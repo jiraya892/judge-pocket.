@@ -17,7 +17,7 @@ function addObject(s,data){
  zone:data.zone||'battlefield',types:(data.types||[]).map(t=>t.toLowerCase()),
  oracle_text:data.oracle_text||'',card_faces:copy(data.card_faces||[]),
  token:!!data.token,power:data.power??null,toughness:data.toughness??null,loyalty:data.loyalty??null,
- counters:copy(data.counters||{}),damage:0,deathtouchMarked:false,tapped:false};
+ counters:copy(data.counters||{}),damage:0,deathtouchMarked:false,tapped:false,indestructible:!!data.indestructible};
  if(!o.name)throw Error('Nome oggetto mancante');
  s.objects.push(o);return o;
 }
@@ -70,12 +70,13 @@ function previewEvent(s,event){
 function applyEvent(s,event,order){
  const preview=previewEvent(s,event);
  if(preview.truncated)return {applied:false,reason:'Troppi rami: verifica manuale necessaria',preview};
+ if(['createTokens','putCounters','gainLife','loseLife','dealDamage'].includes(event.type)&&(!Number.isInteger(event.amount)||event.amount<0))return {applied:false,reason:'Quantità non valida',preview};
  if(preview.amounts.length>1&&!order)return {applied:false,requiresChoice:true,preview};
  const variant=order?preview.variants.find(v=>v.order.join(',')===order.join(',')):preview.variants[0];
  if(!variant)return {applied:false,reason:'Ordine degli effetti non valido',preview};
  const e=variant.event;let result={applied:true,event:e,order:variant.order,created:[]};
  if(e.type==='createTokens'){
-  if(!e.token||!e.token.name||e.amount>100)return {applied:false,reason:'Pedina non specificata o più di 100 pedine',preview};
+  if(!e.token||!e.token.name||e.amount>100||!s.players.some(p=>p.id===e.player))return {applied:false,reason:'Pedina non specificata o più di 100 pedine',preview};
   for(let i=0;i<e.amount;i++)result.created.push(addObject(s,{...e.token,token:true,owner:e.player,controller:e.player}).id);
  }else if(e.type==='putCounters'){
   const o=get(s,e.target);if(o.zone!=='battlefield')return {applied:false,reason:'Oggetto fuori dal campo',preview};
@@ -100,7 +101,7 @@ function queueEnterTriggers(s,entered){
  for(const o of battlefield(s)){
   const lines=root.JudgeEngine.textOf(o).split('\n');
   for(const line of lines){
-   if(!/^(when|whenever)\b/i.test(line)||!/\benters the battlefield\b/i.test(line))continue;
+   if(!/^(when|whenever)\b/i.test(line)||!/\benters(?: the battlefield)?\b/i.test(line))continue;
    const self=/^(when|whenever)\s+(~|this creature|this permanent|this artifact)\s+enters/i.test(line);
    const escaped=o.name.replace(/[^a-zA-Z0-9 ]/g,'\\$&');
    const named=new RegExp('^(when|whenever)\\s+'+escaped+'\\s+enters','i').test(line);
@@ -128,6 +129,14 @@ function queueEnterTriggers(s,entered){
 function putTriggersOnStack(s,orderByPlayer={}){
  const ids=s.players.map(p=>p.id),start=ids.indexOf(s.activePlayer);
  const apnap=[...ids.slice(start),...ids.slice(0,start)],placements=[];
+ // Validate all player-defined orders before changing the stack.
+ for(const id of apnap){
+  const theirs=s.pending.filter(t=>t.controller===id);
+  const order=orderByPlayer[id];
+  if(theirs.length>1&&(!Array.isArray(order)||order.length!==theirs.length||
+    new Set(order).size!==theirs.length||theirs.some(t=>!order.includes(t.id))))
+    return {applied:false,reason:'Serve ordinare gli inneschi del giocatore '+id,options:theirs};
+ }
  for(const id of apnap){
   const theirs=s.pending.filter(t=>t.controller===id);
   const order=orderByPlayer[id];
@@ -168,7 +177,7 @@ function stateBasedActions(s){
  for(const o of [...battlefield(s)]){
   if(typed(o,'creature')&&o.toughness!==null){
    const pt=o.toughness+(o.counters['+1/+1']||0)-(o.counters['-1/-1']||0);
-   if(pt<=0||o.damage>=pt||o.deathtouchMarked){
+   if(pt<=0||(!o.indestructible&&(o.damage>=pt||o.deathtouchMarked))){
     const reason=pt<=0?'toughness':o.deathtouchMarked?'deathtouch':'damage';
     moveZone(s,o.id,'graveyard');out.push({type:'creatureLeaves',name:o.name,reason});
    }
