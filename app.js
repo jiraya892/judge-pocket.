@@ -32,6 +32,12 @@ $('analyze').onclick=async()=>{
   out.replaceChildren();
   if(selected.length<2){showText(out,'Seleziona almeno due carte per confrontarle.');return}
   const report=JudgeEngine.analyze(selected);
+  const continuous=window.JudgeContinuous?.analyze(selected);
+  if(continuous?.effects?.length){
+    showText(out,'Effetti continui e layer (analisi parziale)','h3');
+    showText(out,continuous.reason||'Effetti continui rilevati, verifica manuale necessaria.');
+    showText(out,'Effetti individuati: '+continuous.effects.map(e=>e.source+' — '+e.kind+' (layer '+e.layer+')').join('; ')+'.');
+  }
   if(report.findings.length){
     for(const finding of report.findings){
       showText(out,finding.title,'h3');
