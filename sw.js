@@ -1,5 +1,5 @@
-const CACHE='judge-pocket-beta-v9';
-const ASSETS=['./','./index.html','./app.js','./engine.js','./rules-core.js','./simulator-ui.js','./autocomplete.js','./manifest.webmanifest'];
+const CACHE='judge-pocket-beta-v10';
+const ASSETS=['./','./index.html','./app.js','./engine.js','./rules-core.js','./simulator-ui.js','./autocomplete.js','./updater.js','./version.json','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  self.skipWaiting();
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
