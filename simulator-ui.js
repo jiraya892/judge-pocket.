@@ -21,7 +21,7 @@ function prepare(selected,leaveOut){
   const pow=c.power!==undefined&&/^[-]?\d+$/.test(c.power)?Number(c.power):null;
   const tou=c.toughness!==undefined&&/^[-]?\d+$/.test(c.toughness)?Number(c.toughness):null;
   const obj=core.addObject(state,{name:c.name,owner:'Tu',controller:'Tu',
-   types,power:pow,toughness:tou,indestructible:(c.keywords||[]).includes('Indestructible'),
+   types,power:pow,toughness:tou,legendary:hasType(c,'Legendary'),indestructible:(c.keywords||[]).includes('Indestructible'),
    oracle_text:c.oracle_text||'',card_faces:c.card_faces||[],
    zone:leaveOut===c._instanceId?'hand':'battlefield'});
   lookup.set(c._instanceId,obj);
