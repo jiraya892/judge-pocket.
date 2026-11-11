@@ -6,20 +6,7 @@ $('clear').onclick=()=>{cards=[];analysisRun++;$('analysis').replaceChildren();r
 function render(){let root=$('cards');root.replaceChildren();for(let c of cards){let d=document.createElement('div');d.className='card';let h=document.createElement('h3');h.textContent=c.name;d.append(h);let t=document.createElement('p');t.textContent=c.oracle_text||c.card_faces?.map(x=>x.oracle_text).filter(Boolean).join(' / ')||'Testo Oracle non disponibile';d.append(t);let a=document.createElement('a');a.href=c.scryfall_uri;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Apri carta su Scryfall';d.append(a);let b=document.createElement('button');b.className='secondary';b.textContent='Mostra rulings';b.onclick=async()=>{b.disabled=true;b.textContent='Caricamento…';try{let r=await fetch(c.rulings_uri);if(!r.ok)throw Error('Rulings non disponibili');let j=await r.json();let ul=document.createElement('ul');for(let x of j.data||[]){let li=document.createElement('li');li.textContent=x.comment;ul.append(li)}if(!ul.children.length){let li=document.createElement('li');li.textContent='Nessun ruling disponibile';ul.append(li)}d.append(ul);b.remove()}catch(e){b.disabled=false;b.textContent='Riprova rulings';$('status').textContent=e.message}};d.append(b);let remove=document.createElement('button');remove.className='secondary';remove.textContent='Rimuovi questa carta';remove.onclick=()=>{cards=cards.filter(x=>x.id!==c.id);analysisRun++;$('analysis').replaceChildren();render()};d.append(remove);root.append(d)}}
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
-// Analisi conservativa: segnala soltanto argomenti condivisi, senza dedurre esiti delle regole.
-const topics=[['segnalini',/counter|proliferate|doubl(?:e|ing)|segnalin/i],['pedine',/token|pedin/i],['cimitero',/graveyard|dies|died|cimiter/i],['esilio',/exile|exiled|esili/i],['lancio di magie',/cast|spell|lanci/i],['entrata sul campo',/enters(?: the battlefield)?|enter the battlefield|entra sul campo/i],['danno',/damage|danno/i],['pescare carte',/draw (?:a |two |three |that many )?cards?|pesca/i],['mana',/mana|add \{/i],['sacrificio',/sacrifice|sacrific/i],['attacco',/attacks?|attacc/i],['guadagno di punti vita',/gain(?:s)? (?:that much |[0-9]+ )?life|guadagni? punti vita/i]];
-const oracle=c=>[c.oracle_text,...(c.card_faces||[]).map(f=>f.oracle_text)].filter(Boolean).join(' ');
-
-const exactRules=[
- {names:['Panharmonicon','Yarok, the Desecrated'],title:'Inneschi aggiuntivi all’entrata sul campo',explain:'Se un permanente che entra sul campo fa innescare un’abilità di un permanente che controlli e anche Panharmonicon si applica a quell’evento, l’abilità si innesca una volta in più per ciascuno dei due effetti: tre inneschi totali anziché uno.',caveat:'L’oggetto che entra deve essere un artefatto o una creatura, e la stessa abilità deve soddisfare le condizioni di entrambe le carte.'},
- {names:['Anointed Procession','Mondrak, Glory Dominus'],title:'Raddoppi della creazione di pedine',explain:'Se entrambi sono sotto il tuo controllo e si applicano allo stesso evento in cui crei pedine, il numero di pedine create è quattro volte quello inizialmente previsto.',caveat:'Vale soltanto per nuovi eventi di creazione di pedine sotto il tuo controllo.'},
- {names:['Doubling Season','Parallel Lives'],title:'Effetti di sostituzione sulla creazione di pedine',explain:'Se entrambi gli effetti sono applicabili allo stesso evento di creazione di pedine sotto il tuo controllo, ciascuno raddoppia il numero: il risultato è quattro volte il numero iniziale.',caveat:'Vale soltanto per gli eventi a cui si applicano entrambi gli effetti; non riguarda pedine già presenti.'},
- {names:['Doubling Season','Anointed Procession'],title:'Effetti di sostituzione sulla creazione di pedine',explain:'Quando entrambi si applicano allo stesso evento che crea pedine sotto il tuo controllo, il numero di pedine viene moltiplicato per quattro.',caveat:'Controllore e testo preciso dell’effetto che crea le pedine sono rilevanti.'},
- {names:['Parallel Lives','Anointed Procession'],title:'Effetti di sostituzione sulla creazione di pedine',explain:'Se entrambi gli effetti si applicano allo stesso evento di creazione di pedine sotto il tuo controllo, vengono create quattro volte le pedine inizialmente previste.',caveat:'Non modifica pedine già sul campo di battaglia.'},
- {names:['Doubling Season','Hardened Scales'],title:'Segnalini +1/+1 e sostituzioni',explain:'Se uno o più segnalini +1/+1 stanno per essere messi su una creatura che controlli per effetto di un evento a cui si applicano entrambi, il numero iniziale N diventa 2×(N+1) oppure 2×N+1, secondo l’ordine scelto dal controllore dell’oggetto interessato.',caveat:'Doubling Season richiede che sia un effetto a mettere i segnalini su un permanente che controlli. Il risultato dipende dall’ordine degli effetti di sostituzione.'}
-];
-function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,'')}
-
+// Motore generale: il testo Oracle viene interpretato per meccaniche, non per nomi di carte.
 // Scryfall card-specific rulings help verify relevant text but are NOT an automatic verdict.
 async function loadCardRulings(card){
   if(rulingsCache.has(card.id))return rulingsCache.get(card.id);
@@ -44,22 +31,21 @@ $('analyze').onclick=async()=>{
   const out=$('analysis');
   out.replaceChildren();
   if(selected.length<2){showText(out,'Seleziona almeno due carte per confrontarle.');return}
-  let count=0;
-  for(let i=0;i<selected.length;i++)for(let j=i+1;j<selected.length;j++){
-    const a=selected[i],b=selected[j];
-    const found=exactRules.find(r=>r.names.some(n=>norm(n)===norm(a.name))&&r.names.some(n=>norm(n)===norm(b.name)));
-    if(found){
-      count++;
-      showText(out,a.name+' + '+b.name,'h3');
-      showText(out,found.title);
-      showText(out,found.explain);
-      showText(out,'Condizioni: '+found.caveat);
-    }else{
-      const shared=topics.filter(([,re])=>re.test(oracle(a))&&re.test(oracle(b))).map(([name])=>name);
-      showText(out,a.name+' + '+b.name+': '+(shared.length?'possibili temi comuni: '+shared.join(', '):'nessuna parola chiave comune rilevata')+'. Esito non determinato.');
+  const report=JudgeEngine.analyze(selected);
+  if(report.findings.length){
+    for(const finding of report.findings){
+      showText(out,finding.title,'h3');
+      showText(out,finding.description);
+      showText(out,'Condizioni: '+finding.conditions);
+      showText(out,'Carte coinvolte: '+finding.sources.join(', '));
+      showText(out,'Regole di riferimento: '+finding.rules.join(', '));
     }
+  }else{
+    showText(out,'Nessun risultato determinabile con le meccaniche supportate. Questo non significa che le carte non interagiscano.');
   }
-  showText(out,count?'Le conclusioni valgono soltanto con le condizioni indicate.':'Il motore non dispone di regole specifiche per queste combinazioni.');
+  const recognized=report.recognized.filter(x=>x.mechanics.length);
+  if(recognized.length)showText(out,'Meccaniche individuate: '+recognized.map(x=>x.name+' ('+x.mechanics.join(', ')+')').join('; ')+'.');
+  showText(out,'Limiti: '+report.limitations.join(' '));
   showText(out,'Rulings ufficiali delle singole carte (non dimostrano da soli il risultato della combinazione):','h3');
   const status=showText(out,'Caricamento dei rulings Scryfall…');
   const list=document.createElement('div');
