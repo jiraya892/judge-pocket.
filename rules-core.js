@@ -17,7 +17,7 @@ function addObject(s,data){
  zone:data.zone||'battlefield',types:(data.types||[]).map(t=>t.toLowerCase()),
  oracle_text:data.oracle_text||'',card_faces:copy(data.card_faces||[]),
  token:!!data.token,power:data.power??null,toughness:data.toughness??null,loyalty:data.loyalty??null,
- counters:copy(data.counters||{}),damage:0,deathtouchMarked:false,tapped:false,indestructible:!!data.indestructible};
+ counters:copy(data.counters||{}),damage:0,deathtouchMarked:false,tapped:false,indestructible:!!data.indestructible,legendary:!!data.legendary};
  if(!o.name)throw Error('Nome oggetto mancante');
  s.objects.push(o);return o;
 }
@@ -169,12 +169,40 @@ function passPriority(s,id){
  const entry=s.stack.pop(),legality=entry.targets.map(t=>targetStillLegal(s,t));
  return {type:'resolveManually',entry,legalTargets:legality,allTargetsIllegal:legality.length>0&&legality.every(v=>!v)};
 }
+function legendConflicts(s){
+ const groups=new Map();
+ for(const o of battlefield(s)){
+  if(!o.legendary)continue;
+  const key=o.controller+'|'+o.name.toLowerCase();
+  const previous=groups.get(key)||[];
+  previous.push(o);groups.set(key,previous);
+ }
+ return [...groups.values()].filter(group=>group.length>1).map(group=>({
+  controller:group[0].controller,name:group[0].name,options:group.map(o=>({id:o.id,name:o.name}))
+ }));
+}
+function resolveLegendChoice(s,keepId){
+ const conflict=legendConflicts(s).find(g=>g.options.some(o=>o.id===keepId));
+ if(!conflict)return {applied:false,reason:'Nessun conflitto leggendario per la scelta'};
+ const removed=[];
+ for(const o of conflict.options){
+  if(o.id===keepId)continue;
+  moveZone(s,o.id,'graveyard');removed.push(o.id);
+ }
+ return {applied:true,keepId,removed};
+}
 function stateBasedActions(s){
  const out=[];
  for(const p of s.players)if(!p.lost&&(p.life<=0||p.poison>=10||p.drawFromEmpty)){
   p.lost=true;out.push({type:'loss',player:p.id,reason:p.life<=0?'life':p.poison>=10?'poison':'emptyLibrary'});
  }
  for(const o of [...battlefield(s)]){
+  const positive=o.counters['+1/+1']||0,negative=o.counters['-1/-1']||0;
+  if(positive>0&&negative>0){
+   const cancel=Math.min(positive,negative);
+   o.counters['+1/+1']=positive-cancel;o.counters['-1/-1']=negative-cancel;
+   out.push({type:'counterCancellation',name:o.name,amount:cancel});
+  }
   if(typed(o,'creature')&&o.toughness!==null){
    const pt=o.toughness+(o.counters['+1/+1']||0)-(o.counters['-1/-1']||0);
    if(pt<=0||(!o.indestructible&&(o.damage>=pt||o.deathtouchMarked))){
@@ -189,5 +217,5 @@ function stateBasedActions(s){
  return out;
 }
 root.JudgeRulesCore={createGame,addObject,moveZone,battlefield,modifiers,previewEvent,applyEvent,
- queueEnterTriggers,putTriggersOnStack,pushStack,targetStillLegal,passPriority,stateBasedActions};
+ queueEnterTriggers,putTriggersOnStack,pushStack,targetStillLegal,passPriority,stateBasedActions,legendConflicts,resolveLegendChoice};
 })(typeof window!=='undefined'?window:globalThis);
