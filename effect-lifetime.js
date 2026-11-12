@@ -3,16 +3,17 @@
    their effects continue through the same layer evaluation (CR 613.6).
    Resolved spell/ability effects use explicit duration, not source presence. */
 (function(root){'use strict';
-const modes=new Set(['static','resolved']);
+const modes=new Set(['static','resolved','unattributed']);
 const durations=new Set(['untilEndOfTurn','untilEndOfCombat','whileSourceOnBattlefield','permanent','untilSpecifiedEvent']);
 function prepare(objects,effects){
  if(!Array.isArray(objects)||!Array.isArray(effects))return {supported:false,reason:'Input durata effetti non valido'};
  const byId=new Map(objects.map(o=>[o.id,o]));
  const active=[],records=[];
  for(const e of effects){
-  const mode=e.lifetime?.mode||(e.sourceAbilityId?'static':'resolved');
+  const mode=e.lifetime?.mode||(e.sourceAbilityId?'static':'unattributed');
   if(!modes.has(mode))return {supported:false,reason:'Modalità generazione effetto sconosciuta'};
-  if(mode==='static'){
+  if(mode==='unattributed'){active.push(e);records.push(Object.freeze({id:e.id||null,mode:'unattributed',generated:true}));}
+  else if(mode==='static'){
    if(!e.sourceId||!e.sourceAbilityId)return {supported:false,reason:'Effetto statico senza abilità sorgente'};
    const source=byId.get(e.sourceId);
    if(!source||source.zone&&source.zone!=='battlefield')return {supported:false,reason:'Fonte statica non presente sul campo'};
