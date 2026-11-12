@@ -11,6 +11,8 @@ function evaluate(input){
  const source=input.objects.filter(o=>o.zone==='battlefield'),results=[],warnings=[];
  for(const o of input.objects){if(!o.name||!['A','B'].includes(o.owner)||!['A','B'].includes(o.controller)||!Array.isArray(o.types))return {supported:false,reason:'Oggetto incompleto'};const added=root.JudgeRulesCore.addObject(game,o);added.damage=o.damage||0;added.tapped=!!o.tapped}
  const active=input.effects.filter(e=>!e.oracleGenerated||source.some(o=>o.id===e.sourceId));
+ const shared=root.JudgeUnifiedContinuous?.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),active.filter(e=>generic.has(e.kind)||land.has(e.kind)));
+ if(shared&&!shared.supported)warnings.push('Pipeline condivisa: '+shared.reason);
  const landEffects=active.filter(e=>land.has(e.kind));
  const layer4=active.filter(e=>e.layer==='4'&&(land.has(e.kind)||generic.has(e.kind)));
  const unified=layer4.length&&root.JudgeUnifiedLayer4?root.JudgeUnifiedLayer4.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),layer4):null;
@@ -26,10 +28,12 @@ function evaluate(input){
  for(const o of input.objects){
   if(o.zone!=='battlefield'){results.push({id:o.id,name:o.name,status:'not-evaluated'});continue}
   const relevant=active.filter(e=>e.targetId===o.id||e.targetId==='all');
+  const sharedState=shared?.supported?shared.objects[source.indexOf(o)]:null;
   const unsupported=relevant.filter(e=>!generic.has(e.kind)&&!land.has(e.kind));
   const unknown=o.oracleUnknown||[];
   if(unsupported.length||unknown.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:[...unsupported.map(e=>e.text||e.kind||'effetto non strutturato'),...unknown].join(' | ')});continue}
   const genericEffects=relevant.filter(e=>generic.has(e.kind)&&e.layer!=='4');
+  if(sharedState&&!o.ptDefinition&&!o.oracleUnknown?.length){results.push({id:o.id,name:o.name,status:'partial',types:sharedState.types,subtypes:sharedState.subtypes||[],controller:sharedState.controller,power:sharedState.power??null,toughness:sharedState.toughness??null,damage:o.damage||0,order:shared.order,coverage:shared.coverage});continue}
   const combinedLayer4=unified?.supported&&unified.objects[source.indexOf(o)];
   if(layer4.length&&!combinedLayer4){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Layer 4 unificato non disponibile'});continue}
   const outcome=root.JudgeLayers.evaluate({types:combinedLayer4?.types||o.types,controller:o.controller,power:o.power,toughness:o.toughness,abilities:combinedLayer4?.abilities||o.abilities||[],colors:o.colors||[],text:o.oracle_text||''},genericEffects);
