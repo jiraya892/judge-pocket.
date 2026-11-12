@@ -43,3 +43,8 @@ I test attuali coprono 15 scenari di base, **non** l'intero regolamento.
 7. Riconoscimento di più carte da fotografia e richiesta delle sole informazioni di partita indispensabili.
 
 Fonte normativa: https://magic.wizards.com/en/rules (Comprehensive Rules). Aggiornare parser e test alle revisioni ufficiali.
+
+
+## Aggiornamento ramo di sviluppo — capitolo 5Y (2026-11-12)
+
+Le sezioni sopra descrivono in parte uno stato storico e non vanno lette come inventario aggiornato del ramo di sviluppo. Sono stati aggiunti moduli separati per pila/priorità, bersagli, risoluzione, scelte/costi, copie/neutralizzazione, cambi di zona, inneschi e SBA locali. La copertura rimane **parziale**: solo sei tipi di eventi strutturati, costi semplificati, legalità bersagli non universale, SBA non complete, nessuna interpretazione Oracle generale. Il controllo browser è una pagina di test, non un test di utilizzo dell'app. Consultare `AUDIT_CAPITOLO_5.md` e `test-reports/latest/summary.md` per stato e prove del commit esatto.
