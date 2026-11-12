@@ -39,6 +39,11 @@ async function evaluate(context){
   });
   details.questionPlanning={status:planned.status,reason:planned.reason||null,relevantKeys:planned.relevantKeys||[],scenarios:planned.scenarios||0,previewOnly:true};
  }
+ // Do not ask board/controller/timestamp questions for unsupported event modes.
+ if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
+ if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
+ if(!['enter','present'].includes(context.event))return fail('EVENT_UNKNOWN','Situazione non riconosciuta.');
+ if(context.event==='enter'&&!cards.some(c=>normalizeName(c.name)===normalizeName(context.entering)))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
  if(!context.board)return {status:'question',key:'board',question:'Ci sono altri permanenti che possono influire su questa interazione?',options:[{id:'complete',label:'No, soltanto queste carte'},{id:'additional',label:'Sì, ci sono altri permanenti'}],diagnostic:details};
  if(!Array.isArray(context.controllers)||context.controllers.length!==cards.length){
   const index=Array.isArray(context.controllers)?context.controllers.length:0;
