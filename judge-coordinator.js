@@ -18,7 +18,7 @@ function evaluate(input){
  const landObjects=source.map(o=>({types:o.types.slice(),subtypes:(o.subtypes||[]).slice(),supertypes:(o.supertypes||[]).slice(),abilities:(o.abilities||[]).slice(),controller:o.controller,token:!!o.token,power:o.power,toughness:o.toughness,ptDefinition:o.ptDefinition}));
  let landOutcome=null;
  if(landEffects.length){
-  if(active.some(e=>generic.has(e.kind)&&e.layer==='4'))warnings.push('Effetti di layer 4 di motori diversi non ordinati insieme: risultato incompleto.');
+  if(active.some(e=>generic.has(e.kind)&&e.layer==='4')&&!unified?.supported)warnings.push('Layer 4 misto non verificato.');
   landOutcome=root.JudgeContinuousState.evaluate(landObjects,landEffects);
   if(!landOutcome.supported)warnings.push('Motore terre: '+landOutcome.reason);
   else warnings.push(...(landOutcome.warnings||[]));
