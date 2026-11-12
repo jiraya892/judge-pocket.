@@ -175,4 +175,8 @@ JudgeGroup11ITests: 10/10
 JudgeGroup11JTests: 10/10
 JudgeGroup11KTests: 10/10
 JudgeGroup11LTests: 10/10
-Browser suites: 1770/1770 passed; 0 execution errors
+JudgeGroup11MTests: 10/10
+JudgeGroup11NTests: 10/10
+JudgeGroup11OTests: 10/10
+JudgeGroup11PTests: 10/10
+Browser suites: 1810/1810 passed; 0 execution errors
