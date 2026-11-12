@@ -5,7 +5,8 @@ const stable=x=>JSON.stringify(x);
 function plan(input, evaluator){
  const facts=input?.facts;
  if(!Array.isArray(facts)||typeof evaluator!=='function')return {status:'unsupported',reason:'Invalid planner input'};
- const unknown=facts.filter(f=>f&&!own(input.answers,f.key));
+ if(facts.some(f=>!f||typeof f.key!=='string'||!f.key)||new Set(facts.map(f=>f.key)).size!==facts.length)return {status:'unsupported',reason:'Invalid or duplicate fact keys'};
+ const unknown=facts.filter(f=>!own(input.answers,f.key));
  if(unknown.some(f=>typeof f.key!=='string'||!f.key||!Array.isArray(f.options)||f.options.length<1||f.options.length>8||new Set(f.options.map(o=>String(o.id))).size!==f.options.length))return {status:'unsupported',reason:'Invalid fact options'};
  if(unknown.length>10)return {status:'unsupported',reason:'Too many unknown facts'};
  const combinations=unknown.reduce((n,f)=>n*f.options.length,1);
