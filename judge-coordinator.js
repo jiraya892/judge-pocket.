@@ -33,7 +33,7 @@ function evaluate(input){
   const unknown=o.oracleUnknown||[];
   if(unsupported.length||unknown.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:[...unsupported.map(e=>e.text||e.kind||'effetto non strutturato'),...unknown].join(' | ')});continue}
   const genericEffects=relevant.filter(e=>generic.has(e.kind)&&e.layer!=='4');
-  if(sharedState&&!o.ptDefinition&&!o.oracleUnknown?.length){results.push({id:o.id,name:o.name,status:'partial',types:sharedState.types,subtypes:sharedState.subtypes||[],controller:sharedState.controller,power:sharedState.power??null,toughness:sharedState.toughness??null,damage:o.damage||0,order:shared.order,coverage:shared.coverage});continue}
+  if(sharedState&&!o.oracleUnknown?.length){results.push({id:o.id,name:o.name,status:'partial',types:sharedState.types,subtypes:sharedState.subtypes||[],controller:sharedState.controller,power:sharedState.power??null,toughness:sharedState.toughness??null,damage:o.damage||0,order:shared.order,coverage:shared.coverage});continue}
   const combinedLayer4=unified?.supported&&unified.objects[source.indexOf(o)];
   if(layer4.length&&!combinedLayer4){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Layer 4 unificato non disponibile'});continue}
   const outcome=root.JudgeLayers.evaluate({types:combinedLayer4?.types||o.types,controller:o.controller,power:o.power,toughness:o.toughness,abilities:combinedLayer4?.abilities||o.abilities||[],colors:o.colors||[],text:o.oracle_text||''},genericEffects);
