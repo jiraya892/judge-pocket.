@@ -91,9 +91,8 @@ JudgeGroup7STests: 10/10
 JudgeGroup7TTests: 10/10
 JudgeGroup7UTests: 10/10
 JudgeGroup7VTests: 10/10
-JudgeGroup7WTests: 9/10
-FAIL JudgeGroup7WTests: W applies visibility and placement
+JudgeGroup7WTests: 10/10
 JudgeGroup7XTests: 10/10
 JudgeGroup7YTests: 10/10
 JudgeGroup7ZTests: 10/10
-Browser suites: 969/970 passed; 0 execution errors
+Browser suites: 970/970 passed; 0 execution errors
