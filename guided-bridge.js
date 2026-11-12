@@ -38,6 +38,14 @@ async function evaluate(context){
   details.questionPlanning={status:planned.status,reason:planned.reason||null,relevantKeys:planned.relevantKeys||[],scenarios:planned.scenarios||0,previewOnly:true};
  }
  if(!context.board)return {status:'question',key:'board',question:'Ci sono altri permanenti che possono influire su questa interazione?',options:[{id:'complete',label:'No, soltanto queste carte'},{id:'additional',label:'Sì, ci sono altri permanenti'}],diagnostic:details};
+ if(!Array.isArray(context.controllers)||context.controllers.length!==cards.length){
+  const index=Array.isArray(context.controllers)?context.controllers.length:0;
+  return {status:'question',key:'controllers',question:'Chi controlla '+cards[index].name+'?',options:[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}],diagnostic:details};
+ }
+ if(context.event==='present'&&(!Array.isArray(context.order)||context.order.length!==cards.length)){
+  const chosen=Array.isArray(context.order)?context.order:[];
+  return {status:'question',key:'orderChoices',question:'Quale carta è entrata '+(chosen.length?'successivamente':'per prima')+'?',options:cards.map((card,i)=>({id:String(i),label:card.name})).filter(o=>!chosen.includes(Number(o.id))),diagnostic:details};
+ }
  const facts=root.JudgeGameFacts?.build(context,cards.map(cardObject));if(!facts?.supported)return fail(facts?.code||'FACTS_ENGINE_MISSING',facts?.reason||'Modulo stato mancante');const objects=facts.objects,effects=[];
  for(let i=0;i<cards.length;i++){
   const recognition=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognition.unknown;
