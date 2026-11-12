@@ -1,5 +1,5 @@
 name: Publish isolated development preview
-# Retry after enabling all branches for github-pages deployment.
+# Retry after explicitly allowing main and dev/groups-5f-5h for github-pages deployment.
 on:
   push:
     branches: [dev/groups-5f-5h]
