@@ -17,6 +17,7 @@ function evaluate(objects,effects){if(!Array.isArray(objects)||!Array.isArray(ef
  if(effects.some(e=>!e||!kinds.has(e.kind)||!Number.isSafeInteger(e.timestamp)||e.layer!=='4'))return {supported:false,reason:'Effetto layer 4 sconosciuto'};
  if(effects.some(e=>['addLandSubtype','setNonbasicLandSubtype'].includes(e.kind)&&!basic.includes(e.subtype)))return {supported:false,reason:'Sottotipo terra non supportato'};
  if(effects.some(e=>e.kind==='addLandSubtype'&&e.scope!=='nontokenCreaturesYouControl'))return {supported:false,reason:'Ambito terra non supportato'};
+ if(effects.some(e=>!e.targetId))return {supported:false,reason:'Ambito effetto non specificato'};
  const tagged=effects.map((e,i)=>({...e,_id:e.id||'effect-'+i,_index:i}));if(new Set(tagged.map(e=>e._id)).size!==tagged.length)return {supported:false,reason:'ID effetti duplicati'};
  let state=objects.map(clone),pending=tagged,order=[];
  while(pending.length){const deps=new Map();for(const e of pending){const dependencies=[];
@@ -25,6 +26,8 @@ function evaluate(objects,effects){if(!Array.isArray(objects)||!Array.isArray(ef
  // Recognize only the provable type-to-land applicability dependency.
  if(e.kind==='setNonbasicLandSubtype'&&other.kind==='addLandSubtype'&&state.some((o,i)=>!applies(e,o)&&applies(e,apply(other,state)[i])))dependencies.push(other._id);
  if(e.kind==='setNonbasicLandSubtype'&&other.kind==='addType'&&other.value==='land'&&state.some((o,i)=>!applies(e,o)&&applies(e,apply(other,state)[i])))dependencies.push(other._id);
+ // General layer-4 applicability changes: adding/removing creature or land type can change the set of affected objects.
+ if((e.kind==='addLandSubtype'||e.kind==='setNonbasicLandSubtype')&&(other.kind==='addType'||other.kind==='removeType')&&state.some((o,i)=>applies(e,o)!==applies(e,apply(other,state)[i]))&&!dependencies.includes(other._id))dependencies.push(other._id);
  }
  deps.set(e._id,dependencies)}
  if(pending.some(e=>(e.dependency||[]).some(id=>!tagged.some(x=>x._id===id))))return {supported:false,reason:'Dipendenza sconosciuta'};
