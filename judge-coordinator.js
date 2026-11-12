@@ -15,7 +15,8 @@ function evaluate(input){
  }
  const active=input.effects.filter(e=>!e.oracleGenerated||source.some(o=>o.id===e.sourceId));
  const model=root.JudgeEffectModel?.build(source,active);
- const modelProblem=model?.supported?null:(model?.reason||'Modello effetti non disponibile');
+ const runtime=model?.supported?root.JudgeEffectModel.runtime(model.model):null;
+ const modelProblem=runtime?.supported?null:(runtime?.reason||model?.reason||'Modello effetti non disponibile');
  const unknownEffects=active.filter(e=>!kinds.has(e.kind));
  const unknownOracle=source.filter(o=>(o.oracleUnknown||[]).length);
  // An unrecognized global effect may influence every object: never use a fallback engine.
@@ -23,7 +24,7 @@ function evaluate(input){
  const invalidSources=active.filter(e=>e.oracleGenerated&&(!e.sourceId||!source.some(o=>o.id===e.sourceId)));
  const problems=[...(modelProblem?[modelProblem]:[]),...unknownEffects.map(e=>'Operazione sconosciuta: '+(e.kind||e.text||'?')),...invalidScope.map(e=>'Ambito non valido: '+(e.kind||'?')),...invalidSources.map(e=>'Fonte non valida: '+(e.kind||'?')),...unknownOracle.map(o=>'Oracle incompleto: '+o.name)];
  let shared=null;
- if(!problems.length){shared=root.JudgeUnifiedContinuous.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),active);if(!shared.supported)problems.push(shared.reason||'Effetti non supportati')}
+ if(!problems.length){shared=root.JudgeUnifiedContinuous.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),runtime.model);if(!shared.supported)problems.push(shared.reason||'Effetti non supportati')}
  if(problems.length)warnings.push(...problems);
  for(const o of input.objects){
   if(o.zone!=='battlefield'){results.push({id:o.id,name:o.name,status:'not-evaluated'});continue}
