@@ -3,8 +3,12 @@
 (function(root){'use strict';
 const ranks=['1a','1b','2','3','4','5','6','7a','7b','7c','7d'];
 const supported=new Set(['addType','removeType','addLandSubtype','setNonbasicLandSubtype','setColor','addColor','removeColor','addAbility','removeAbility','removeAllAbilities','setPT','definePT','modifyPT','switchPT','setController','replaceText','copyCharacteristics']);
-function evaluate(objects,effects){if(!root.JudgeUnifiedLayer4||!root.JudgeLayers)return {supported:false,reason:'Motori dei layer mancanti'};
-if(!Array.isArray(objects)||!Array.isArray(effects))return {supported:false,reason:'Stato non valido'};
+function evaluate(objects,input){if(!root.JudgeUnifiedLayer4||!root.JudgeLayers||!root.JudgeEffectModel)return {supported:false,reason:'Motori dei layer mancanti'};
+if(!Array.isArray(objects))return {supported:false,reason:'Stato non valido'};
+ const built=Array.isArray(input)?root.JudgeEffectModel.build(objects,input):{supported:true,model:input};
+ if(!built.supported)return built;
+ const runtime=root.JudgeEffectModel.runtime(built.model);if(!runtime.supported)return runtime;
+ const effects=runtime.effects;
 if(effects.some(e=>!supported.has(e.kind)||!ranks.includes(String(e.layer))))return {supported:false,reason:'Effetto continuo non supportato'};
 const layer4=effects.filter(e=>String(e.layer)==='4');
 const early=effects.filter(e=>ranks.indexOf(String(e.layer))<ranks.indexOf('4'));
