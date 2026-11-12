@@ -2,7 +2,6 @@
 'use strict';
 // Chapter 15/4: offline, fail-closed evidence gate. This never authenticates a publisher.
 const fs=require('node:fs');
-const crypto=require('node:crypto');
 const path=require('node:path');
 function evaluate(report, evidence) {
   const problems=[];
@@ -17,7 +16,7 @@ function evaluate(report, evidence) {
   if(evidence?.verificationMethod!=='independent-publisher-signed-digest') problems.push('No independently authenticated publisher signature');
   // An assertion in a JSON file cannot prove a cryptographic signature.
   problems.push('Cryptographic publisher signature validation not implemented');
-  return {status:'review-required',authenticated:false,officialDigestVerified:false,importable:false,checksPassed:problems.length===1,problems};
+  return {status:'review-required',authenticated:false,officialDigestVerified:false,importable:false,checksPassed:false,problems};
 }
 if(require.main===module){
  const reportPath=process.argv[2]||'test-reports/official/diagnostic.json';
