@@ -40,7 +40,7 @@ function evaluate(objects,effects){
     // or the types/subtypes/abilities produced by e.
     if(JSON.stringify(before)!==JSON.stringify(after)&&
        (e.kind==='setNonbasicLandSubtype'&&other.kind==='addLandSubtype')&&
-       state.some((o,i)=>!isNonbasic(o)&&isNonbasic(apply(other,state)[i])))deps.push(other._index);
+       state.some((o,i)=>!isNonbasic(o)&&isNonbasic(apply(other,state)[i]))deps.push(other._index);
    }
    dependencies.set(e._index,deps);
   }
