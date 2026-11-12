@@ -15,7 +15,7 @@ function process(event,effects=[],choices=[]){
  if(effects.some(e=>e.operation==='prevent'&&e.match.type&&e.match.type!=='dealDamage'))return {supported:false,reason:'Prevenzione su evento non danno non supportata'};
  const used=new Set(),trace=[];let current={...event};
  while(true){
-  const eligible=effects.filter(e=>!used.has(e.id)&&matches(e,current)&&(!e.operation||e.operation!=='prevent'||current.type==='dealDamage'));
+  const eligible=effects.filter(e=>!used.has(e.id)&&matches(e,current)&&(e.operation!=='prevent'||current.type==='dealDamage'&&!current.unpreventable));
   if(!eligible.length)break;
   let chosen;
   if(eligible.length===1)chosen=eligible[0];
@@ -27,7 +27,6 @@ function process(event,effects=[],choices=[]){
   used.add(chosen.id);
   const value=chosen.value;
   if(chosen.operation==='prevent'){
-   if(current.unpreventable)return {supported:false,reason:'Danno non prevenibile: effetto di prevenzione inapplicabile'};
    if(value!==undefined&&(!Number.isSafeInteger(value)||value<0))return {supported:false,reason:'Quantità prevenzione invalida'};
    current={...current,amount:Math.max(0,current.amount-(value??current.amount))};
   }else if(['multiply','add','set'].includes(chosen.operation)){
