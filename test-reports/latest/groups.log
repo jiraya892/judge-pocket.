@@ -118,8 +118,7 @@ JudgeGroup8TTests: 10/10
 JudgeGroup8UTests: 10/10
 JudgeGroup8VTests: 10/10
 JudgeGroup8WTests: 10/10
-JudgeGroup8XTests: 9/10
-FAIL JudgeGroup8XTests: function attachment rejected
+JudgeGroup8XTests: 10/10
 JudgeGroup8YTests: 10/10
 JudgeGroup8ZTests: 10/10
-Browser suites: 1229/1230 passed; 0 execution errors
+Browser suites: 1230/1230 passed; 0 execution errors
