@@ -9,7 +9,7 @@ function evaluate(objects,effects){
  const ids=new Map(objects.map(o=>[o.id,o]));
  if(ids.size!==objects.length)return {supported:false,reason:'ID oggetti duplicati'};
  if(effects.some(e=>e.kind!=='copyCharacteristics'||e.layer!=='1a'||!e.sourceId||!e.targetId||e.targetId==='all'||!ids.has(e.sourceId)||!ids.has(e.targetId)||!Number.isSafeInteger(e.timestamp)))return {supported:false,reason:'Effetto copia incompleto'};
- if(effects.some(e=>e.faceDown||e.mutate||e.meld||e.exception||e.copyModification))return {supported:false,reason:'Eccezione ai valori copiabili non ancora supportata'};
+ if(effects.some(e=>e.faceDown||e.mutate||e.meld||e.exception||e.copyModification||e.asEnters||e.copyAs||e.copyExceptions))return {supported:false,reason:'Eccezione ai valori copiabili non ancora supportata'};
  const byTarget=new Map();
  for(const e of effects){if(!byTarget.has(e.targetId))byTarget.set(e.targetId,[]);byTarget.get(e.targetId).push(e)}
  for(const list of byTarget.values())list.sort((a,b)=>a.timestamp-b.timestamp||effects.indexOf(a)-effects.indexOf(b));
