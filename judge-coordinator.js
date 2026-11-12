@@ -18,6 +18,7 @@ function evaluate(input){
   if(active.some(e=>generic.has(e.kind)&&e.layer==='4'))warnings.push('Effetti di layer 4 di motori diversi non ordinati insieme: risultato incompleto.');
   landOutcome=root.JudgeContinuousState.evaluate(landObjects,landEffects);
   if(!landOutcome.supported)warnings.push('Motore terre: '+landOutcome.reason);
+  else warnings.push(...(landOutcome.warnings||[]));
  }
  for(const o of input.objects){
   if(o.zone!=='battlefield'){results.push({id:o.id,name:o.name,status:'not-evaluated'});continue}
@@ -30,6 +31,8 @@ function evaluate(input){
   if(!outcome.supported){results.push({id:o.id,name:o.name,status:'unsupported',reason:outcome.reason});continue}
   const index=source.indexOf(o),landState=landOutcome?.supported?landOutcome.objects[index]:null;
   const landAffected=landEffects.some(e=>e.kind==='setNonbasicLandSubtype'&&landState?.subtypes?.includes(e.subtype)||e.kind==='addLandSubtype'&&landState?.subtypes?.includes(e.subtype));
+  const cdaRemoved=!!(o.ptDefinition&&landState&&!landState.abilities.some(a=>a.id===o.ptDefinition.abilityId));
+  if(cdaRemoved){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Abilità che definisce P/T rimossa: calcolo completo dei layer non verificato'});continue}
   const mixed=landAffected&&genericEffects.some(e=>e.layer==='4'||e.layer==='6'||e.layer==='7a');
   const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
   if(hasCounters&&genericEffects.some(e=>e.layer==='7d')){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Ordine layer 7c/7d e segnalini non integrato'});continue}
