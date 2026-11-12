@@ -5,6 +5,10 @@ on:
     paths:
       - 'question-planner.js'
       - 'question-planner.test.cjs'
+      - 'guided-bridge.js'
+      - 'context-ui.js'
+      - 'context-interview.js'
+      - 'game-facts.js'
       - '.github/workflows/chapter-16-tests.yml'
   workflow_dispatch:
 permissions:
