@@ -17,13 +17,15 @@ for(const o of objects){const r=root.JudgeLayers.evaluate({types:o.types,control
 const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,layer4):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
 for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
-if(hasCounters&&relevant.some(e=>e.layer==='7d'))return {supported:false,reason:'Segnalini e inversione P/T non ancora integrati'};
+
 if(o.ptDefinition&& !o.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa: valutazione completa non disponibile'};
 if(o.ptDefinition&&relevant.some(e=>['7a','7b','7c','7d'].includes(e.layer)))return {supported:false,reason:'Definizione dinamica P/T e modifiche successive non ancora integrate'};
-const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:o.power,toughness:o.toughness},relevant);if(!r.supported)return r;
+const prior=relevant.filter(e=>e.layer!=='7d');const switches=relevant.filter(e=>e.layer==='7d');
+const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:o.power,toughness:o.toughness},prior);if(!r.supported)return r;
 const state={...o,...r.state,subtypes:o.subtypes};
 const delta=(o.counters?.['+1/+1']||0)-(o.counters?.['-1/-1']||0);
 if(state.power!=null)state.power+=delta;if(state.toughness!=null)state.toughness+=delta;
+if(switches.length){const swapped=root.JudgeLayers.evaluate(state,switches);if(!swapped.supported)return swapped;state.power=swapped.state.power;state.toughness=swapped.state.toughness;}
 result.push(state)}
 return {supported:true,objects:result,order:[...middle.order],coverage:'restricted-shared-state',warnings:['Calcolo parziale: dipendenze generali e durata degli effetti non ancora verificate']}}
 root.JudgeUnifiedContinuous={evaluate};
