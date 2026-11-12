@@ -4,6 +4,7 @@
 'use strict';
 const has=(o,t)=>o.types.includes(t);
 const isNonbasic=o=>has(o,'land')&&!o.supertypes.includes('basic');
+const basicTypes=['Plains','Island','Swamp','Mountain','Forest'];
 function snapshot(o){return {types:[...o.types],subtypes:[...o.subtypes],supertypes:[...o.supertypes],abilities:[...o.abilities],controller:o.controller,token:!!o.token}}
 function apply(effect,objects){
  const out=objects.map(snapshot);
@@ -15,10 +16,11 @@ function apply(effect,objects){
    if(!o.subtypes.includes(effect.subtype))o.subtypes.push(effect.subtype);
   }else if(effect.kind==='setNonbasicLandSubtype'){
    if(!isNonbasic(o))continue;
-   o.subtypes=o.subtypes.filter(x=>!['Plains','Island','Swamp','Mountain','Forest'].includes(x));
+   o.subtypes=o.subtypes.filter(x=>!basicTypes.includes(x));
    o.subtypes.push(effect.subtype);
    // CR 305.7: replacing a land's basic land types removes abilities generated from its rules text.
    o.abilities=o.abilities.filter(a=>a.origin!=='rulesText');
+   o.abilities.push({id:'intrinsic-mana-'+effect.subtype,origin:'basicLandType',kind:'tapForMana',color:({Plains:'W',Island:'U',Swamp:'B',Mountain:'R',Forest:'G'})[effect.subtype]});
   }
  }
  return out;
@@ -44,8 +46,8 @@ function evaluate(objects,effects){
    }
    dependencies.set(e._index,deps);
   }
-  const ready=pending.filter(e=>dependencies.get(e._index).every(id=>!pending.some(x=>x._index===id))).sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
-  if(!ready.length)return {supported:false,reason:'Ciclo di dipendenze non risolto'};
+  let ready=pending.filter(e=>dependencies.get(e._index).every(id=>!pending.some(x=>x._index===id))).sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
+  if(!ready.length)ready=pending.slice().sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
   const e=ready[0];state=apply(e,state);order.push({kind:e.kind,timestamp:e.timestamp});pending=pending.filter(x=>x!==e);
  }
  return {supported:true,objects:state,order};
