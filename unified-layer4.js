@@ -18,24 +18,13 @@ function evaluate(objects,effects){if(!Array.isArray(objects)||!Array.isArray(ef
  if(effects.some(e=>['addLandSubtype','setNonbasicLandSubtype'].includes(e.kind)&&!basic.includes(e.subtype)))return {supported:false,reason:'Sottotipo terra non supportato'};
  if(effects.some(e=>e.kind==='addLandSubtype'&&e.scope!=='nontokenCreaturesYouControl'))return {supported:false,reason:'Ambito terra non supportato'};
  if(effects.some(e=>!e.targetId))return {supported:false,reason:'Ambito effetto non specificato'};
- const tagged=effects.map((e,i)=>({...e,_id:e.id||'effect-'+i,_index:i}));if(new Set(tagged.map(e=>e._id)).size!==tagged.length)return {supported:false,reason:'ID effetti duplicati'};
- let state=objects.map(clone),pending=tagged,order=[];
- while(pending.length){const deps=new Map();for(const e of pending){const dependencies=[];
- for(const other of pending){if(e===other)continue;
- if((e.dependency||[]).includes(other._id)){dependencies.push(other._id);continue}
- // Recognize only the provable type-to-land applicability dependency.
- if(e.kind==='setNonbasicLandSubtype'&&other.kind==='addLandSubtype'&&state.some((o,i)=>!applies(e,o)&&applies(e,apply(other,state)[i])))dependencies.push(other._id);
- if(e.kind==='setNonbasicLandSubtype'&&other.kind==='addType'&&other.value==='land'&&state.some((o,i)=>!applies(e,o)&&applies(e,apply(other,state)[i])))dependencies.push(other._id);
- // General layer-4 applicability changes: adding/removing creature or land type can change the set of affected objects.
- if((e.kind==='addLandSubtype'||e.kind==='setNonbasicLandSubtype')&&(other.kind==='addType'||other.kind==='removeType')&&state.some((o,i)=>applies(e,o)!==applies(e,apply(other,state)[i]))&&!dependencies.includes(other._id))dependencies.push(other._id);
- }
- deps.set(e._id,dependencies)}
- if(pending.some(e=>(e.dependency||[]).some(id=>!tagged.some(x=>x._id===id))))return {supported:false,reason:'Dipendenza sconosciuta'};
- let ready=pending.filter(e=>deps.get(e._id).every(id=>!pending.some(x=>x._id===id)));
- if(!ready.length)return {supported:false,reason:'Dipendenza circolare: rilevamento completo non disponibile'};
- ready.sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);const e=ready[0];state=apply(e,state);order.push({kind:e.kind,layer:'4',timestamp:e.timestamp,id:e._id});pending=pending.filter(x=>x!==e)
- }
- return {supported:true,objects:state,order,coverage:'restricted-layer4'};
+ if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
+ const planned=root.JudgeDependencies.order(effects,objects.map(clone),{
+  affected:(e,state)=>state.filter(o=>applies(e,o)).map(o=>o.id).sort(),
+  apply:(e,state)=>apply(e,state)
+ });
+ if(!planned.supported)return planned;
+ return {supported:true,objects:planned.state,order:planned.order.map(e=>({kind:e.kind,layer:'4',timestamp:e.timestamp,id:e._id})),coverage:'restricted-layer4'};
 }
 root.JudgeUnifiedLayer4={evaluate};
 })(typeof window!=='undefined'?window:globalThis);
