@@ -1,5 +1,8 @@
 # Judge Pocket — beta PWA
 
+**Obiettivo architetturale aggiornato:** risolvere una specifica interazione tra carte con uno scenario minimo sufficiente, non simulare l'intera partita. Vedi [SCENARIO_MINIMO.md](./SCENARIO_MINIMO.md). La migrazione dei vecchi moduli non è ancora completa.
+
+
 Prototipo mobile per consultare le carte di **Magic: The Gathering**, i loro testi Oracle, i rulings di Scryfall e analizzare alcune interazioni senza chiamare modelli di intelligenza artificiale.
 
 ## Come funziona oggi
