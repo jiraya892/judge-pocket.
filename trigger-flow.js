@@ -20,7 +20,7 @@ function transition(before,after,event){
  const pending=observed.pending.map((t,i)=>({...t,id:'trigger:'+String(after.nextTriggerId||0)+':'+i+':'+t.abilityId}));
  if(pending.some(t=>used.has(t.id)))return {supported:false,reason:'ID innesco duplicato'};
  const state={...clone(after),pendingTriggers:pending,delayedTriggers:observed.delayedTriggers||[],firedDelayed:observed.firedDelayed,nextTriggerId:(after.nextTriggerId||0)+1};
- return {supported:true,state,records,queued:pending.length};
+ return {supported:true,state,records,queued:pending.length-(after.pendingTriggers||[]).length};
 }
 function place(state,orders){if(!root.JudgeAPNAP)return {supported:false,reason:'APNAP mancante'};return root.JudgeAPNAP.place({...state,activePlayer:state.turn?.activePlayer||state.activePlayer},orders);}
 root.JudgeTriggerFlow={transition,place};
