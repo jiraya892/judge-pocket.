@@ -64,6 +64,18 @@ $('simulate').onclick=()=>{
   if(!target){put('Seleziona una carta permanente che entra sul campo.');return}
   const res=core.applyEvent(state,{type:'enterBattlefield',target:target.id,controller:'Tu'});
   if(!res.applied){put(res.reason);return}
+  // Narrow, explicitly recognized interaction. This is not a general layer solver.
+  const battlefield=cards.filter(x=>x._instanceId!==choice);
+  const textOf=x=>[x.oracle_text,...(x.card_faces||[]).map(f=>f.oracle_text)].filter(Boolean).join('\\n');
+  const moon=battlefield.some(x=>/nonbasic lands are Mountains/i.test(textOf(x)));
+  const ashaya=/nontoken creatures you control are Forest lands in addition to their other types/i.test(textOf(cards.find(x=>x._instanceId===choice)||{}));
+  if(moon&&ashaya){
+   put('Interazione continua riconosciuta: Blood Moon è già sul campo e Ashaya entra sotto il tuo controllo.','h3');
+   put('Ashaya rende sé stessa una terra Foresta non base (layer 4). Blood Moon la rende Montagna non base; secondo la regola 305.7 perde le abilità stampate, inclusa quella che definisce forza e costituzione.');
+   put('Ashaya diventa una creatura 0/0 e viene messa nel cimitero dalle azioni basate sullo stato. Dopo che Ashaya lascia il campo, il suo effetto continuo termina.');
+   put('Questo verdetto vale per lo scenario indicato, senza altri effetti, segnalini o modifiche di forza/costituzione. Non è una simulazione generale delle dipendenze.');
+   return;
+  }
   const triggers=res.triggers||[];
   put('La carta entra sul campo: '+target.name+'. Possibili abilità innescate riconosciute: '+triggers.length+'.');
   if(triggers.length){
