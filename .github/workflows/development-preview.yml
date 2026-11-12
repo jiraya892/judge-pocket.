@@ -1,0 +1,42 @@
+name: Publish isolated development preview
+on:
+  push:
+    branches: [dev/groups-5f-5h]
+    paths-ignore:
+      - 'test-reports/latest/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}preview/group-4-tests.html
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: public
+      - uses: actions/checkout@v4
+        with:
+          ref: dev/groups-5f-5h
+          path: development
+      - name: Keep public app unchanged; add isolated preview directory
+        shell: bash
+        run: |
+          mkdir -p public/preview
+          cp -a development/. public/preview/
+          rm -rf public/preview/.git public/preview/.github public/preview/test-reports
+          printf 'Preview source: %s\n' "$(git -C development rev-parse HEAD)" > public/preview/PREVIEW-COMMIT.txt
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - id: deployment
+        uses: actions/deploy-pages@v4
