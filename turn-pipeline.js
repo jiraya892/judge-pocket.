@@ -13,13 +13,13 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
   Object.assign(s,{players:out.state.players,objects:out.state.objects});
   if(!root.JudgeTriggerFlow)return {supported:false,reason:'Flusso trigger 4F non disponibile'};
   const applied=out.appliedEvents;
-  if(!Array.isArray(applied)||applied.length!==1)return {supported:false,reason:'Evento effettivo post-sostituzione non disponibile'};
-  const integrated=root.JudgeTriggerFlow.transition(before,s,applied[0]);
+  if(!Array.isArray(applied)||applied.length>1)return {supported:false,reason:'Eventi effettivi post-sostituzione non disponibili'};
+  const integrated=root.JudgeTriggerFlow.transition(before,s,applied[0]||null);
   if(!integrated.supported)return integrated;
   Object.assign(s,{pendingTriggers:integrated.state.pendingTriggers,delayedTriggers:integrated.state.delayedTriggers,firedDelayed:integrated.state.firedDelayed,nextTriggerId:integrated.state.nextTriggerId});
   s.pending=s.pendingTriggers;
   s.history.push({kind:'event',event:ev,sba:out.sba,sbaExecuted:out.sbaExecuted});
-  return {supported:true,state:s,event:applied[0],queued:integrated.queued,sba:out.sba,sbaExecuted:out.sbaExecuted,warnings:out.warnings};
+  return {supported:true,state:s,event:applied[0]||null,queued:integrated.queued,sba:out.sba,sbaExecuted:out.sbaExecuted,warnings:out.warnings};
  }
  if(action.type==='putTriggersOnStack'){
   if(!root.JudgeTriggerFlow)return {supported:false,reason:'Flusso trigger 4F non disponibile'};
