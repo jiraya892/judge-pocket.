@@ -11,7 +11,7 @@ function place(state,orders={}){
  for(const player of sequence){
   const theirs=pending.filter(t=>t.controller===player),choice=orders[player];
   if(choice!==undefined&&(!Array.isArray(choice)||choice.length!==theirs.length||new Set(choice).size!==choice.length||choice.some(id=>!theirs.some(t=>t.id===id))))return {supported:false,reason:'Ordine non valido',player};
-  if(theirs.length>1&&choice===undefined)return {supported:false,reason:'Scelta ordine richiesta',player,options:theirs.map(t=>({id:t.id,description:t.description||''}))};
+  if(theirs.length>1&&choice===undefined)return {supported:false,reason:'Scelta ordine richiesta',player,options:theirs.map(t=>({id:t.id,description:t.description||''})),requiredFacts:[{key:'triggerOrder:'+player,question:'In quale ordine vuoi mettere in pila gli inneschi che controlla '+player+'? (dal basso verso l’alto)',options:theirs.map(t=>({id:t.id,label:t.description||t.id}))}]};
   for(const id of choice??theirs.map(t=>t.id))placements.push(theirs.find(t=>t.id===id));
  }
  const stack=[...clone(state.stack),...clone(placements)];
