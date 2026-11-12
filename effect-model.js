@@ -30,6 +30,14 @@ function build(objects,effects){
  }
  return {supported:true,model:Object.freeze({sourceAbilities:Object.freeze(sources),continuousEffects:Object.freeze(continuous),dependencies:Object.freeze(dependencies)})};
 }
+function runtime(model){
+ if(!model||!Array.isArray(model.continuousEffects)||!Array.isArray(model.dependencies))return {supported:false,reason:'Modello effetti assente'};
+ const byId=new Map(model.continuousEffects.map(e=>[e.id,e]));
+ if(byId.size!==model.continuousEffects.length)return {supported:false,reason:'ID effetti duplicati'};
+ const deps=new Map(model.continuousEffects.map(e=>[e.id,[]]));
+ for(const d of model.dependencies){if(!byId.has(d.dependentId)||!byId.has(d.prerequisiteId))return {supported:false,reason:'Dipendenza non risolvibile'};deps.get(d.dependentId).push(d.prerequisiteId)}
+ return {supported:true,effects:model.continuousEffects.map(e=>Object.freeze({...e.raw,id:e.id,layer:e.layer,dependency:deps.get(e.id),sourceId:e.sourceObjectId,sourceAbilityId:e.sourceAbility?e.sourceAbility.split('::').slice(1).join('::'):undefined})),model};
+}
 function sourceExists(effect,state){
  if(!effect.sourceAbilityId)return true;
  if(!Array.isArray(state))return undefined;
@@ -37,5 +45,5 @@ function sourceExists(effect,state){
  if(!source||!Array.isArray(source.abilities))return undefined;
  return source.abilities.some(a=>a.id===effect.sourceAbilityId);
 }
-root.JudgeEffectModel={build,sourceExists};
+root.JudgeEffectModel={build,runtime,sourceExists};
 })(typeof window!=='undefined'?window:globalThis);
