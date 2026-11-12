@@ -5,6 +5,7 @@ on:
     paths:
       - 'question-planner.js'
       - 'question-planner.test.cjs'
+      - 'chapter-16-guided.test.cjs'
       - 'guided-bridge.js'
       - 'context-ui.js'
       - 'context-interview.js'
@@ -30,3 +31,4 @@ jobs:
           node --check context-interview.js
           node --check game-facts.js
           node question-planner.test.cjs
+          node chapter-16-guided.test.cjs
