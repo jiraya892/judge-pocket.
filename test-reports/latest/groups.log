@@ -227,4 +227,8 @@ JudgeGroup14MTests: 10/10
 JudgeGroup14NTests: 10/10
 JudgeGroup14OTests: 10/10
 JudgeGroup14PTests: 10/10
-Browser suites: 2290/2290 passed; 0 execution errors
+JudgeGroup15ATests: 10/10
+JudgeGroup15BTests: 10/10
+JudgeGroup15CTests: 10/10
+JudgeGroup15DTests: 10/10
+Browser suites: 2330/2330 passed; 0 execution errors
