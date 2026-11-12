@@ -6,7 +6,7 @@ const copy=x=>JSON.parse(JSON.stringify(x));
 const supported=['gainLife','loseLife','putCounters','dealDamage','tap','untap'];
 function plan(state,top){
  if(!state||!top||!Array.isArray(state.stack)||state.stack.at(-1)?.id!==top.id)return {supported:false,reason:'Solo la cima della pila può risolversi'};
- if(top.targets!==undefined&&(!Array.isArray(top.targets)||top.targets.some(t=>!t||typeof t.id!=='string'||!t.id)))
+ if(top.targets!==undefined&&(!Array.isArray(top.targets)||top.targets.some(t=>!t||typeof t.id!=='string'||!t.id||typeof t.kind!=='string'||!t.kind)))
   return {supported:false,reason:'Dichiarazione dei bersagli malformata'};
  let legality=null;
  if(top.targets?.length){
