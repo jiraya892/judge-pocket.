@@ -19,7 +19,7 @@ function apply(effect,objects){
    o.subtypes=o.subtypes.filter(x=>!basicTypes.includes(x));
    o.subtypes.push(effect.subtype);
    // CR 305.7: replacing a land's basic land types removes abilities generated from its rules text.
-   o.abilities=o.abilities.filter(a=>a.origin!=='rulesText');
+   o.abilities=o.abilities.filter(a=>a.origin!=='rulesText'&&a.origin!=='basicLandType');
    o.abilities.push({id:'intrinsic-mana-'+effect.subtype,origin:'basicLandType',kind:'tapForMana',color:({Plains:'W',Island:'U',Swamp:'B',Mountain:'R',Forest:'G'})[effect.subtype]});
   }
  }
