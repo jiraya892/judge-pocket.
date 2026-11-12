@@ -13,4 +13,6 @@ check('unsupported branch stops',()=>assert.equal(plan({facts,answers:{}},x=>({s
 check('invalid options rejected',()=>assert.equal(plan({facts:[{key:'x',options:[]}],answers:{}},()=>({supported:true,outcome:1})).status,'unsupported'));
 check('bounded scenarios',()=>assert.equal(plan({facts:Array.from({length:11},(_,i)=>({key:'k'+i,options:[{id:0},{id:1}]})),answers:{}},()=>({supported:true,outcome:1})).status,'unsupported'));
 check('independent choices',()=>assert.deepEqual(plan({facts,answers:{}},x=>({supported:true,outcome:x.answers.controller+x.answers.target})).relevantKeys,['controller','target']));
+check('duplicate keys rejected',()=>assert.equal(plan({facts:[facts[0],facts[0]],answers:{}},()=>({supported:true,outcome:1})).status,'unsupported'));
+check('invalid answered fact rejected',()=>assert.equal(plan({facts:[{key:'',options:[]}],answers:{'':'A'}},()=>({supported:true,outcome:1})).status,'unsupported'));
 console.log(n+'/'+n+' question-planner tests passed');
