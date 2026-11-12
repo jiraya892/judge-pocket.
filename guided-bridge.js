@@ -1,5 +1,6 @@
 /* Guided interview -> Oracle -> coordinator, with conservative diagnostic output. */
 (function(root){'use strict';
+const normalizeName=name=>String(name||'').normalize('NFKD').toLowerCase().replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 const TYPES=['creature','land','artifact','enchantment','planeswalker','instant','sorcery','battle'];
 function cardObject(card,index){
  const line=card.type_line||'';const parts=line.split(/\\s+[—-]\\s+/);const before=parts[0]||'';
@@ -22,7 +23,7 @@ async function evaluate(context){
  // Context enters the engine as an explicit zone/state. Entry timing is not implemented.
  if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
  if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
- if(context.event==='enter'&&!cards.some(c=>c.name===context.entering))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
+ if(context.event==='enter'&&!cards.some(c=>normalizeName(c.name)===normalizeName(context.entering)))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
  if(!['enter','present'].includes(context.event))return fail('EVENT_UNKNOWN','Situazione non riconosciuta.');
  if(context.event==='enter')details.warnings.push('La carta in ingresso è rappresentata sul campo; il motore non modella ancora gli effetti di sostituzione applicati durante l’ingresso.');
  let outcome;try{outcome=root.JudgeCoordinator.evaluate(state)}catch(e){return fail('COORDINATOR_ERROR','Errore nel coordinatore: '+e.message)}
