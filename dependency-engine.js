@@ -31,15 +31,30 @@ function order(input,state,handlers){
   }
   const ready=pending.filter(e=>edges.get(e._id).size===0).sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
   if(!ready.length){
-   // Ignore only edges within a strongly connected component, preserving dependencies outside it.
-   const reachable=(start,target,seen=new Set())=>{if(start===target)return true;if(seen.has(start))return false;seen.add(start);return [...(edges.get(start)||[])].some(id=>reachable(id,target,seen))};
-   const cyclic=new Set(pending.filter(e=>[...(edges.get(e._id)||[])].some(id=>reachable(id,e._id))).map(e=>e._id));
-   if(!cyclic.size)return {supported:false,reason:'Dipendenze non risolvibili'};
-   // A cyclic node is eligible only if all dependencies outside its SCC are already resolved.
-   const eligible=pending.filter(e=>cyclic.has(e._id)&&[...(edges.get(e._id)||[])].every(id=>cyclic.has(id)&&reachable(id,e._id)));
+   // Tarjan SCC: only ignore cyclic edges inside the same strongly connected
+   // component. Incoming dependencies from other components remain binding.
+   let index=0;const indices=new Map(),low=new Map(),stack=[],onStack=new Set(),components=[];
+   const visit=id=>{
+    indices.set(id,index);low.set(id,index++);stack.push(id);onStack.add(id);
+    for(const dep of edges.get(id)||[]){
+     if(!indices.has(dep)){visit(dep);low.set(id,Math.min(low.get(id),low.get(dep)))}
+     else if(onStack.has(dep))low.set(id,Math.min(low.get(id),indices.get(dep)));
+    }
+    if(low.get(id)===indices.get(id)){
+     const component=[];let node;
+     do{node=stack.pop();onStack.delete(node);component.push(node)}while(node!==id);
+     components.push(component);
+    }
+   };
+   for(const e of pending)if(!indices.has(e._id))visit(e._id);
+   const cyclic=components.filter(c=>c.length>1||c.some(id=>edges.get(id).has(id)));
+   const eligible=cyclic.filter(component=>component.every(id=>[...edges.get(id)].every(dep=>component.includes(dep))));
    if(!eligible.length)return {supported:false,reason:'Ciclo con dipendenze esterne non risolte'};
-   eligible.sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
-   const next=eligible[0];if(handlers.exists&&handlers.exists(next,working)===false)return {supported:false,reason:'Abilità generatrice non più presente: durata non verificata'};working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);continue;
+   const pool=pending.filter(e=>eligible.some(component=>component.includes(e._id)));
+   pool.sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
+   const next=pool[0];
+   if(handlers.exists&&handlers.exists(next,working)===false)return {supported:false,reason:'Abilità generatrice non più presente: durata non verificata'};
+   working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);continue;
   }
   const next=ready[0];if(handlers.exists&&handlers.exists(next,working)===false)return {supported:false,reason:'Abilità generatrice non più presente: durata non verificata'};working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);
  }
