@@ -15,14 +15,14 @@ async function evaluate(context){
 
  // Chapter 16A/B: evaluate controller alternatives only as a conservative
  // diagnostic preview. Partial coordinator results are not rulings.
- if(!context.controllers&&root.JudgeQuestionPlanner&&root.JudgeGameFacts){
+ if(!context.controllers&&context.board&&root.JudgeQuestionPlanner&&root.JudgeGameFacts){
   const options=[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}];
   const planned=root.JudgeQuestionPlanner.plan({
    facts:cards.map((_,i)=>({key:'controller'+i,question:'Chi controlla '+cards[i].name+'?',options})),
    answers:{}
   },scenario=>{
    const controllers=cards.map((_,i)=>scenario.answers['controller'+i]);
-   const candidate={...context,controllers,board:context.board||'complete',order:context.event==='present'?(context.order||cards.map((_,i)=>i)):context.order};
+   const candidate={...context,controllers,board:context.board,order:context.order};
    const built=root.JudgeGameFacts.build(candidate,cards.map(cardObject));
    if(!built.supported)return {supported:false};
    const objects=built.objects,effects=[];
