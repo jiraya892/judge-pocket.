@@ -15,4 +15,9 @@ check('separate ability and effect records',architecture.supported&&architecture
 check('effect model does not mutate input',architecture.supported&&Object.isFrozen(architecture.model.continuousEffects[0]));
 check('missing generating ability rejected',!root.JudgeEffectModel.build([{id:'obj',abilities:[]}],[{id:'e',kind:'addType',layer:'4',sourceId:'obj',sourceAbilityId:'missing',timestamp:1}]).supported);
 check('dependency is a separate record',root.JudgeEffectModel.build([{id:'obj',abilities:[]}],[{id:'a',kind:'addType',layer:'4',timestamp:1},{id:'b',kind:'removeType',layer:'4',timestamp:2,dependency:['a']}]).model.dependencies[0].prerequisiteId==='a');
+const modelInput=root.JudgeEffectModel.build([object],[{id:'a',kind:'setPT',layer:'7b',targetId:'x',power:4,toughness:4,timestamp:1},{id:'b',kind:'setPT',layer:'7b',targetId:'x',power:8,toughness:8,timestamp:2,dependency:['a']}]);
+const viaModel=root.JudgeUnifiedContinuous.evaluate([object],modelInput.model);
+check('unified engine consumes three-part model',viaModel.supported&&viaModel.objects[0].power===8);
+const viaLegacy=root.JudgeUnifiedContinuous.evaluate([object],modelInput.model.continuousEffects.map(e=>e.raw));
+check('legacy input adapter matches model evaluation',viaLegacy.supported&&viaLegacy.objects[0].power===viaModel.objects[0].power);
 return {passed:tests.filter(x=>x.pass).length,total:tests.length,tests}}root.JudgeGroup2BTests={run}})(typeof window!=='undefined'?window:globalThis);
