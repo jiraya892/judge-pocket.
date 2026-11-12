@@ -26,10 +26,7 @@ function evaluate(objects,input){const built=Array.isArray(input)?root.JudgeEffe
  const planned=root.JudgeDependencies.order(effects,objects.map(clone),{
   affected:(e,state)=>state.filter(o=>applies(e,o)).map(o=>o.id).sort(),
   apply:(e,state)=>apply(e,state),
-  exists:(e,state)=>{
-   if(!e.sourceAbilityId)return true;
-   return root.JudgeEffectModel?.sourceExists(e,state);
-  }
+  exists:()=>true // generation checked at layer entry; CR 613.6 retains the effect
  });
  if(!planned.supported)return planned;
  return {supported:true,objects:planned.state,order:planned.order.map(e=>({kind:e.kind,layer:'4',timestamp:e.timestamp,id:e._id})),coverage:'restricted-layer4'};
