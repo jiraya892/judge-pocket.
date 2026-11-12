@@ -17,6 +17,8 @@ function order(effects,state,handlers){
     const after=handlers.affected(e,modified);
     if(!Array.isArray(before)||!Array.isArray(after))return {supported:false,reason:'Applicabilità non determinabile'};
     if(before.join('|')!==after.join('|'))dependencies.add(other._id);
+    // Optional semantic signature: dependency also exists when an effect changes what another effect does.
+    if(handlers.signature){const first=handlers.signature(e,working),second=handlers.signature(e,modified);if(first===undefined||second===undefined)return {supported:false,reason:'Risultato effetto non determinabile'};if(JSON.stringify(first)!==JSON.stringify(second))dependencies.add(other._id)}
    }
    edges.set(e._id,dependencies);
   }
