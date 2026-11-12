@@ -54,3 +54,6 @@ La pagina `group-4-tests.html` ora espone PASS/FAIL, numero atteso 193 test, err
 
 ## Verifica browser 4F.8 — 2026-11-12
 L'utente ha eseguito `group-4-tests.html` sul proprio tablet Android e ha riportato **PASS — 193/193**. Questo attesta il passaggio delle suite JavaScript nel browser del dispositivo (risultato comunicato dall'utente, non telemetria acquisita). Chiusura del perimetro 4F.8: regressioni del motore e pubblicazione della pagina diagnostica. **Non verificati:** installazione PWA, comportamento offline, interazione guidata end-to-end, riconoscimento fotografico, copertura generale Oracle. Questi punti restano nei gruppi 7–11. Il Gruppo 5 può iniziare.
+
+## Gruppo 5A — v0.9.49
+Introdotto `stack-engine.js`: pila LIFO, oggetti di tipo spell/activatedAbility/triggeredAbility, ID univoci, controllori e riferimenti fonte/carta, operazioni push/peek/pop immutabili e controlli fail-closed. Collegato `pushStack` del turn pipeline al modulo. 13 test 5A e 193 regressioni precedenti superati (206/206) in più esecuzioni JavaScript. Pagina browser aggiornata per 206 test, ma nuova versione non ancora verificata sul tablet. Limiti: priorità/risoluzione/bersagli e costi saranno trattati nei gruppi 5B–5H; gli inneschi preesistenti sono ancora inseriti con il modello storico di 4E e richiedono normalizzazione completa nei gruppi successivi.
