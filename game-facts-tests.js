@@ -13,6 +13,9 @@ function run(){const interview=root.JudgeContextInterview,facts=root.JudgeGameFa
  const extra=facts.build(extended,[{id:'a'},{id:'b'},{id:'c'}]);check('extra card supported',extra.supported&&extra.objects.length===3);check('extra card controller',extra.objects[2].controller==='A');check('entry after other permanents',extra.timestamps.b===3);
  const three={cards:['A','B','C'],event:'present',controllers:['A','B','A'],board:'additional',extraComplete:true};check('three-card chronology asked',interview.next(three).key==='orderChoices');check('chronology second question',interview.next({...three,orderChoices:[2]}).key==='orderChoices');check('chronology ready',interview.next({...three,orderChoices:[2,0]}).context.order.join(',')==='2,0,1');
  check('present needs order',interview.next({cards:['A','B'],event:'present',controllers:['A','B'],board:'complete'}).key==='orderChoices');
+ const zoneState={objects:[{id:'o1',name:'Test',owner:'A',controller:'B',zone:'battlefield',token:false,counters:{'+1/+1':2},damage:3,tapped:true}]};
+ const moved=facts.move(zoneState,'o1','graveyard');check('zone transition',moved.supported&&moved.object.zone==='graveyard');check('new object identity',moved.object.id!=='o1');check('reset counters and damage',Object.keys(moved.object.counters).length===0&&moved.object.damage===0);check('original state immutable',zoneState.objects[0].zone==='battlefield');check('invalid zone rejected',facts.move(zoneState,'o1','unknown').code==='INVALID_ZONE');
+ const token=facts.move({objects:[{...zoneState.objects[0],token:true}]},'o1','graveyard');check('token awaits SBA',token.object.tokenPendingCease===true);
  return {passed:tests.filter(t=>t.pass).length,total:tests.length,tests};}
 root.JudgeGameFactsTests={run};
 })(typeof window!=='undefined'?window:globalThis);
