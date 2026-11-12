@@ -13,6 +13,8 @@ if(!lifetime?.supported)return {supported:false,reason:lifetime?.reason||'Gestio
 const effects=lifetime.effects;
 const activeModel=root.JudgeEffectModel.subset(built.model,effects.map(e=>e.id));
 if(effects.some(e=>!supported.has(e.kind)||!ranks.includes(String(e.layer))))return {supported:false,reason:'Effetto continuo non supportato'};
+const objectIds=new Set(objects.map(o=>o.id));
+if(effects.some(e=>!e.targetId||(e.targetId!=='all'&&!objectIds.has(e.targetId))))return {supported:false,reason:'Destinazione effetto assente o non valida'};
 const layer4=effects.filter(e=>String(e.layer)==='4');
 const early=effects.filter(e=>ranks.indexOf(String(e.layer))<ranks.indexOf('4'));
 const late=effects.filter(e=>ranks.indexOf(String(e.layer))>ranks.indexOf('4'));
