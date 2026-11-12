@@ -42,8 +42,8 @@ function refreshTargets(){
 }
 $('simulationType').onchange=()=>{
  const type=$('simulationType').value;
- $('simQuantityRow').hidden=type==='enterBattlefield';
- $('simTargetRow').hidden=type==='createTokens';
+ $('simQuantityRow').hidden=['enterBattlefield','tap','untap','destroy','exile','returnHand','sba'].includes(type);
+ $('simTargetRow').hidden=['createTokens','gainLife','loseLife','sba'].includes(type);
 };
 $('simulate').onclick=()=>{
  results.replaceChildren();
@@ -52,7 +52,7 @@ $('simulate').onclick=()=>{
  refreshTargets();
  const type=$('simulationType').value;
  const count=Number($('simQuantity').value);
- if(type!=='enterBattlefield'&&(!Number.isInteger(count)||count<1||count>20)){
+ if(!['enterBattlefield','tap','untap','destroy','exile','returnHand','sba'].includes(type)&&(!Number.isInteger(count)||count<1||count>20)){
   put('Scegli una quantità intera tra 1 e 20.');return;
  }
  const choice=$('simTarget').value;
@@ -90,6 +90,26 @@ $('simulate').onclick=()=>{
    put('Gli inneschi rimangono in attesa: non è stata simulata la loro risoluzione.');
    for(const t of triggers)put(t.description);
   }else put('Non sono stati riconosciuti inneschi dall’evento. Questo non esclude altre abilità.');
+  return;
+ }
+ if(['gainLife','loseLife','dealDamage','tap','untap','destroy','exile','returnHand','sba'].includes(type)){
+  if(type==='sba'){
+   const changes=core.stateBasedActions(state);
+   put(changes.length?'Azioni basate sullo stato riconosciute: '+changes.length:'Nessuna azione basata sullo stato riconosciuta nello scenario semplificato.','h3');
+   for(const x of changes)put(x.name||x.player||x.type+': '+(x.reason||x.type));
+   put('Le caratteristiche dipendenti da layer non sono ancora ricalcolate per questa opzione.');
+   return;
+  }
+  if(!['gainLife','loseLife'].includes(type)&&!target){put('Seleziona un permanente interessato.');return}
+  const events={gainLife:{type:'gainLife',player:'Tu',amount:count},loseLife:{type:'loseLife',player:'Tu',amount:count},dealDamage:{type:'dealDamage',target:target?.id,amount:count},tap:{type:'tap',target:target?.id},untap:{type:'untap',target:target?.id},destroy:{type:'moveZone',target:target?.id,to:'graveyard'},exile:{type:'moveZone',target:target?.id,to:'exile'},returnHand:{type:'moveZone',target:target?.id,to:'hand'}};
+  if(type==='destroy'&&target.indestructible){put('Il permanente è indistruttibile: non viene distrutto.');return}
+  const result=core.applyEvent(state,events[type]);
+  if(!result.applied){put(result.reason||'Evento non applicabile.');return}
+  if(['gainLife','loseLife'].includes(type))put('Punti vita risultanti: '+state.players.find(x=>x.id==='Tu').life+'.','h3');
+  else if(type==='dealDamage'){put('Danni segnati su '+target.name+': '+count+'.','h3');const changes=core.stateBasedActions(state);for(const x of changes)put('Azione basata sullo stato: '+(x.name||x.type)+' — '+x.reason);}
+  else if(['tap','untap'].includes(type))put(target.name+(target.tapped?' è TAPpato.':' è STAPpato.'),'h3');
+  else put(target.name+' spostato nella zona '+events[type].to+'.','h3');
+  put('Scenario manuale: l’evento è applicato come ipotesi, non è verificato se una carta possa generarlo o se esistano effetti di sostituzione e prevenzione.');
   return;
  }
  let event;
