@@ -37,5 +37,17 @@ function passPriority(s,player){
  s.priorityPlayer=null;s.passes=0;
  return s.stack.length?{type:'stackResolutionRequired'}:{type:'stepReady'};
 }
-root.JudgeTurnKernel={sequence,makeTurn,canReceivePriority,grantPriority,canCastSorcery,advanceStep,passPriority};
+function resolveTopManually(s){
+ if(s.priorityPlayer!==null||!s.stack.length)throw Error('Risoluzione non disponibile');
+ const item=s.stack.pop();
+ // This kernel does not execute Oracle text: caller must apply the effect separately.
+ // After resolution, state-based actions and pending triggers must be handled by the caller.
+ return {type:'manualResolution',item,requiresStateBasedActions:true,requiresTriggerProcessing:true};
+}
+function resumeAfterResolution(s){
+ if(s.priorityPlayer!==null)throw Error('Priorità già assegnata');
+ if(!canReceivePriority(s))throw Error('Priorità non disponibile');
+ return grantPriority(s);
+}
+root.JudgeTurnKernel={sequence,makeTurn,canReceivePriority,grantPriority,canCastSorcery,advanceStep,passPriority,resolveTopManually,resumeAfterResolution};
 })(typeof window!=='undefined'?window:globalThis);
