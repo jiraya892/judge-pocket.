@@ -24,7 +24,7 @@ function apply(effect,objects){
  return out;
 }
 function evaluate(objects,effects){
- if(!Array.isArray(objects)||!Array.isArray(effects)||objects.some(o=>!o||!Array.isArray(o.types)||!Array.isArray(o.subtypes)||!Array.isArray(o.supertypes)||!Array.isArray(o.abilities))return {supported:false,reason:'Oggetti incompleti'};
+ if(!Array.isArray(objects)||!Array.isArray(effects)||objects.some(o=>!o||!Array.isArray(o.types)||!Array.isArray(o.subtypes)||!Array.isArray(o.supertypes)||!Array.isArray(o.abilities)))return {supported:false,reason:'Oggetti incompleti'};
  if(effects.some(e=>!e||!['addLandSubtype','setNonbasicLandSubtype'].includes(e.kind)||!Number.isSafeInteger(e.timestamp)||!['Forest','Mountain','Plains','Island','Swamp'].includes(e.subtype)))return {supported:false,reason:'Effetto di tipo terra non supportato'};
  if(effects.some(e=>e.kind==='addLandSubtype'&&e.scope!=='nontokenCreaturesYouControl'))return {supported:false,reason:'Ambito non supportato'};
  let state=objects.map(snapshot),pending=effects.map((e,i)=>({...e,_index:i})),order=[];
