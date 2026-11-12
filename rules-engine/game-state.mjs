@@ -33,10 +33,12 @@ export function addObject(state, spec) {
 }
 export function moveObject(state, id, toZone) {
   assert(ZONES.includes(toZone), 'Unknown destination zone');
+  assert(state && state.objects, 'Invalid game state');
   const original=state.objects[id];
   assert(original, 'Unknown object');
   // Tokens cease to exist after leaving battlefield (state-based action).
   // This primitive only records the move; SBA handling belongs to a later module.
+  assert(original.zone !== toZone, 'Source and destination must differ');
   const next=copy(state);
   next.zones[original.zone]=next.zones[original.zone].filter(x=>x!==id);
   next.zones[toZone].push(id);
