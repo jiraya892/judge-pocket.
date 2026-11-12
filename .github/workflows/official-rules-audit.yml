@@ -29,9 +29,9 @@ jobs:
           echo '' >> "$GITHUB_STEP_SUMMARY"
           echo 'This report does not authenticate the publisher and does not enable verified rulings.' >> "$GITHUB_STEP_SUMMARY"
           if [ -f test-reports/official/diagnostic.json ]; then
-            echo '\`\`\`json' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
             cat test-reports/official/diagnostic.json >> "$GITHUB_STEP_SUMMARY"
-            echo '\`\`\`' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
             echo 'Diagnostic file was not produced.' >> "$GITHUB_STEP_SUMMARY"
           fi
