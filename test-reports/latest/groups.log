@@ -26,4 +26,5 @@ JudgeGroup5GIntegrationTests: 7/7
 JudgeGroup5GSBATests: 9/9
 JudgeGroup5HTests: 7/7
 JudgeGroup5LTests: 6/6
-Browser suites: 326/326 passed; 0 execution errors
+JudgeGroup5MTests: 6/6
+Browser suites: 332/332 passed; 0 execution errors
