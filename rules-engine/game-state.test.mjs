@@ -13,4 +13,7 @@ assert.equal(moved.zones.battlefield[0],added.id);
 assert.equal(s.zones.hand.length,1,'Original state remains unchanged');
 assert.equal(validateGame(moved).ok,true);
 assert.throws(()=>moveObject(s,added.id,'unknown'));
+assert.throws(()=>moveObject(s,added.id,'hand'));
+assert.throws(()=>addObject(s,{name:'x',owner:'C'}));
+assert.equal(moved.events.length,1);
 console.log('Foundation tests passed');
