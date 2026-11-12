@@ -2,8 +2,12 @@ name: Pocket Judge regression tests
 on:
   push:
     branches: [main, feature/rules-engine-foundation, dev/groups-5f-5h]
+    paths-ignore:
+      - 'test-reports/latest/**'
   pull_request:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -51,3 +55,18 @@ jobs:
           name: judge-pocket-test-report
           path: test-reports/
           retention-days: 30
+      - name: Save latest report to development branch
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/dev/groups-5f-5h'
+        shell: bash
+        run: |
+          mkdir -p test-reports/latest
+          cp test-reports/*.log test-reports/latest/ 2>/dev/null || true
+          cp test-reports/summary.md test-reports/latest/summary.md
+          printf '%s\n' "$GITHUB_SHA" > test-reports/latest/verified-commit.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add test-reports/latest/
+          if ! git diff --cached --quiet; then
+            git commit -m "ci(report): store latest regression results [skip ci]"
+            git push origin HEAD:dev/groups-5f-5h
+          fi
