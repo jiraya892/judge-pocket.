@@ -25,14 +25,15 @@ function legacyCondition(expr,ctx){
  switch(expr.op){case 'eq':return v===expr.value;case 'ne':return v!==expr.value;case 'gt':return typeof v==='number'&&v>expr.value;case 'gte':return typeof v==='number'&&v>=expr.value;case 'lt':return typeof v==='number'&&v<expr.value;case 'lte':return typeof v==='number'&&v<=expr.value;case 'in':return Array.isArray(expr.value)&&expr.value.includes(v);}
  return false;
 }
-function condition(expr,ctx){return root.JudgeTriggerConditions?root.JudgeTriggerConditions.test(expr,ctx):legacyCondition(expr,ctx);}
+function condition(expr,ctx){return !!root.JudgeTriggerConditions&&root.JudgeTriggerConditions.test(expr,ctx);}
 function observe(state,events,abilities,options={}){
+ if(!root.JudgeTriggerConditions)return {supported:false,reason:'Motore condizioni 4C mancante'};
  if(!state||!Array.isArray(state.players)||!Array.isArray(events)||!Array.isArray(abilities))return {supported:false,reason:'Input non valido'};
  const players=state.players.map(p=>p.id);if(!players.length||new Set(players).size!==players.length)return {supported:false,reason:'Giocatori non validi'};
  const pending=clone(state.pendingTriggers||[]),used=new Set(state.firedDelayed||[]),trace=[];
  const ids=new Set();for(const a of abilities){
   if(!a||typeof a.id!=='string'||!a.id||ids.has(a.id)||!players.includes(a.controller)||!a.event||typeof a.event.type!=='string'||!['normal','delayed','reflexive'].includes(a.kind||'normal'))return {supported:false,reason:'Descrittore abilità non valido'};
-  if(a.interveningIf!=null&&root.JudgeTriggerConditions&&!root.JudgeTriggerConditions.valid(a.interveningIf))return {supported:false,reason:'Condizione intervening-if non valida'};
+  if(a.interveningIf!=null&&!root.JudgeTriggerConditions.valid(a.interveningIf))return {supported:false,reason:'Condizione intervening-if non valida'};
   ids.add(a.id);
  }
  for(let i=0;i<events.length;i++){
