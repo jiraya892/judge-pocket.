@@ -17,6 +17,7 @@ function canReceivePriority(s){
 }
 function grantPriority(s){
  if(!canReceivePriority(s))return {granted:false,reason:'Questo passo normalmente non concede priorità'};
+ if(s.priorityPlayer!==null)throw Error('Priorità già assegnata: non si può azzerare il conteggio dei passaggi');
  s.priorityPlayer=s.activePlayer;s.passes=0;return {granted:true,player:s.priorityPlayer};
 }
 function canCastSorcery(s,player){
