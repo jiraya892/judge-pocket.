@@ -26,4 +26,4 @@ for(const name of names){
  }catch(e){errors++;console.error('ERROR '+name+': '+e.stack)}
 }
 console.log('Browser suites: '+passed+'/'+total+' passed; '+errors+' execution errors');
-if(errors||passed!==total||total<820)process.exitCode=1;
+if(errors||passed!==total||total<830)process.exitCode=1;
