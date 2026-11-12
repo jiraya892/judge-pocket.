@@ -30,10 +30,9 @@ function evaluate(input){
   const unknown=o.oracleUnknown||[];
   if(unsupported.length||unknown.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:[...unsupported.map(e=>e.text||e.kind||'effetto non strutturato'),...unknown].join(' | ')});continue}
   const genericEffects=relevant.filter(e=>generic.has(e.kind)&&e.layer!=='4');
-  const genericLayer4=relevant.filter(e=>generic.has(e.kind)&&e.layer==='4');
   const combinedLayer4=unified?.supported&&unified.objects[source.indexOf(o)];
-  if(layer4.length&&!combinedLayer4&&genericLayer4.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Layer 4 unificato non disponibile'});continue}
-  const outcome=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,power:o.power,toughness:o.toughness,abilities:o.abilities||[],colors:o.colors||[],text:o.oracle_text||''},genericEffects);
+  if(layer4.length&&!combinedLayer4){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Layer 4 unificato non disponibile'});continue}
+  const outcome=root.JudgeLayers.evaluate({types:combinedLayer4?.types||o.types,controller:o.controller,power:o.power,toughness:o.toughness,abilities:combinedLayer4?.abilities||o.abilities||[],colors:o.colors||[],text:o.oracle_text||''},genericEffects);
   if(!outcome.supported){results.push({id:o.id,name:o.name,status:'unsupported',reason:outcome.reason});continue}
   const index=source.indexOf(o),landState=landOutcome?.supported?landOutcome.objects[index]:null;
   const landAffected=landEffects.some(e=>e.kind==='setNonbasicLandSubtype'&&landState?.subtypes?.includes(e.subtype)||e.kind==='addLandSubtype'&&landState?.subtypes?.includes(e.subtype));
