@@ -7,7 +7,7 @@ function run(input,events){
  if(!Array.isArray(events)||!events.length)return {supported:false,reason:'Nessun evento'};
  const state=copy(input),initial=root.JudgeCoordinator.evaluate(state);
  if(!initial.supported)return initial;
- const log=[];let blocked=false;
+ const log=[],appliedEvents=[];let blocked=false;
  const replacements=input.replacements||[];
  if(!Array.isArray(replacements))return {supported:false,reason:'Sostituzioni non valide'};
  if(replacements.length&&!root.JudgeReplacements)return {supported:false,reason:'Motore sostituzioni non disponibile'};
@@ -15,6 +15,8 @@ function run(input,events){
   const replacement=root.JudgeReplacements?root.JudgeReplacements.process(original,replacements,original.replacementChoices||[]):{supported:true,event:original,trace:[]};
   if(!replacement.supported)return {...replacement,supported:false};
   const event=replacement.event;
+  if(event==null){log.push({type:'prevented',replacements:replacement.trace});continue;}
+  appliedEvents.push(copy(event));
   if(!types.has(event.type))return {supported:false,reason:'Evento non supportato: '+event.type};
   const amount=event.amount;
   if(['gainLife','loseLife','putCounters','dealDamage'].includes(event.type)&&(!Number.isSafeInteger(amount)||amount<0))return {supported:false,reason:'Quantità non valida'};
@@ -45,7 +47,7 @@ function run(input,events){
   for(const change of changes)sba.push(change);
   // The core mutates its own copy, not the returned state. Report preview only.
  }
- return {supported:true,state,outcome,events:log,sba,sbaExecuted:false,warnings:[...outcome.warnings,'Eventi espliciti soltanto; sostituzioni strutturate applicate prima degli eventi, inneschi non ancora gestiti.']};
+ return {supported:true,state,outcome,events:log,appliedEvents,sba,sbaExecuted:false,warnings:[...outcome.warnings,'Eventi espliciti soltanto; gli inneschi sono gestiti dal flusso turni quando disponibile.']};
 }
 root.JudgeEventPipeline={run};
 })(typeof window!=='undefined'?window:globalThis);
