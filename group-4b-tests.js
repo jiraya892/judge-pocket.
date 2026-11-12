@@ -1,0 +1,27 @@
+(function(root){'use strict';
+function run(){const t=[],check=(name,v)=>t.push({name,pass:!!v});const k=root.JudgeTriggerRecognition;
+const ability=(id,type)=>({id,kind:'triggered',event:{type},text:'structured'});
+const obj=(id,zone,abilities=[])=>({id,zone,controller:'A',types:['creature'],abilities});
+const state=objects=>({players:[{id:'A'},{id:'B'}],activePlayer:'A',objects,stack:[]});
+let r=k.run(state([obj('watch','battlefield',[ability('etb','enterBattlefield')]),obj('new','hand')]),state([obj('watch','battlefield',[ability('etb','enterBattlefield')]),obj('new','battlefield')]));
+check('4A entry connects to trigger',r.supported&&r.pending.length===1&&r.pending[0].abilityId==='etb');
+check('event record retained',r.events.some(x=>x.event.type==='enterBattlefield'));
+r=k.run(state([obj('watch','battlefield',[ability('death','dies')]),obj('victim','battlefield')]),state([obj('watch','battlefield',[ability('death','dies')]),obj('victim','graveyard')]));
+check('dies recognized',r.supported&&r.pending.some(x=>x.abilityId==='death'));
+r=k.run(state([obj('watch','battlefield',[ability('etb','enterBattlefield')]),obj('new','hand')]),state([obj('watch','battlefield',[ability('etb','enterBattlefield')]),obj('new','hand')]));
+check('no transition no trigger',r.pending.length===0);
+r=k.run(state([obj('gone','battlefield',[ability('leave','leavesBattlefield')])]),state([obj('gone','graveyard',[ability('leave','leavesBattlefield')])]));
+check('leaves trigger LKI',r.supported&&r.pending.some(x=>x.abilityId==='leave'));
+r=k.collect(state([obj('x','battlefield',[{id:'raw',kind:'triggered',text:'Whenever a creature enters...'}])]));
+check('unsupported Oracle text flagged',r.supported&&r.abilities.length===0&&r.unsupported.length===1);
+r=k.collect(state([obj('x','battlefield',[{kind:'static',event:{type:'dies'}}])]));
+check('static abilities ignored',r.supported&&r.abilities.length===0);
+r=k.collect(state([obj('x','battlefield',[ability('dup','dies'),ability('dup','dies')])]));
+check('duplicate descriptors rejected',!r.supported);
+r=k.collect(state([obj('x','battlefield',[{kind:'triggered',event:{type:'dies'},controller:'Z'}])]));
+check('unknown controller rejected',!r.supported);
+r=k.run(state([obj('watch','battlefield',[ability('etb','enterBattlefield')]),obj('new','hand')]),state([obj('watch','battlefield',[ability('etb','enterBattlefield')]),obj('new','battlefield')]));
+check('source and controller preserved',r.pending[0].source==='watch'&&r.pending[0].controller==='A');
+return {passed:t.filter(x=>x.pass).length,total:t.length,tests:t};}
+root.JudgeGroup4BTests={run};
+})(typeof window!=='undefined'?window:globalThis);
