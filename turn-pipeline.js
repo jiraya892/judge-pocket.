@@ -49,7 +49,7 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
   const allowed=root.JudgePriority.act(s,action.player);if(!allowed.supported)return allowed;
   const out=action.type==='copyStackObject'?root.JudgeStackOperations.copyObject(s,action.targetId,action.newId,action.controller||action.player,action.overrides||{}):action.type==='counterStackObject'?root.JudgeStackOperations.counter(s,action.targetId,action.options||{}):root.JudgeStackOperations.remove(s,action.targetId,action.reason);
   if(!out.supported)return out;
-  if(out.zoneTransitionRequired)return {supported:false,reason:'Transizione di zona della magia non ancora integrata: operazione non applicata',requiredFacts:[{key:'stackZoneTransition',question:'La magia deve cambiare zona; il motore zone non è ancora collegato'}]};
+  if(out.zoneTransitionRequired){if(!root.JudgeStackZone)return {supported:false,reason:'Motore zone pila 5F mancante'};const moved=root.JudgeStackZone.transition(out.state,out.removed,out.destination);if(!moved.supported)return moved;out.state=moved.state;out.zoneTransition=moved.transition;if(root.JudgeTriggerFlow){const tr=root.JudgeTriggerFlow.transition(moved.before,moved.state,moved.transition);if(!tr.supported)return tr;out.state.pendingTriggers=tr.state.pendingTriggers;out.state.delayedTriggers=tr.state.delayedTriggers;out.state.firedDelayed=tr.state.firedDelayed;out.state.nextTriggerId=tr.state.nextTriggerId;}}
   const next=out.state;next.history.push({kind:action.type,targetId:action.targetId,result:out.countered??true});return {...out,state:next};
  }
  if(action.type==='passPriority'){
