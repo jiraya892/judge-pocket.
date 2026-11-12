@@ -13,7 +13,7 @@ function match(pattern,event,context){
  }
  return true;
 }
-function condition(expr,ctx){
+function legacyCondition(expr,ctx){
  if(expr===undefined||expr===null)return true;
  if(typeof expr!=='object'||Array.isArray(expr))return false;
  if(Array.isArray(expr.all))return expr.all.every(x=>condition(x,ctx));
@@ -25,12 +25,14 @@ function condition(expr,ctx){
  switch(expr.op){case 'eq':return v===expr.value;case 'ne':return v!==expr.value;case 'gt':return typeof v==='number'&&v>expr.value;case 'gte':return typeof v==='number'&&v>=expr.value;case 'lt':return typeof v==='number'&&v<expr.value;case 'lte':return typeof v==='number'&&v<=expr.value;case 'in':return Array.isArray(expr.value)&&expr.value.includes(v);}
  return false;
 }
+function condition(expr,ctx){return root.JudgeTriggerConditions?root.JudgeTriggerConditions.test(expr,ctx):legacyCondition(expr,ctx);}
 function observe(state,events,abilities,options={}){
  if(!state||!Array.isArray(state.players)||!Array.isArray(events)||!Array.isArray(abilities))return {supported:false,reason:'Input non valido'};
  const players=state.players.map(p=>p.id);if(!players.length||new Set(players).size!==players.length)return {supported:false,reason:'Giocatori non validi'};
  const pending=clone(state.pendingTriggers||[]),used=new Set(state.firedDelayed||[]),trace=[];
  const ids=new Set();for(const a of abilities){
   if(!a||typeof a.id!=='string'||!a.id||ids.has(a.id)||!players.includes(a.controller)||!a.event||typeof a.event.type!=='string'||!['normal','delayed','reflexive'].includes(a.kind||'normal'))return {supported:false,reason:'Descrittore abilità non valido'};
+  if(a.interveningIf!=null&&root.JudgeTriggerConditions&&!root.JudgeTriggerConditions.valid(a.interveningIf))return {supported:false,reason:'Condizione intervening-if non valida'};
   ids.add(a.id);
  }
  for(let i=0;i<events.length;i++){
@@ -71,7 +73,8 @@ function stackAPNAP(state,pending,orders={}){
 }
 function recheck(trigger,current){
  if(!trigger||!current)return {supported:false,reason:'Contesto assente'};
- return {supported:true,resolves:condition(trigger.interveningIf,{...trigger.context,after:current,source:(current.objects||[]).find(o=>o.id===trigger.source)||trigger.context?.source})};
+ if(root.JudgeTriggerConditions)return root.JudgeTriggerConditions.resolution(trigger,current);
+ return {supported:false,reason:'Motore condizioni 4C non disponibile'};
 }
 root.JudgeTriggers={match,condition,observe,stackAPNAP,recheck};
 })(typeof window!=='undefined'?window:globalThis);
