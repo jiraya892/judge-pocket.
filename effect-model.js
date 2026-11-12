@@ -19,8 +19,8 @@ function build(objects,effects){
   const e=effects[i];if(!e||typeof e.kind!=='string'||!e.kind||!Number.isSafeInteger(e.timestamp))return {supported:false,reason:'Effetto continuo incompleto'};
   const id=e.id||'effect-'+i;if(effectIds.has(id))return {supported:false,reason:'ID effetto duplicato'};effectIds.add(id);
   if(e.sourceAbilityId&&!e.sourceId)return {supported:false,reason:'Abilità senza oggetto sorgente'};
-  if(e.sourceId&&!ids.has(e.sourceId))return {supported:false,reason:'Oggetto sorgente assente'};
-  if(e.sourceAbilityId&&!abilities.has(e.sourceId+'::'+e.sourceAbilityId))return {supported:false,reason:'Abilità sorgente assente'};
+  if(e.sourceId&&!ids.has(e.sourceId)&&e.lifetime?.mode!=='resolved')return {supported:false,reason:'Oggetto sorgente assente'};
+  if(e.sourceAbilityId&&!abilities.has(e.sourceId+'::'+e.sourceAbilityId)&&e.lifetime?.mode!=='resolved')return {supported:false,reason:'Abilità sorgente assente'};
   continuous.push(Object.freeze({id,sourceAbility:e.sourceAbilityId?e.sourceId+'::'+e.sourceAbilityId:null,sourceObjectId:e.sourceId||null,layer:String(e.layer),operation:e.kind,targetId:e.targetId||null,timestamp:e.timestamp,raw:e}));
  }
  const dependencies=[];
