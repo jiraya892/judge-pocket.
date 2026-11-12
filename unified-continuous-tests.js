@@ -2,4 +2,8 @@
 const forest={...o,id:'forest',name:'Forest',types:['land'],subtypes:['Forest'],power:null,toughness:null,counters:{}};
 const dyn=root.JudgeUnifiedContinuous.evaluate([cda,forest],[{kind:'modifyPT',layer:'7c',targetId:'x',power:1,toughness:2,timestamp:1}]);check('land count then PT modification',dyn.supported&&dyn.objects[0].power===2&&dyn.objects[0].toughness===3);
 const lost=root.JudgeUnifiedContinuous.evaluate([cda,forest],[{kind:'removeAllAbilities',layer:'6',targetId:'x',timestamp:1}]);check('removed CDA safely rejected',!lost.supported);
+const template={...o,id:'template',name:'Template',types:['artifact'],power:4,toughness:5,abilities:['flying'],counters:{}};
+const target={...o,counters:{}};const copied=root.JudgeUnifiedContinuous.evaluate([target,template],[{kind:'copyCharacteristics',layer:'1a',targetId:'x',sourceId:'template',timestamp:1}]);check('snapshot copy type and PT',copied.supported&&copied.objects[0].types.includes('artifact')&&copied.objects[0].power===4&&copied.objects[0].toughness===5);
+check('snapshot copy abilities',copied.supported&&copied.objects[0].abilities.includes('flying'));
+const chain=root.JudgeUnifiedContinuous.evaluate([target,template],[{kind:'copyCharacteristics',layer:'1a',targetId:'x',sourceId:'template',timestamp:1},{kind:'copyCharacteristics',layer:'1a',targetId:'template',sourceId:'x',timestamp:2}]);check('copy chain refused',!chain.supported);
 return {passed:tests.filter(t=>t.pass).length,total:tests.length,tests}}root.JudgeUnifiedContinuousTests={run}})(typeof window!=='undefined'?window:globalThis);
