@@ -27,6 +27,8 @@ const expired=root.JudgeUnifiedContinuous.evaluate([a],[e('resolved','addType','
 check('expired resolved effect excluded before layers',expired.supported&&!expired.objects[0].types.includes('artifact'));
 const invalid=root.JudgeUnifiedContinuous.evaluate([a],[e('unknown','nonsense','7c','a',1)]);
 check('unknown operation fails closed',!invalid.supported);
+const dangling=root.JudgeUnifiedContinuous.evaluate([a],[e('dangling','modifyPT','7c','missing',1,{power:1,toughness:1})]);
+check('missing late-layer target fails closed',!dangling.supported);
 const cdaLost=root.JudgeUnifiedContinuous.evaluate([dynamic,land],[e('remove','removeAllAbilities','6','dyn',1)]);
 check('CDA removed in layer 6 fails closed',!cdaLost.supported);
 check('original objects remain unchanged',a.name==='A'&&b.name==='B'&&dynamic.abilities.length===1);
