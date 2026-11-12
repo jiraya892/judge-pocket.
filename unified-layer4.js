@@ -13,10 +13,10 @@ function apply(e,objects){return objects.map(original=>{const o=clone(original);
  if(e.kind==='addLandSubtype'){if(!o.types.includes('land'))o.types.push('land');if(!o.subtypes.includes(e.subtype))o.subtypes.push(e.subtype)}
  if(e.kind==='setNonbasicLandSubtype'){o.subtypes=o.subtypes.filter(t=>!basic.includes(t));o.subtypes.push(e.subtype);o.abilities=o.abilities.filter(a=>a.origin!=='rulesText'&&a.origin!=='basicLandType');o.abilities.push({id:'intrinsic-mana-'+e.subtype,origin:'basicLandType',kind:'tapForMana',color:mana[e.subtype]})}
  return o})}
-function evaluate(objects,input){const built=Array.isArray(input)?root.JudgeEffectModel?.build(objects,input):{supported:true,model:input};
+function evaluate(objects,input,options={}){const built=Array.isArray(input)?root.JudgeEffectModel?.build(objects,input):{supported:true,model:input};
  if(!built?.supported)return {supported:false,reason:built?.reason||'Modello effetti non disponibile'};
  const runtime=root.JudgeEffectModel.runtime(built.model);if(!runtime.supported)return runtime;
- const lifetime=root.JudgeEffectLifetime?.prepare(objects,runtime.effects);
+ const lifetime=options.preGenerated?{supported:true,effects:runtime.effects}:root.JudgeEffectLifetime?.prepare(objects,runtime.effects);
  if(!lifetime?.supported)return {supported:false,reason:lifetime?.reason||'Gestione durata mancante'};
  const effects=lifetime.effects;
  if(!Array.isArray(objects)||!Array.isArray(effects)||objects.some(o=>!o||!o.id||!Array.isArray(o.types)||!Array.isArray(o.abilities)))return {supported:false,reason:'Oggetti layer 4 incompleti'};
