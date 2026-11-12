@@ -1,0 +1,38 @@
+/* Guided interview -> Oracle -> coordinator, with conservative diagnostic output. */
+(function(root){'use strict';
+const TYPES=['creature','land','artifact','enchantment','planeswalker','instant','sorcery','battle'];
+function cardObject(card,index){
+ const line=card.type_line||'';const parts=line.split(/\\s+[—-]\\s+/);const before=parts[0]||'';
+ return {id:'guided-'+index,name:card.name,owner:'A',controller:'A',zone:'battlefield',types:TYPES.filter(t=>new RegExp('\\\\b'+t+'\\\\b','i').test(before)),supertypes:['basic','legendary','snow','world'].filter(t=>new RegExp('\\\\b'+t+'\\\\b','i').test(before)),subtypes:parts[1]?parts[1].split(/\\s+/):[],power:/^-?\\d+$/.test(card.power||'')?Number(card.power):null,toughness:/^-?\\d+$/.test(card.toughness||'')?Number(card.toughness):null,counters:{'+1/+1':0},damage:0,tapped:false,token:false,oracle_text:card.oracle_text||''};
+}
+async function evaluate(context){
+ const details={version:1,cards:context?.cards||[],event:context?.event||null,entering:context?.entering||null,casting:context?.casting||null,reasonCodes:[],unsupportedLines:[],warnings:[]};
+ const fail=(code,reason,extra={})=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{...details,reasonCodes:[...details.reasonCodes,code],...extra}});
+ if(!root.JudgeOracleRecognition||!root.JudgeCoordinator)return fail('ENGINE_MISSING','Moduli Oracle o coordinatore mancanti.');
+ if(!Array.isArray(context?.cards)||context.cards.length<2)return fail('CARDS_MISSING','Servono almeno due carte.');
+ let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(e){return fail('ORACLE_LOOKUP_FAILED','Impossibile recuperare una carta: '+e.message)}
+ const objects=cards.map(cardObject),effects=[];
+ for(let i=0;i<cards.length;i++){
+  const recognition=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognition.unknown;
+  details.unsupportedLines.push(...recognition.unknown.map(line=>({card:cards[i].name,text:line})));
+  for(const e of recognition.effects)effects.push({...e,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:i+1,duration:'ongoing'});
+ }
+ const state={schemaVersion:1,players:[{id:'A',life:20},{id:'B',life:20}],turn:{activePlayer:'A',priorityPlayer:'A',phase:'main1'},objects,effects};
+ details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);
+ // Context enters the engine as an explicit zone/state. Entry timing is not implemented.
+ if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
+ if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
+ if(context.event==='enter'&&!cards.some(c=>c.name===context.entering))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
+ if(!['enter','present'].includes(context.event))return fail('EVENT_UNKNOWN','Situazione non riconosciuta.');
+ if(context.event==='enter')details.warnings.push('La carta in ingresso è rappresentata sul campo; il motore non modella ancora gli effetti di sostituzione applicati durante l’ingresso.');
+ let outcome;try{outcome=root.JudgeCoordinator.evaluate(state)}catch(e){return fail('COORDINATOR_ERROR','Errore nel coordinatore: '+e.message)}
+ if(!outcome.supported)return fail('COORDINATOR_REJECTED',outcome.reason||'Il coordinatore non ha accettato lo stato.');
+ details.warnings.push(...(outcome.warnings||[]));
+ const incomplete=outcome.results.filter(r=>r.status==='unsupported'||r.status==='not-evaluated');
+ if(incomplete.length)return fail('UNSUPPORTED_EFFECTS','Il coordinatore non riesce ancora a calcolare tutti gli effetti delle carte.',{results:outcome.results,unsupportedObjects:incomplete});
+ if(details.unsupportedLines.length)return fail('ORACLE_TEXT_UNSUPPORTED','Alcune righe Oracle non sono state interpretate.',{results:outcome.results});
+ // A partial layer computation is NOT a reliable interaction ruling.
+ return fail('PARTIAL_RULES_COVERAGE','Il coordinatore ha calcolato caratteristiche parziali, ma non può ancora certificare questa interazione come verdetto.',{results:outcome.results});
+}
+root.JudgeGuidedBridge={evaluate,cardObject};
+})(typeof window!=='undefined'?window:globalThis);
