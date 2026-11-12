@@ -15,3 +15,11 @@ La GitHub Actions creata esegue solo gli 8 test unitari: non dimostra le 2370+71
 ## Esecuzione locale verificata — 2026-11-12
 
 Eseguito `node question-planner.test.cjs` con Node.js v22.16.0 in una copia locale dei due file del pianificatore: **8/8 PASS** (controller irrilevante, esiti identici, controller rilevante, risposta già nota, scenario unsupported, opzioni invalide, limite scenari, scelte indipendenti). Questo non equivale a un'esecuzione GitHub Actions né alla suite completa del repository. Non sono stati eseguiti i 2370 test di gruppo né i 71 core in questa sessione. La validazione end-to-end Ashaya + Blood Moon resta non completata.
+
+## Revisione conservativa — 2026-11-12
+
+- `guided-bridge.js`: la pianificazione non può più trattare risultati `partial` del coordinatore come scenari verificati; soltanto risultati `verified` possono autorizzare l'eliminazione di domande. Il coordinatore attuale non garantisce questo livello, quindi la soppressione resta sospesa.
+- `context-ui.js`: dopo la prima domanda su controllori o ordine di ingresso, il colloquio richiede le informazioni residue anziché inferirle arbitrariamente.
+- `.github/workflows/chapter-16-tests.yml`: trigger estesi ai file del percorso guidato e controlli `node --check` aggiunti. Non equivale alla suite 2370+71.
+- Il connettore GitHub disponibile restituisce soltanto esecuzioni associate a pull request. La ricerca per commit `93db6f46bf9e012d5a24d2bb09f01f1f0c9cff17` non ha restituito run: ciò **non dimostra** l'assenza di workflow push. I log delle esecuzioni verdi riferite dall'utente non sono stati consultati.
+- Il test completo Ashaya + Blood Moon e le regressioni 2370+71 restano non verificati. Non dichiarare 16A/16B completati.
