@@ -127,4 +127,10 @@ JudgeGroup9CTests: 10/10
 JudgeGroup9DTests: 10/10
 JudgeGroup9ETests: 10/10
 JudgeGroup9FTests: 10/10
-Browser suites: 1290/1290 passed; 0 execution errors
+JudgeGroup9GTests: 10/10
+JudgeGroup9HTests: 10/10
+JudgeGroup9ITests: 10/10
+JudgeGroup9JTests: 10/10
+JudgeGroup9KTests: 10/10
+JudgeGroup9LTests: 10/10
+Browser suites: 1350/1350 passed; 0 execution errors
