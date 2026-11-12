@@ -8,8 +8,6 @@ const scripts=[...html.matchAll(/<script src="([^"]+\.js)"><\/script>/g)].map(x=
 const registry=html.match(/const names=(\[[^;]+\]);function runAll/);
 if(!registry)throw Error('Cannot parse browser suite registry');
 const names=JSON.parse(registry[1].replace(/'/g,'"'));
-names.push('JudgeGroup5HTests','JudgeGroup5LTests','JudgeGroup5MTests','JudgeGroup5NTests','JudgeGroup5OTests','JudgeGroup5PTests','JudgeGroup5QTests','JudgeGroup5RTests','JudgeGroup5STests','JudgeGroup5TTests','JudgeGroup5UTests','JudgeGroup5VTests','JudgeGroup5WTests','JudgeGroup5XTests','JudgeGroup5Y1Tests','JudgeGroup5Y2Tests','JudgeGroup5Y3Tests','JudgeGroup5Y4Tests');
-scripts.push('group-5h-tests.js','group-5l-tests.js','group-5m-tests.js','group-5n-tests.js','group-5o-tests.js','group-5p-tests.js','group-5q-tests.js','group-5r-tests.js','group-5s-tests.js','group-5t-tests.js','group-5u-tests.js','group-5v-tests.js','group-5w-tests.js','group-5x-tests.js','group-5y1-tests.js','group-5y2-tests.js','group-5y3-tests.js','group-5y4-tests.js');
 const window={};
 const context=vm.createContext({window,console});
 for(const path of scripts){
