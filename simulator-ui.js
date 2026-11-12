@@ -76,6 +76,14 @@ $('simulate').onclick=()=>{
    put('Questo verdetto vale per lo scenario indicato, senza altri effetti, segnalini o modifiche di forza/costituzione. Non è una simulazione generale delle dipendenze.');
    return;
   }
+  // Missing triggers never proves the absence of continuous effects.
+  const continuous=window.JudgeContinuous?.analyze(cards);
+  if(continuous?.effects?.length){
+   put('Effetti continui rilevati: il simulatore non ha ancora calcolato il risultato generale dei layer.','h3');
+   put(continuous.reason||'Calcolo non disponibile.');
+   put('Esito indeterminato, non «nessun effetto».');
+   return;
+  }
   const triggers=res.triggers||[];
   put('La carta entra sul campo: '+target.name+'. Possibili abilità innescate riconosciute: '+triggers.length+'.');
   if(triggers.length){
