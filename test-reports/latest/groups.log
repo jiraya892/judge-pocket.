@@ -36,4 +36,5 @@ JudgeGroup5STests: 7/7
 JudgeGroup5TTests: 7/7
 JudgeGroup5UTests: 7/7
 JudgeGroup5VTests: 6/6
-Browser suites: 395/395 passed; 0 execution errors
+JudgeGroup5WTests: 6/6
+Browser suites: 401/401 passed; 0 execution errors
