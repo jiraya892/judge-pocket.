@@ -3,7 +3,7 @@
 'use strict';
 const ordered=['1a','1b','2','3','4','5','6','7a','7b','7c','7d'];
 const rank=l=>ordered.indexOf(String(l));
-function evaluate(base,effects=[]){
+function evaluate(base,effects=[],options={}){
  if(!base||!Array.isArray(base.types)||!Array.isArray(effects))return {supported:false,reason:'Input non valido'};
  if(effects.some(e=>!e||rank(e.layer)<0||e.kind==='nonbasicMountain'||e.kind==='addForest'))
   return {supported:false,reason:'Dipendenza o modifica di tipo terra non supportata: verifica CR 613 e 305.7'};
@@ -23,7 +23,7 @@ function evaluate(base,effects=[]){
  if(tagged.some(e=>e.dependency&&!Array.isArray(e.dependency)))return {supported:false,reason:'Dipendenze esplicite non valide'};
  if(tagged.some(e=>(e.dependency||[]).some(id=>!tagged.some(x=>x._id===id&&x.layer===e.layer))))return {supported:false,reason:'Dipendenza assente o in layer diverso'};
  const sorted=[];
- for(const layer of ordered){let pending=tagged.filter(e=>String(e.layer)===layer);
+ if(options.preordered){sorted.push(...tagged)}else for(const layer of ordered){let pending=tagged.filter(e=>String(e.layer)===layer);
   while(pending.length){
    const ready=pending.filter(e=>(e.dependency||[]).every(id=>!pending.some(x=>x._id===id)));
    // CR 613.8: circular dependencies are ignored for ordering; timestamp breaks the tie.
@@ -58,5 +58,5 @@ function evaluate(base,effects=[]){
  }
  return {supported:true,state,order:sorted.map(e=>({layer:e.layer,kind:e.kind,timestamp:e.timestamp}))};
 }
-root.JudgeLayers={ordered,evaluate};
+root.JudgeLayers={ordered,evaluate,applyOrdered:(base,effects)=>evaluate(base,effects.map(e=>({...e,dependency:[]})),{preordered:true})};
 })(typeof window!=='undefined'?window:globalThis);
