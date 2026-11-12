@@ -23,7 +23,7 @@ for(const [summary,details] of [['testSummary','testResults'],['turnTestSummary'
 /* Group 5H: execute real SBA regressions in CI, not merely browser-only tests. */
 vm.runInContext(fs.readFileSync(__dirname+'/local-sba.js','utf8'),context,{filename:'local-sba.js',timeout:3000});
 const sba=window.JudgeLocalSBA;
-const creature=()=>({players:[{id:'A'},{id:'B'}],effects:[],objects:[{id:'c',zone:'battlefield',types:['creature'],toughness:2,damage:0,counters:{}}]});
+const creature=()=>({players:[{id:'A',life:20},{id:'B',life:20}],effects:[],objects:[{id:'c',zone:'battlefield',types:['creature'],toughness:2,damage:0,counters:{}}]});
 const cases=[
  ['2 damage kills 2/2 at SBA check',()=>{const s=creature();s.objects[0].damage=2;return sba.stabilize(s).state.objects[0].zone==='graveyard'}],
  ['2 damage then +1/+1 in same resolution survives',()=>{const s=creature();s.objects[0].damage=2;s.objects[0].counters['+1/+1']=1;const r=sba.stabilize(s);return r.supported&&r.state.objects[0].zone==='battlefield'&&r.changes.length===0}],
