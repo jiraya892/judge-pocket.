@@ -2,7 +2,7 @@
 (function(root){'use strict';
 const allowed=/^https:\/\/(?:magic\.wizards\.com|media\.wizards\.com)\//i;
 const rule=/^([1-9]\d{2}(?:\.\d{1,3}[a-z]?)?)\.?\s+(.+)$/i;
-function source(url){if(typeof url!=='string'||!allowed.test(url))return {supported:false,reason:'URL non ufficiale o non HTTPS'};try{const u=new URL(url);if(!['magic.wizards.com','media.wizards.com'].includes(u.hostname.toLowerCase())||u.username||u.password||u.port||!u.pathname.match(/\.(?:pdf|docx|txt)$/i))return {supported:false,reason:'Documento non consentito'};return {supported:true,url:u.href,host:u.hostname}}catch(e){return {supported:false,reason:'URL non valido'}}}
+function source(url){if(typeof url!=='string'||!allowed.test(url))return {supported:false,reason:'URL non ufficiale o non HTTPS'};try{const m=/^https:\/\/(magic\.wizards\.com|media\.wizards\.com)(\/[^?#]*)?(?:\?[^#]*)?$/i.exec(url);if(!m||!m[2]||!m[2].match(/\.(?:pdf|docx|txt)$/i))return {supported:false,reason:'Documento non consentito'};return {supported:true,url,host:m[1].toLowerCase()}}catch(e){return {supported:false,reason:'URL non valido'}}}
 function parse(text,options={}){
  if(typeof text!=='string'||text.length>20000000||text.length<30)return {supported:false,reason:'Testo assente o troppo grande'};
  const head=text.slice(0,2500);
