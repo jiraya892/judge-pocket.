@@ -33,7 +33,7 @@ async function evaluate(context){
  if(incomplete.length)return fail('UNSUPPORTED_EFFECTS','Il coordinatore non riesce ancora a calcolare tutti gli effetti delle carte.',{results:outcome.results,unsupportedObjects:incomplete});
  if(details.unsupportedLines.length)return fail('ORACLE_TEXT_UNSUPPORTED','Alcune righe Oracle non sono state interpretate.',{results:outcome.results});
  // A partial layer computation is NOT a reliable interaction ruling.
- return fail('PARTIAL_RULES_COVERAGE','Le caratteristiche calcolate sono una simulazione parziale, non un verdetto. Restano da verificare controllori, effetti di ingresso, altre carte presenti e azioni basate sullo stato.',{results:outcome.results,preview:outcome.results.map(r=>({card:r.name,types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness,possibleZeroToughness:r.possibleZeroToughness})),missingSupport:['CONTROLLERS_AND_BOARD_STATE','ENTRY_REPLACEMENT_EFFECTS','SBA_EXECUTION','FULL_CONTINUOUS_EFFECT_VALIDATION']});
+ return fail('PARTIAL_RULES_COVERAGE','Le caratteristiche calcolate sono una simulazione parziale, non un verdetto. Restano da verificare controllori, effetti di ingresso, altre carte presenti e azioni basate sullo stato.',{results:outcome.results,preview:outcome.results.map(r=>({card:r.name,types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness,possibleZeroToughness:r.possibleZeroToughness})),missingSupport:['CONTROLLERS_AND_BOARD_STATE','ENTRY_REPLACEMENT_EFFECTS','TRIGGERED_ABILITIES','STACK_AND_PRIORITY','SBA_EXECUTION','FULL_CONTINUOUS_EFFECT_VALIDATION']});
 }
 root.JudgeGuidedBridge={evaluate,cardObject};
 })(typeof window!=='undefined'?window:globalThis);
