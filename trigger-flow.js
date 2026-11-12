@@ -6,7 +6,7 @@ function transition(before,after,event){
  const detected=root.JudgeEventDetector.detect(before,after);if(!detected.supported)return detected;
  const records=[...detected.records];
  if(event){if(!event.type||typeof event.type!=='string')return {supported:false,reason:'Evento non valido'};records.push({event:clone(event),before:clone(before),after:clone(after)});}
- const collected=root.JudgeTriggerRecognition.collect({...after,objects:[...after.objects,...before.objects.filter(o=>!after.objects.some(n=>n.id===o.id))]});
+ const collected=root.JudgeTriggerRecognition.collect({...after,objects:[...after.objects.filter(o=>o.zone==='battlefield'||!before.objects.some(b=>b.id===o.id&&b.zone==='battlefield')),...before.objects.filter(o=>o.zone==='battlefield'&&!after.objects.some(n=>n.id===o.id&&n.zone==='battlefield'))]});
  if(!collected.supported)return collected;
  if(collected.unsupported.length)return {supported:false,reason:'Abilità innescate Oracle non strutturate',unsupported:collected.unsupported};
  const definitions=after.triggerDefinitions||[];
