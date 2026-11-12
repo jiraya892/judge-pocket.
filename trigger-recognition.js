@@ -19,7 +19,7 @@ function collect(state){
    const controller=ability.controller??obj.controller;
    if(!players.has(controller))return {supported:false,reason:'Controllore non valido'};
    ids.add(id);
-   abilities.push({id,source:obj.id,controller,event:clone(ability.event),kind:'normal',description:ability.text||ability.description||'',...(ability.interveningIf!==undefined?{interveningIf:clone(ability.interveningIf)}:{})});
+   abilities.push({id,source:obj.id,...(obj.objectIdentity!==undefined?{sourceIdentity:obj.objectIdentity}:{}),controller,event:clone(ability.event),kind:'normal',description:ability.text||ability.description||'',...(ability.interveningIf!==undefined?{interveningIf:clone(ability.interveningIf)}:{})});
   }
  }
  return {supported:true,abilities,unsupported};
