@@ -11,6 +11,8 @@ test('Pila non vuota impedisce stregoneria',()=>{const s=k.makeTurn();for(let i=
 test('Due passaggi di priorità completano il passo',()=>{const s=k.makeTurn();k.advanceStep(s);k.grantPriority(s);ok(k.passPriority(s,'A').type==='pass');ok(k.passPriority(s,'B').type==='stepReady')});
 test('Con pila non vuota richiede risoluzione, non avanza',()=>{const s=k.makeTurn();k.advanceStep(s);k.grantPriority(s);s.stack.push({});k.passPriority(s,'A');ok(k.passPriority(s,'B').type==='stackResolutionRequired');let threw=false;try{k.advanceStep(s)}catch(e){threw=true}ok(threw)});
 test('Non si può riassegnare priorità durante il giro di passaggi',()=>{const s=k.makeTurn();k.advanceStep(s);k.grantPriority(s);k.passPriority(s,'A');let threw=false;try{k.grantPriority(s)}catch(e){threw=true}ok(threw&&s.passes===1&&s.priorityPlayer==='B')});
+test('Risoluzione manuale rimuove solo la cima della pila',()=>{const s=k.makeTurn();k.advanceStep(s);k.grantPriority(s);s.stack.push({id:'first'},{id:'second'});k.passPriority(s,'A');k.passPriority(s,'B');const r=k.resolveTopManually(s);ok(r.item.id==='second'&&r.requiresStateBasedActions&&s.stack.length===1);ok(k.resumeAfterResolution(s).player==='A')});
+test('Non si risolve la pila prima dei passaggi di priorità',()=>{const s=k.makeTurn();k.advanceStep(s);k.grantPriority(s);s.stack.push({id:'spell'});let threw=false;try{k.resolveTopManually(s)}catch(e){threw=true}ok(threw&&s.stack.length===1)});
 test('Fine turno passa al prossimo giocatore',()=>{const s=k.makeTurn();for(let i=0;i<12;i++)k.advanceStep(s);ok(s.activePlayer==='B'&&s.step==='untap'&&s.turnNumber===2)});
 document.getElementById('turnTestSummary').textContent=passed+' test superati, '+failed+' falliti.';
 })();
