@@ -15,7 +15,7 @@ function recognize(card,object){
    effects.push({kind:'setNonbasicLandSubtype',layer:'4',targetId:'all',subtype:'Mountain'});
   }else if(/^Nontoken creatures you control are Forest lands in addition to their other types\.$/i.test(line)){
    effects.push({kind:'addLandSubtype',layer:'4',targetId:'all',scope:'nontokenCreaturesYouControl',controller:object.controller,subtype:'Forest'});
-  }else if(/\b(are|become|gets?|gain|lose|have|has|instead|would|when|whenever|if|until|as long as|equal to)\b/i.test(line))unknown.push(line);
+  }else unknown.push(line);
  }
  return {effects,unknown,text};
 }
