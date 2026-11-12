@@ -2,7 +2,8 @@
 (function(root){'use strict';
 function guard(output){
  const source=root.JudgeBuiltInTrust?.status();
- const trusted=source?.officialCorpusAvailable===true&&source?.cryptographicPublisherAuthentication===true;
+ // No authenticated official publisher trust chain is provisioned yet.
+ const trusted=false;
  const diagnostic=output?.diagnostic&&typeof output.diagnostic==='object'?output.diagnostic:{};
  const blocked=output?.status==='verified'||output?.verdict!=null;
  const reasons=Array.isArray(diagnostic.reasonCodes)?diagnostic.reasonCodes.filter(x=>typeof x==='string'):[];
