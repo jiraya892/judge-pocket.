@@ -1,0 +1,17 @@
+(function(root){'use strict';function run(){const tests=[],check=(name,v)=>tests.push({name,pass:!!v});
+const event={type:'dealDamage',target:'x',amount:5};
+const e=(id,operation,extra={})=>({id,operation,match:{type:'dealDamage'},...extra});
+const run=(ev,fx,choices)=>root.JudgeReplacements.process(ev,fx,choices);
+const prevention=run(event,[e('prevent','prevent',{value:3})]);check('partial prevention',prevention.supported&&prevention.event.amount===2);
+const all=run(event,[e('prevent','prevent')]);check('full prevention',all.supported&&all.event.amount===0);
+const unpreventable=run({...event,unpreventable:true},[e('prevent','prevent')]);check('unpreventable damage bypasses prevention',unpreventable.supported&&unpreventable.event.amount===5);
+const doubled=run(event,[e('double','multiply',{value:2})]);check('damage multiplier',doubled.supported&&doubled.event.amount===10);
+const choice=run(event,[e('prevent','prevent',{value:3}),e('double','multiply',{value:2})]);check('ambiguous replacement order asks for choice',!choice.supported&&choice.choices.length===2);
+const first=run(event,[e('prevent','prevent',{value:3}),e('double','multiply',{value:2})],['prevent']);check('prevention before doubling',first.supported&&first.event.amount===4);
+const second=run(event,[e('prevent','prevent',{value:3}),e('double','multiply',{value:2})],['double']);check('doubling before prevention',second.supported&&second.event.amount===7);
+const once=run(event,[e('redirect','redirect',{target:'y'}),e('boost','add',{value:2,match:{type:'dealDamage',target:'y'}})],['redirect']);check('newly applicable replacement and each only once',once.supported&&once.event.target==='y'&&once.event.amount===7&&once.applied.length===2);
+const invalid=run(event,[e('bad','multiply',{value:-1})]);check('negative multiplier rejected',!invalid.supported);
+const wrong=run({type:'gainLife',player:'A',amount:3},[e('prevent','prevent')]);check('nonmatching prevention ignored',wrong.supported&&wrong.event.amount===3);
+const life=run({type:'gainLife',player:'A',amount:3},[{id:'doubleLife',operation:'multiply',match:{type:'gainLife'},value:2}]);check('life gain replacement',life.supported&&life.event.amount===6);
+check('original event unchanged',event.amount===5&&event.target==='x');
+return {passed:tests.filter(t=>t.pass).length,total:tests.length,tests};}root.JudgeGroup3Tests={run};})(typeof window!=='undefined'?window:globalThis);
