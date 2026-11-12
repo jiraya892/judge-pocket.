@@ -1,10 +1,10 @@
 ## Judge Pocket — Regression results
 
-- Commit: `07aba006b0f219191123683032927c82bcd0fb87`
-- Result: `success`
+- Commit: `000fbf51cd4ad976c0d245d4f9a9340b96699117`
+- Result: `failure`
 
 ### Core tests
 Total: 71 passed, 0 failed
 
 ### Group suites
-Browser suites: 740/740 passed; 0 execution errors
+Browser suites: 749/750 passed; 0 execution errors
