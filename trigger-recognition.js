@@ -25,7 +25,7 @@ function collect(state){
  return {supported:true,abilities,unsupported};
 }
 function run(before,after,options={}){
- if(!root.JudgeEventDetector||!root.JudgeTriggers)return {supported:false,reason:'Moduli 4A o inneschi mancanti'};
+ if(!root.JudgeEventDetector||!root.JudgeTriggers||!root.JudgeDelayedTriggers)return {supported:false,reason:'Moduli 4A o inneschi mancanti'};
  const detected=root.JudgeEventDetector.detect(before,after);if(!detected.supported)return detected;
  // Use both snapshots: sources of LTB triggers can disappear from the after-state.
  const collected=collect({...after,objects:[...after.objects,...before.objects.filter(o=>!after.objects.some(n=>n.id===o.id))]});
