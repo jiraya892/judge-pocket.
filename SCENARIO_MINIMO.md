@@ -69,3 +69,6 @@ Nuovo `resolution-engine.js`: piano di risoluzione per la cima della pila, ricon
 
 ## Gruppo 5E — v0.9.53
 Modulo `choices-costs.js` integrato nel `turn-pipeline.js`: modalità esplicite, risposte a scelte richieste, pagamenti di mana generico e punti vita con controllo e aggiornamento atomico prima dell'inserimento in pila. I costi non supportati falliscono chiusi e le informazioni mancanti producono `requiredFacts`. 14 nuovi test e 255/255 test complessivi superati in esecuzioni JavaScript separate. Limiti: mana colorato, costi alternativi/addizionali, sacrifici, tap, X e modalità dipendenti dall'Oracle richiedono successive implementazioni. Browser Android v0.9.53 non ancora verificato.
+
+## Gruppo 5F — v0.9.54 (perimetro parziale)
+Introdotto `stack-operations.js` per copiare magie e abilità in pila, mantenere istruzioni, distinguere copie, neutralizzare abilità e rimuovere oggetti dalla pila. Integrato in `turn-pipeline.js` con verifica della priorità. 15 nuovi test passati e regressioni 5A–5E superate. **Limite bloccante:** neutralizzare/esiliare/rimbalzare una magia non applica ancora la transizione di zona nel modello oggetti; il pipeline fallisce chiuso e lascia invariato lo stato. Non dichiarare completamento 5F finché la transizione non è integrata e verificata. Browser Android non verificato.
