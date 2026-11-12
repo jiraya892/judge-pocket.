@@ -22,7 +22,7 @@ const grave=state([obj('victim','graveyard','A',[{id:'dies',kind:'triggered',eve
 r=f.transition(died,grave);check('LKI death trigger',r.supported&&r.queued===1&&r.state.pendingTriggers[0].context.source.zone==='battlefield');
 r=f.transition(state([obj('x','battlefield','A',[{kind:'triggered',text:'Whenever...'}])]),state([obj('x','battlefield','A',[{kind:'triggered',text:'Whenever...'}])]));check('unparsed Oracle fails closed',!r.supported);
 const pipeline=root.JudgeTurnPipeline,original=root.JudgeEventPipeline;
-root.JudgeEventPipeline={run:(s,events)=>{const x=JSON.parse(JSON.stringify(s));x.players[0].life+=events[0].amount;return {supported:true,state:x,sba:[],sbaExecuted:false,warnings:[]};}};
+root.JudgeEventPipeline={run:(s,events)=>{const x=JSON.parse(JSON.stringify(s));x.players[0].life+=events[0].amount;return {supported:true,state:x,appliedEvents:events,sba:[],sbaExecuted:false,warnings:[]};}};
 try{
  const start=pipeline.create({...state([obj('watch','battlefield','A',[{id:'gain',kind:'triggered',event:{type:'gainLife'}}])]),players:[{id:'A',life:20},{id:'B',life:20}]});
  let out=pipeline.apply(start,{type:'event',event:{type:'gainLife',player:'A',amount:3}});
@@ -30,4 +30,19 @@ try{
  if(out.supported){const next=pipeline.apply(out.state,{type:'putTriggersOnStack',orders:{}});check('turn pipeline APNAP places queued',next.supported&&next.state.pendingTriggers.length===0&&next.state.stack.at(-1).abilityId==='gain');}
  else check('turn pipeline APNAP places queued',false);
 }finally{root.JudgeEventPipeline=original;}
+
+// Real event pipeline path, with coordinator stub only (not a fabricated event executor).
+const savedPipeline=root.JudgeEventPipeline,savedCoordinator=root.JudgeCoordinator,savedRules=root.JudgeRulesCore;
+root.JudgeCoordinator={evaluate:s=>({supported:true,game:{},results:[],warnings:[]})};
+root.JudgeRulesCore={stateBasedActions:()=>[]};
+try{
+ const start=root.JudgeTurnPipeline.create({...state([obj('watch','battlefield','A',[{id:'gain2',kind:'triggered',event:{type:'gainLife'}}])]),players:[{id:'A',life:20},{id:'B',life:20}],effects:[]});
+ const eventResult=root.JudgeTurnPipeline.apply(start,{type:'event',event:{type:'gainLife',player:'A',amount:2}});
+ check('real event pipeline queues trigger',eventResult.supported&&eventResult.queued===1&&eventResult.state.players[0].life===22);
+ if(eventResult.supported){
+  check('priority blocked with pending',!root.JudgeTurnPipeline.apply(eventResult.state,{type:'passPriority',player:'A'}).supported);
+  const stackResult=root.JudgeTurnPipeline.apply(eventResult.state,{type:'putTriggersOnStack',orders:{}});
+  check('real event pipeline stack placement',stackResult.supported&&stackResult.state.stack.at(-1).abilityId==='gain2');
+ }else{check('priority blocked with pending',false);check('real event pipeline stack placement',false);}
+}finally{root.JudgeCoordinator=savedCoordinator;root.JudgeRulesCore=savedRules;root.JudgeEventPipeline=savedPipeline;}
 return {passed:t.filter(x=>x.pass).length,total:t.length,tests:t};}root.JudgeGroup4FTests={run};})(typeof window!=='undefined'?window:globalThis);
