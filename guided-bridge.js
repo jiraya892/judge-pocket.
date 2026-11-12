@@ -18,7 +18,7 @@ async function evaluate(context){
   for(const e of recognition.effects)effects.push({...e,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:facts.timestamps[objects[i].id],duration:'ongoing'});
  }
  const state={schemaVersion:1,players:facts.players,turn:facts.turn,objects,effects};
- details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);details.knownFacts=facts.knownFacts;details.controllers=context.controllers;details.timestamps=facts.timestamps;
+ details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);details.knownFacts=facts.knownFacts;details.controllers=context.controllers;details.timestamps=facts.timestamps;details.zones=objects.map(o=>({name:o.name,zone:o.zone,controller:o.controller}));
  // Context enters the engine as an explicit zone/state. Entry timing is not implemented.
  if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
  if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
