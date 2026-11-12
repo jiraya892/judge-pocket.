@@ -14,8 +14,8 @@ function detect(before,after){
   const b=old.get(id),a=now.get(id),from=b?.zone??null,to=a?.zone??null;
   // A stable ID may be reused across snapshots only if the identity token is stable.
   // A same-zone identity change hides one or more zone transitions: refuse to guess.
-  if(from===to){if(b&&a&&b.objectIdentity!==undefined&&a.objectIdentity!==undefined&&b.objectIdentity!==a.objectIdentity)return {supported:false,reason:'Identità cambiata senza transizione di zona osservabile'};continue;}
-  if(b&&a&&b.objectIdentity!==undefined&&a.objectIdentity!==undefined&&b.objectIdentity===a.objectIdentity)return {supported:false,reason:'Cambio zona senza nuova identità oggetto'};
+  if(from===to){if(b&&a&&b.objectIdentity!==undefined&&a.objectIdentity!==undefined&&b.objectIdentity!==a.objectIdentity)return {supported:false,reason:'Identità cambiata senza transizione di zona osservabile',requiredFacts:[{key:'hiddenZoneTransition:'+id,question:'Il permanente '+id+' è uscito dalla zona '+from+' ed è poi rientrato? Quali cambi di zona sono avvenuti?',options:[],reason:'L’identità è cambiata ma gli eventi intermedi non sono noti'}]};continue;}
+  if(b&&a&&b.objectIdentity!==undefined&&a.objectIdentity!==undefined&&b.objectIdentity===a.objectIdentity)return {supported:false,reason:'Cambio zona senza nuova identità oggetto',requiredFacts:[{key:'newObjectIdentity:'+id,question:'Confermi che '+id+' ha cambiato zona da '+from+' a '+to+' e rappresenta un nuovo oggetto?',options:[{id:'yes',label:'Sì, è un nuovo oggetto'},{id:'unknown',label:'Non lo so'}],reason:'Un cambio di zona crea normalmente un nuovo oggetto'}]};
   // Object IDs must represent one zone-change identity; a reused ID is not a new object.
   if(from==='battlefield'&&to!=='battlefield'){
    const event={type:'leavesBattlefield',target:id,from,to,controller:b.controller??null,objectIdentity:b.objectIdentity??id};emit(event,b,a);
