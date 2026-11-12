@@ -5,7 +5,7 @@ const ordered=['1a','1b','2','3','4','5','6','7a','7b','7c','7d'];
 const rank=l=>ordered.indexOf(String(l));
 function evaluate(base,effects=[]){
  if(!base||!Array.isArray(base.types)||!Array.isArray(effects))return {supported:false,reason:'Input non valido'};
- if(effects.some(e=>!e||rank(e.layer)<0||e.dependency||e.kind==='nonbasicMountain'||e.kind==='addForest'))
+ if(effects.some(e=>!e||rank(e.layer)<0||e.kind==='nonbasicMountain'||e.kind==='addForest'))
   return {supported:false,reason:'Dipendenza o modifica di tipo terra non supportata: verifica CR 613 e 305.7'};
  const supported=new Set(['addType','removeType','setColor','addAbility','removeAbility','setPT','modifyPT','definePT','switchPT','addColor','removeColor','removeAllAbilities','copyCharacteristics','setController','replaceText']);
  if(effects.some(e=>!supported.has(e.kind)))return {supported:false,reason:'Operazione layer sconosciuta'};
@@ -18,7 +18,20 @@ function evaluate(base,effects=[]){
  if(effects.some(e=>e.kind==='modifyPT'&&(!Number.isFinite(e.power)||!Number.isFinite(e.toughness))))return {supported:false,reason:'Modifica P/T invalida'};
  if(effects.some(e=>['setPT','definePT'].includes(e.kind)&&(!Number.isFinite(e.power)||!Number.isFinite(e.toughness))))return {supported:false,reason:'Valore P/T invalido'};
  const state={controller:base.controller??null,text:base.text??'',types:[...base.types],colors:[...(base.colors||[])],abilities:[...(base.abilities||[])],power:base.power??null,toughness:base.toughness??null};
- const sorted=effects.map((e,i)=>({...e,_index:i})).sort((a,b)=>rank(a.layer)-rank(b.layer)||a.timestamp-b.timestamp||a._index-b._index);
+ const tagged=effects.map((e,i)=>({...e,_index:i,_id:e.id||'effect-'+i}));
+ if(new Set(tagged.map(e=>e._id)).size!==tagged.length)return {supported:false,reason:'Identificatori effetti duplicati'};
+ if(tagged.some(e=>e.dependency&&!Array.isArray(e.dependency)))return {supported:false,reason:'Dipendenze esplicite non valide'};
+ const sorted=[];
+ for(const layer of ordered){let pending=tagged.filter(e=>String(e.layer)===layer);
+  while(pending.length){
+   const ready=pending.filter(e=>(e.dependency||[]).every(id=>!pending.some(x=>x._id===id)));
+   // CR 613.8: circular dependencies are ignored for ordering; timestamp breaks the tie.
+   const pool=ready.length?ready:pending;
+   pool.sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
+   const next=pool[0];sorted.push(next);pending=pending.filter(e=>e!==next);
+  }
+ }
+
  for(const e of sorted){
   if(e.kind==='copyCharacteristics'){
    if(!e.source||!Array.isArray(e.source.types))return {supported:false,reason:'Sorgente di copia non valida'};
