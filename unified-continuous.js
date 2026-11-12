@@ -30,7 +30,7 @@ for(const copied of copiedResult.objects){
 }
 const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(activeModel,layer4.map(e=>e.id)),{preGenerated:true}):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
-for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
+for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');
 
 if(o.ptDefinition&& !o.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa: valutazione completa non disponibile'};
 if(o.ptDefinition&&o.ptDefinition.kind!=='landCount')return {supported:false,reason:'Definizione dinamica sconosciuta'};
@@ -39,7 +39,8 @@ const orderedLate=[];
 // The planner evaluates actual state changes, not placeholder identities. Effects that
 // alter whether another effect applies are ordered before it; dependencies are
 // recalculated after each application. Global late-layer effects are scoped per object.
-let planning={types:[...o.types],controller:o.controller,abilities:[...o.abilities],colors:[...(o.colors||[])],text:o.text||'',power:o.power,toughness:o.toughness};
+const initialPT=o.ptDefinition&&o.ptDefinition.kind==='landCount'?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
+let planning={types:[...o.types],controller:o.controller,abilities:[...o.abilities],colors:[...(o.colors||[])],text:o.text||'',power:initialPT??o.power,toughness:initialPT??o.toughness};
 for(const layer of ['5','6','7a','7b','7c','7d']){
  const group=relevant.filter(e=>e.layer===layer);if(!group.length)continue;
  if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
@@ -62,14 +63,14 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
  if(!plan.supported)return plan;
  planning=plan.state;orderedLate.push(...plan.order);
 }
-const prior=orderedLate.filter(e=>e.layer!=='7d');const switches=orderedLate.filter(e=>e.layer==='7d');
-const count=o.ptDefinition?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
-const r=root.JudgeLayers.applyOrdered({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:count??o.power,toughness:count??o.toughness},prior);if(!r.supported)return r;
-if(o.ptDefinition&&!r.state.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa durante il layer 6'};
+const nonPT=orderedLate.filter(e=>!['7a','7b','7c','7d'].includes(String(e.layer)));
+const r=root.JudgeLayers.applyOrdered({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:o.power,toughness:o.toughness},nonPT);
+if(!r.supported)return r;
 const state={...o,...r.state,subtypes:o.subtypes};
-const delta=(o.counters?.['+1/+1']||0)-(o.counters?.['-1/-1']||0);
-if(state.power!=null)state.power+=delta;if(state.toughness!=null)state.toughness+=delta;
-if(switches.length){const swapped=root.JudgeLayers.applyOrdered(state,switches);if(!swapped.supported)return swapped;state.power=swapped.state.power;state.toughness=swapped.state.toughness;}
+if(o.ptDefinition&&!state.abilities.some(a=>a&&a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa durante il layer 6'};
+const pt=root.JudgePTLayers?.evaluate(state,middle.objects,orderedLate);
+if(!pt?.supported)return {supported:false,reason:pt?.reason||'Motore P/T non disponibile'};
+state.power=pt.power;state.toughness=pt.toughness;
 result.push(state)}
 return {supported:true,objects:result,order:[...copiedResult.order,...middle.order],coverage:'restricted-shared-state',warnings:['Calcolo parziale: dipendenze generali e durata degli effetti non ancora verificate']}}
 root.JudgeUnifiedContinuous={evaluate};
