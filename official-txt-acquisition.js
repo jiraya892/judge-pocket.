@@ -4,7 +4,7 @@ const LANDING='https://magic.wizards.com/en/rules';
 function discover(html){
  if(typeof html!=='string'||html.length>2000000)return {supported:false,reason:'Pagina non valida'};
  const links=[...html.matchAll(/href\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1].replace(/&amp;/g,'&'));
- const candidates=links.filter(x=>/^https:\/\/media\.wizards\.com\/[^?#]+\.txt(?:\?[^#]*)?$/i.test(x));
+ const candidates=links.filter(x=>!x.includes('@')&&/^https:\/\/media\.wizards\.com\/[^?#]+\.txt(?:\?[^#]*)?$/i.test(x));
  if(candidates.length!==1)return {supported:false,reason:'Collegamento TXT ufficiale assente o ambiguo'};
  return {supported:true,url:candidates[0],landing:LANDING,discovery:'landing-page-link'};
 }
