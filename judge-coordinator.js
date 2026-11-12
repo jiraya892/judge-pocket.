@@ -1,6 +1,6 @@
 /* Unified, conservative orchestration of the existing independent engines. */
 (function(root){'use strict';
-const generic=new Set(['addType','removeType','setColor','addColor','removeColor','addAbility','removeAbility','removeAllAbilities','setPT','definePT','modifyPT','switchPT','setController','replaceText']);
+const generic=new Set(['addType','removeType','setColor','addColor','removeColor','addAbility','removeAbility','removeAllAbilities','setPT','definePT','modifyPT','switchPT','setController','replaceText','copyCharacteristics']);
 const land=new Set(['addLandSubtype','setNonbasicLandSubtype']);
 function evaluate(input){
  if(!input||!Array.isArray(input.objects)||!Array.isArray(input.effects)||!Array.isArray(input.players))return {supported:false,reason:'Formato stato non valido'};
