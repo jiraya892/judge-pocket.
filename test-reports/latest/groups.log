@@ -4,9 +4,27 @@ JudgeGroup4BTests: 10/10
 JudgeGroup4CTests: 16/16
 JudgeGroup4DTests: 14/14
 JudgeGroup4ETests: 16/16
-JudgeGroup4FTests: 19/19
+JudgeGroup4FTests: 14/19
+FAIL JudgeGroup4FTests: turn pipeline queues actual event
+FAIL JudgeGroup4FTests: turn pipeline APNAP places queued
+FAIL JudgeGroup4FTests: real event pipeline queues trigger
+FAIL JudgeGroup4FTests: priority blocked with pending
+FAIL JudgeGroup4FTests: real event pipeline stack placement
 JudgeGroup4F1Tests: 12/12
-JudgeGroup4F2Tests: 16/16
+JudgeGroup4F2Tests: 3/16
+FAIL JudgeGroup4F2Tests: full prevention no event
+FAIL JudgeGroup4F2Tests: full prevention no damage
+FAIL JudgeGroup4F2Tests: full prevention no triggers
+FAIL JudgeGroup4F2Tests: partial prevention damage 2
+FAIL JudgeGroup4F2Tests: partial prevention trigger
+FAIL JudgeGroup4F2Tests: multiply damage once
+FAIL JudgeGroup4F2Tests: redirect target updated
+FAIL JudgeGroup4F2Tests: specific trigger does not fire after redirect
+FAIL JudgeGroup4F2Tests: changed type updates life
+FAIL JudgeGroup4F2Tests: changed type fires only loss
+FAIL JudgeGroup4F2Tests: prevent then double
+FAIL JudgeGroup4F2Tests: double then prevent
+FAIL JudgeGroup4F2Tests: unpreventable damage preserved
 JudgeGroup4F3Tests: 17/17
 JudgeGroup4F4Tests: 8/8
 JudgeGroup4F5Tests: 14/14
@@ -41,4 +59,4 @@ JudgeGroup5XTests: 8/8
 JudgeGroup5Y1Tests: 7/7
 JudgeGroup5Y2Tests: 8/8
 JudgeGroup5Y3Tests: 10/10
-Browser suites: 434/434 passed; 0 execution errors
+Browser suites: 416/434 passed; 0 execution errors
