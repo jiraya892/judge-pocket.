@@ -48,6 +48,9 @@ function observe(state,events,abilities,options={}){
    const leaves=['leavesBattlefield','dies','moveZone'].includes(event.type)&&event.from==='battlefield';
    const validSource=a.kind==='delayed'||a.source===undefined||
       (leaves?source?.zone==='battlefield':afterSource?.zone==='battlefield');
+   // An ability belonging to a specific incarnation must not fire for a different incarnation.
+   const relevant=leaves?source:afterSource;
+   if(a.sourceIdentity!==undefined&&relevant?.objectIdentity!==a.sourceIdentity)continue;
    if(!validSource||!match(a.event,event,record))continue;
    const ctx={event,before:record.before||null,after:record.after||null,source:leaves?source:afterSource,controller:a.controller};
    if(!condition(a.interveningIf,ctx))continue;
