@@ -28,7 +28,7 @@ for(const copied of copiedResult.objects){
  if(!r.supported)return r;
  before.push({...copied,...r.state,subtypes:copied.subtypes||[],supertypes:copied.supertypes||[]});
 }
-const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(activeModel,layer4.map(e=>e.id))):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
+const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(activeModel,layer4.map(e=>e.id)),{preGenerated:true}):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
 for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
 
