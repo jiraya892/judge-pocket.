@@ -1,7 +1,7 @@
 name: Pocket Judge regression tests
 on:
   push:
-    branches: [main, feature/rules-engine-foundation]
+    branches: [main, feature/rules-engine-foundation, dev/groups-5f-5h]
   pull_request:
   workflow_dispatch:
 jobs:
