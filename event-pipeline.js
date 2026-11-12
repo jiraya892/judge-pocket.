@@ -36,7 +36,8 @@ function run(input,events){
   const game=outcome.game;
   // Core SBA is used only for simple, fully entered battlefield characteristics.
   const changes=root.JudgeRulesCore.stateBasedActions(game);
-  for(const change of changes)sba.push(change);\n  // The core mutates its own copy, not the returned state. Report preview only.
+  for(const change of changes)sba.push(change);
+  // The core mutates its own copy, not the returned state. Report preview only.
  }
  return {supported:true,state,outcome,events:log,sba,sbaExecuted:false,warnings:[...outcome.warnings,'Eventi espliciti soltanto; non vengono automaticamente applicati sostituzioni, prevenzione o inneschi.']};
 }
