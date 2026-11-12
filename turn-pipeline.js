@@ -7,6 +7,7 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
   if(!root.JudgeEventPipeline)return {supported:false,reason:'Motore eventi assente'};
   // Replacement and prevention belong exclusively to JudgeEventPipeline.
   // Never apply them here a second time, or report the original event as modified.
+  if((s.pendingTriggers||[]).length)return {supported:false,reason:'Inneschi in attesa: inserirli nella pila prima di altri eventi'};
   const ev=clone(action.event||{});
   const before=clone(s);
   const out=root.JudgeEventPipeline.run(s,[ev]);if(!out.supported)return out;
