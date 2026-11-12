@@ -24,7 +24,7 @@ for(const o of objects){const ownCopies=copies.filter(e=>e.targetId===o.id).sort
  const last=ownCopies[ownCopies.length-1];const source=last?objects.find(x=>x.id===last.sourceId):null;
  const copied=source?{...o,types:[...source.types],subtypes:[...(source.subtypes||[])],supertypes:[...(source.supertypes||[])],abilities:[...(source.abilities||[])],colors:[...(source.colors||[])],power:source.power,toughness:source.toughness,ptDefinition:source.ptDefinition,oracle_text:source.oracle_text}:o;
  const r=root.JudgeLayers.evaluate({types:copied.types,controller:copied.controller,abilities:copied.abilities||[],colors:copied.colors||[],text:copied.oracle_text||'',power:copied.power,toughness:copied.toughness},early.filter(e=>e.targetId===o.id&&e.kind!=='copyCharacteristics'));if(!r.supported)return r;before.push({...copied,...r.state,subtypes:copied.subtypes||[],supertypes:copied.supertypes||[]})}
-const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,layer4):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
+const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(built.model,layer4.map(e=>e.id))):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
 for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
 
@@ -41,7 +41,7 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
  if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
  let invalid=null;
  const apply=(e,s)=>{const outcome=root.JudgeLayers.evaluate(s,[{...e,dependency:[]}]);if(!outcome.supported){invalid=outcome.reason;return s}return outcome.state};
- const plan=root.JudgeDependencies.order(group,planning,{
+ const plan=root.JudgeDependencies.order(root.JudgeEffectModel.subset(built.model,group.map(e=>e.id)),planning,{
   exists:(e,s)=>{
    if(!e.sourceAbilityId)return true;
    if(e.sourceId!==o.id)return undefined; // cross-object ability state needs board-wide layer evaluation
@@ -64,12 +64,12 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
 }
 const prior=orderedLate.filter(e=>e.layer!=='7d');const switches=orderedLate.filter(e=>e.layer==='7d');
 const count=o.ptDefinition?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
-const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:count??o.power,toughness:count??o.toughness},prior);if(!r.supported)return r;
+const r=root.JudgeLayers.applyOrdered({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:count??o.power,toughness:count??o.toughness},prior);if(!r.supported)return r;
 if(o.ptDefinition&&!r.state.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa durante il layer 6'};
 const state={...o,...r.state,subtypes:o.subtypes};
 const delta=(o.counters?.['+1/+1']||0)-(o.counters?.['-1/-1']||0);
 if(state.power!=null)state.power+=delta;if(state.toughness!=null)state.toughness+=delta;
-if(switches.length){const swapped=root.JudgeLayers.evaluate(state,switches);if(!swapped.supported)return swapped;state.power=swapped.state.power;state.toughness=swapped.state.toughness;}
+if(switches.length){const swapped=root.JudgeLayers.applyOrdered(state,switches);if(!swapped.supported)return swapped;state.power=swapped.state.power;state.toughness=swapped.state.toughness;}
 result.push(state)}
 return {supported:true,objects:result,order:[...middle.order],coverage:'restricted-shared-state',warnings:['Calcolo parziale: dipendenze generali e durata degli effetti non ancora verificate']}}
 root.JudgeUnifiedContinuous={evaluate};
