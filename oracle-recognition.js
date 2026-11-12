@@ -11,6 +11,8 @@ function recognize(card,object){
    else unknown.push(line);
   }else if(/^This creature has (flying|trample|vigilance|lifelink|deathtouch|haste|reach|menace|hexproof|indestructible)\.$/i.test(line)){
    unknown.push(line); // Static printed ability, not an effect that grants itself.
+  }else if(line===card.name+"'s power and toughness are each equal to the number of lands you control."){
+   const abilityId='oracle-pt-'+object.id;object.abilities=object.abilities||[];object.abilities.push({id:abilityId,origin:'rulesText',text:line});object.ptDefinition={kind:'landCount',abilityId};
   }else if(/^Nonbasic lands are Mountains\.$/i.test(line)){
    effects.push({kind:'setNonbasicLandSubtype',layer:'4',targetId:'all',subtype:'Mountain'});
   }else if(/^Nontoken creatures you control are Forest lands in addition to their other types\.$/i.test(line)){
