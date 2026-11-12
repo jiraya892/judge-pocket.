@@ -5,8 +5,10 @@ const own=(o,k)=>Object.prototype.hasOwnProperty.call(o||{},k);
 function reference(record){
  if(!record||typeof record!=='object'||Array.isArray(record))return {supported:false,reason:'Fonte non valida'};
  const id=typeof record.rule==='string'?record.rule.trim():'';
- if(!rule.test(id)||record.verified!==true||typeof record.source!=='string'||record.source.trim()!=='Comprehensive Rules'||typeof record.excerpt!=='string'||!record.excerpt.trim())return {supported:false,reason:'Riferimento non verificato'};
- return {supported:true,rule:id,source:'Comprehensive Rules',excerpt:record.excerpt.trim(),verified:true};
+ if(!rule.test(id)||typeof record.source!=='string'||record.source.trim()!=='Comprehensive Rules'||typeof record.excerpt!=='string'||!record.excerpt.trim())return {supported:false,reason:'Riferimento non verificato'};
+ const checked=root.JudgeLocalRulesSource?.verify(record);
+ if(!checked?.supported)return {supported:false,reason:checked?.reason||'Corpus locale non disponibile'};
+ return {supported:true,rule:id,source:'Comprehensive Rules',excerpt:checked.excerpt,edition:checked.edition,verifiedAgainstLocalText:true};
 }
 function explain(result,records){
  const trust=root.JudgeOutcomeTrust?.classify(result);
