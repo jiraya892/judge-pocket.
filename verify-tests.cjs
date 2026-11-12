@@ -8,11 +8,11 @@ const document={
 };
 const window={};
 const context=vm.createContext({window,document,console});
-for(const path of ['engine.js','rules-core.js','rules-tests.js','turn-kernel.js','turn-tests.js','effect-executor.js','effect-tests.js','layer-engine.js','layer-tests.js','oracle-compiler.js','oracle-tests.js']){
+for(const path of ['engine.js','rules-core.js','rules-tests.js','turn-kernel.js','turn-tests.js','effect-executor.js','effect-tests.js','layer-engine.js','layer-tests.js','oracle-compiler.js','oracle-tests.js','oracle-runtime.js','runtime-tests.js']){
  vm.runInContext(fs.readFileSync(__dirname+'/'+path,'utf8'),context,{filename:path,timeout:3000});
 }
 let failed=0,passed=0;
-for(const [summary,details] of [['testSummary','testResults'],['turnTestSummary','turnTestResults'],['effectTestSummary','effectTestResults'],['layerTestSummary','layerTestResults'],['oracleTestSummary','oracleTestResults']]){
+for(const [summary,details] of [['testSummary','testResults'],['turnTestSummary','turnTestResults'],['effectTestSummary','effectTestResults'],['layerTestSummary','layerTestResults'],['oracleTestSummary','oracleTestResults'],['runtimeTestSummary','runtimeTestResults']]){
  console.log(elements[summary].textContent);
  for(const line of elements[details].children){
   if(line.className==='fail'){failed++;console.error(line.textContent)}
