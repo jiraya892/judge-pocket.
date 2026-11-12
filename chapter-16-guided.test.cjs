@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict');
+require('./guided-bridge.js');
+const bridge=globalThis.JudgeGuidedBridge;
+globalThis.JudgeOracleRecognition={fetchCard:async name=>({name,type_line:'Enchantment',oracle_text:'Unsupported Oracle line'}),recognize:()=>({effects:[],unknown:['Unsupported Oracle line']})};
+globalThis.JudgeCoordinator={evaluate:()=>({supported:false,reason:'No verified ruling'})};
+globalThis.JudgeGameFacts={build:()=>({supported:false,code:'EXPECTED_UNSUPPORTED',reason:'Incomplete'})};
+globalThis.JudgeQuestionPlanner={plan:()=>({status:'unsupported',reason:'Scenario not fully supported'})};
+(async()=>{
+ const base={cards:['Card One','Card Two'],event:'enter',entering:'Card Two',enteringIndex:1};
+ let out=await bridge.evaluate(base);
+ assert.equal(out.status,'question');assert.equal(out.key,'board');
+ out=await bridge.evaluate({...base,board:'complete'});
+ assert.equal(out.status,'question');assert.equal(out.key,'controllers');
+ out=await bridge.evaluate({...base,board:'complete',controllers:['A']});
+ assert.equal(out.status,'question');assert.equal(out.key,'controllers');
+ out=await bridge.evaluate({...base,board:'complete',controllers:['A','B']});
+ assert.equal(out.status,'unsupported');assert.ok(out.diagnostic.reasonCodes.includes('EXPECTED_UNSUPPORTED'));
+ const present={...base,event:'present',board:'complete',controllers:['A','B']};
+ out=await bridge.evaluate(present);
+ assert.equal(out.status,'question');assert.equal(out.key,'orderChoices');
+ out=await bridge.evaluate({...present,order:[0,1]});
+ assert.equal(out.status,'unsupported');
+ console.log('6/6 guided bridge integration checks passed');
+})().catch(e=>{console.error(e);process.exitCode=1});
