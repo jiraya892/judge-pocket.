@@ -14,6 +14,8 @@ function evaluate(input){
   ids.add(o.id);const added=root.JudgeRulesCore.addObject(game,o);added.damage=o.damage||0;added.tapped=!!o.tapped;
  }
  const active=input.effects.filter(e=>!e.oracleGenerated||source.some(o=>o.id===e.sourceId));
+ const model=root.JudgeEffectModel?.build(source,active);
+ if(!model?.supported)return {supported:false,reason:model?.reason||'Modello effetti non disponibile'};
  const unknownEffects=active.filter(e=>!kinds.has(e.kind));
  const unknownOracle=source.filter(o=>(o.oracleUnknown||[]).length);
  // An unrecognized global effect may influence every object: never use a fallback engine.
