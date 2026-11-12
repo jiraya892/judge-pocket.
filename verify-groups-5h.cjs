@@ -9,7 +9,7 @@ const registry=html.match(/const names=(\[[^;]+\]);function runAll/);
 if(!registry)throw Error('Cannot parse browser suite registry');
 const names=JSON.parse(registry[1].replace(/'/g,'"'));
 names.push('JudgeGroup5HTests','JudgeGroup5LTests');
-scripts.push('group-5h-tests.js','atomic-resolution.js','group-5l-tests.js');
+scripts.push('group-5h-tests.js','group-5l-tests.js');
 const window={};
 const context=vm.createContext({window,console});
 for(const path of scripts){
