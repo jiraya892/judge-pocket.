@@ -1,7 +1,7 @@
 (function(){
 'use strict';
-const current='0.7',box=document.getElementById('updateNotice'),label=document.getElementById('updateText');
-const newer=(a,b)=>{const x=a.split('.').map(Number),y=b.split('.').map(Number);return x.some((v,i)=>v>(y[i]||0)&&x.slice(0,i).every((n,j)=>n===(y[j]||0)));};
+const current=document.querySelector('meta[name="app-version"]')?.content||'0.8.1',box=document.getElementById('updateNotice'),label=document.getElementById('updateText');
+const newer=(a,b)=>{const x=a.split('.').map(Number),y=b.split('.').map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false;};
 async function check(){
  if(!navigator.onLine)return;
  try{
@@ -11,7 +11,7 @@ async function check(){
   if(typeof data.version==='string'&&newer(data.version,current)){
    label.textContent='È disponibile Judge Pocket Beta '+data.version+'.';
    box.hidden=false;
-  }
+  }else{box.hidden=true;}
  }catch(e){}
 }
 document.getElementById('updateNow').addEventListener('click',async()=>{
