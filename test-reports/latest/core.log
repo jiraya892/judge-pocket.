@@ -4,8 +4,8 @@
 16 test superati, 0 falliti.
 9 test superati, 0 falliti.
 5 test superati, 0 falliti.
-FAIL 5H: 2 damage kills 2/2 at SBA check — Cannot read properties of undefined (reading 'objects')
-FAIL 5H: 2 damage then +1/+1 in same resolution survives — assertion failed
-FAIL 5H: 2 damage in separate resolution kills before later counter — assertion failed
-FAIL 5H: indestructible 2/2 survives lethal damage — assertion failed
-Total: 67 passed, 4 failed
+PASS 5H: 2 damage kills 2/2 at SBA check
+PASS 5H: 2 damage then +1/+1 in same resolution survives
+PASS 5H: 2 damage in separate resolution kills before later counter
+PASS 5H: indestructible 2/2 survives lethal damage
+Total: 71 passed, 0 failed

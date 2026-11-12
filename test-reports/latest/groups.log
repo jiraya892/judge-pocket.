@@ -25,7 +25,10 @@ JudgeGroup5GTests: 9/9
 JudgeGroup5GIntegrationTests: 7/7
 JudgeGroup5GSBATests: 9/9
 JudgeGroup5HTests: 7/7
-JudgeGroup5LTests: 6/6
+JudgeGroup5LTests: 3/6
+FAIL JudgeGroup5LTests: damage then counter survives one resolution
+FAIL JudgeGroup5LTests: damage alone kills
+FAIL JudgeGroup5LTests: separate resolution kills before counter
 JudgeGroup5MTests: 6/6
 JudgeGroup5NTests: 7/7
 JudgeGroup5OTests: 7/7
@@ -45,4 +48,5 @@ JudgeGroup5Y4Tests: 10/10
 JudgeGroup5Y5Tests: 8/8
 JudgeGroup6ATests: 10/10
 JudgeGroup6BTests: 8/8
-Browser suites: 470/470 passed; 0 execution errors
+JudgeGroup6CTests: 10/10
+Browser suites: 477/480 passed; 0 execution errors
