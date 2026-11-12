@@ -3,6 +3,7 @@
 function recognize(card,object){
  const text=[card.oracle_text,...(card.card_faces||[]).map(f=>f.oracle_text)].filter(Boolean).join('\n');
  const effects=[],unknown=[];
+ const generated=(effect,line)=>{const id='oracle-static-'+object.id+'-'+effects.length;object.abilities=object.abilities||[];object.abilities.push({id,origin:'rulesText',kind:'static',text:line});effects.push({...effect,sourceId:object.id,sourceAbilityId:id});};
  for(const line of text.split('\n').map(x=>x.trim()).filter(Boolean)){
   let m;
   if((m=/^([A-Za-z ]+) gets ([+-]\d+)\/([+-]\d+)\.$/.exec(line))){
@@ -14,9 +15,9 @@ function recognize(card,object){
   }else if(line===card.name+"'s power and toughness are each equal to the number of lands you control."){
    const abilityId='oracle-pt-'+object.id;object.abilities=object.abilities||[];object.abilities.push({id:abilityId,origin:'rulesText',text:line});object.ptDefinition={kind:'landCount',abilityId};
   }else if(/^Nonbasic lands are Mountains\.$/i.test(line)){
-   effects.push({kind:'setNonbasicLandSubtype',layer:'4',targetId:'all',subtype:'Mountain'});
+   generated({kind:'setNonbasicLandSubtype',layer:'4',targetId:'all',subtype:'Mountain'},line);
   }else if(/^Nontoken creatures you control are Forest lands in addition to their other types\.$/i.test(line)){
-   effects.push({kind:'addLandSubtype',layer:'4',targetId:'all',scope:'nontokenCreaturesYouControl',controller:object.controller,subtype:'Forest'});
+   generated({kind:'addLandSubtype',layer:'4',targetId:'all',scope:'nontokenCreaturesYouControl',controller:object.controller,subtype:'Forest'},line);
   }else unknown.push(line);
  }
  return {effects,unknown,text};
