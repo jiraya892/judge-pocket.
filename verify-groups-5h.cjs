@@ -8,8 +8,8 @@ const scripts=[...html.matchAll(/<script src="([^"]+\.js)"><\/script>/g)].map(x=
 const registry=html.match(/const names=(\[[^;]+\]);function runAll/);
 if(!registry)throw Error('Cannot parse browser suite registry');
 const names=JSON.parse(registry[1].replace(/'/g,'"'));
-names.push('JudgeGroup5HTests','JudgeGroup5LTests','JudgeGroup5MTests','JudgeGroup5NTests','JudgeGroup5OTests','JudgeGroup5PTests','JudgeGroup5QTests');
-scripts.push('group-5h-tests.js','group-5l-tests.js','group-5m-tests.js','group-5n-tests.js','group-5o-tests.js','group-5p-tests.js','group-5q-tests.js');
+names.push('JudgeGroup5HTests','JudgeGroup5LTests','JudgeGroup5MTests','JudgeGroup5NTests','JudgeGroup5OTests','JudgeGroup5PTests','JudgeGroup5QTests','JudgeGroup5RTests');
+scripts.push('group-5h-tests.js','group-5l-tests.js','group-5m-tests.js','group-5n-tests.js','group-5o-tests.js','group-5p-tests.js','group-5q-tests.js','group-5r-tests.js');
 const window={};
 const context=vm.createContext({window,console});
 for(const path of scripts){
@@ -28,4 +28,4 @@ for(const name of names){
  }catch(e){errors++;console.error('ERROR '+name+': '+e.stack)}
 }
 console.log('Browser suites: '+passed+'/'+total+' passed; '+errors+' execution errors');
-if(errors||passed!==total||total<360)process.exitCode=1;
+if(errors||passed!==total||total<368)process.exitCode=1;
