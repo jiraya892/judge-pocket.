@@ -21,5 +21,11 @@ globalThis.JudgeQuestionPlanner={plan:()=>({status:'unsupported',reason:'Scenari
  assert.equal(out.status,'question');assert.equal(out.key,'orderChoices');
  out=await bridge.evaluate({...present,order:[0,1]});
  assert.equal(out.status,'unsupported');
- console.log('6/6 guided bridge integration checks passed');
+ out=await bridge.evaluate({...base,event:'cast',casting:'Card One'});
+ assert.equal(out.status,'unsupported');assert.ok(out.diagnostic.reasonCodes.includes('CAST_STACK_NOT_CONNECTED'));
+ out=await bridge.evaluate({...base,event:'other',description:'Custom'});
+ assert.equal(out.status,'unsupported');assert.ok(out.diagnostic.reasonCodes.includes('CUSTOM_EVENT_NOT_PARSED'));
+ out=await bridge.evaluate({...base,entering:'Card Three'});
+ assert.equal(out.status,'unsupported');assert.ok(out.diagnostic.reasonCodes.includes('ENTERING_CARD_UNKNOWN'));
+ console.log('9/9 guided bridge integration checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
