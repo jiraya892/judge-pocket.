@@ -10,4 +10,9 @@ const abilityEffects=[{id:'moon',kind:'setNonbasicLandSubtype',layer:'4',targetI
 const removedSource=root.JudgeUnifiedLayer4.evaluate(source,abilityEffects);check('source ability removal does not produce false ruling',!removedSource.supported);
 const missingSource=root.JudgeUnifiedLayer4.evaluate(source,[{...abilityEffects[1],sourceAbilityId:'missing'}]);check('missing source ability fails closed',!missingSource.supported);
 const preserved=root.JudgeUnifiedLayer4.evaluate(source,[{...abilityEffects[1]}]);check('present source ability accepted',preserved.supported&&preserved.objects[0].types.includes('creature'));
+const architecture=root.JudgeEffectModel.build([{id:'obj',abilities:[{id:'ability',origin:'rulesText'}]}],[{id:'effect',kind:'addType',layer:'4',targetId:'obj',sourceId:'obj',sourceAbilityId:'ability',timestamp:1}]);
+check('separate ability and effect records',architecture.supported&&architecture.model.sourceAbilities.length===1&&architecture.model.continuousEffects[0].sourceAbility==='obj::ability');
+check('effect model does not mutate input',architecture.supported&&Object.isFrozen(architecture.model.continuousEffects[0]));
+check('missing generating ability rejected',!root.JudgeEffectModel.build([{id:'obj',abilities:[]}],[{id:'e',kind:'addType',layer:'4',sourceId:'obj',sourceAbilityId:'missing',timestamp:1}]).supported);
+check('dependency is a separate record',root.JudgeEffectModel.build([{id:'obj',abilities:[]}],[{id:'a',kind:'addType',layer:'4',timestamp:1},{id:'b',kind:'removeType',layer:'4',timestamp:2,dependency:['a']}]).model.dependencies[0].prerequisiteId==='a');
 return {passed:tests.filter(x=>x.pass).length,total:tests.length,tests}}root.JudgeGroup2BTests={run}})(typeof window!=='undefined'?window:globalThis);
