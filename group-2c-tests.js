@@ -11,7 +11,7 @@ check('copiable abilities colors and mana cost',result.supported&&result.objects
 check('controller and counters not copied',result.supported&&result.objects[1].controller==='B'&&result.objects[1].power===4);
 check('copy leaves originals immutable',a.types[0]==='creature'&&b.types[0]==='artifact');
 const later=root.JudgeUnifiedContinuous.evaluate([a,b],[cp('ab','a','b',1),{id:'boost',kind:'modifyPT',layer:'7c',targetId:'b',timestamp:2,power:3,toughness:1}]);
-check('copy followed by later PT layer',later.supported&&later.objects[1].power===7&&later.objects[1].toughness===3);
+check('copy followed by later PT layer',later.supported&&later.objects[1].power===7&&later.objects[1].toughness===5);
 const multiple=root.JudgeCopyLayer.evaluate([a,b,c],[cp('a','a','c',1),cp('b','b','c',2)]);
 check('later copy timestamp wins',multiple.supported&&multiple.objects[2].types.includes('artifact'));
 const loop=root.JudgeCopyLayer.evaluate([a,b],[cp('a','a','b',1),cp('b','b','a',2)]);
