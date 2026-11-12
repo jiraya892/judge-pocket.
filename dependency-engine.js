@@ -12,6 +12,10 @@ function order(effects,state,handlers){
   for(const e of pending){
    const dependencies=new Set((e.dependency||[]).filter(id=>pending.some(x=>x._id===id)));
    for(const other of pending){if(e===other)continue;
+    const existsBefore=handlers.exists?handlers.exists(e,working):true;
+    const existsAfter=handlers.exists?handlers.exists(e,handlers.apply(other,working)):true;
+    if(existsBefore===undefined||existsAfter===undefined)return {supported:false,reason:'Esistenza abilità generatrice non determinabile'};
+    if(existsBefore!==existsAfter)dependencies.add(other._id);
     const before=handlers.affected(e,working);
     const modified=handlers.apply(other,working);
     const after=handlers.affected(e,modified);
@@ -32,9 +36,9 @@ function order(effects,state,handlers){
    const eligible=pending.filter(e=>cyclic.has(e._id)&&[...(edges.get(e._id)||[])].every(id=>cyclic.has(id)&&reachable(id,e._id)));
    if(!eligible.length)return {supported:false,reason:'Ciclo con dipendenze esterne non risolte'};
    eligible.sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
-   const next=eligible[0];working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);continue;
+   const next=eligible[0];if(handlers.exists&&handlers.exists(next,working)===false)return {supported:false,reason:'Abilità generatrice non più presente: durata non verificata'};working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);continue;
   }
-  const next=ready[0];working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);
+  const next=ready[0];if(handlers.exists&&handlers.exists(next,working)===false)return {supported:false,reason:'Abilità generatrice non più presente: durata non verificata'};working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);
  }
  return {supported:true,state:working,order:ordered};
 }
