@@ -16,14 +16,15 @@ const late=effects.filter(e=>ranks.indexOf(String(e.layer))>ranks.indexOf('4'));
 if(early.some(e=>e.targetId==='all'))return {supported:false,reason:'Effetti globali nei layer precedenti al 4 non ancora integrati'};
 if(effects.some(e=>e.dependency?.length&&e.layer!=='4'&&(e.dependency||[]).some(id=>!effects.some(x=>x.id===id&&x.layer===e.layer))))return {supported:false,reason:'Dipendenza extra layer mancante o in layer diverso'};
 const copies=early.filter(e=>e.kind==='copyCharacteristics');
-if(copies.some(e=>e.layer!=='1a'||!e.targetId||e.targetId==='all'||!e.sourceId||!objects.some(o=>o.id===e.sourceId)||!Number.isSafeInteger(e.timestamp)))return {supported:false,reason:'Copia senza sorgente o destinazione valida'};
-if(copies.some(e=>copies.some(other=>other!==e&&other.targetId===e.sourceId)))return {supported:false,reason:'Catena di copie non ancora verificata'};
-if(copies.some(e=>e.sourceId===e.targetId))return {supported:false,reason:'Copia di se stessa non supportata'};
+if(!root.JudgeCopyLayer)return {supported:false,reason:'Motore copie mancante'};
+const copiedResult=root.JudgeCopyLayer.evaluate(objects,copies);
+if(!copiedResult.supported)return copiedResult;
 let before=[];
-for(const o of objects){const ownCopies=copies.filter(e=>e.targetId===o.id).sort((a,b)=>a.timestamp-b.timestamp);
- const last=ownCopies[ownCopies.length-1];const source=last?objects.find(x=>x.id===last.sourceId):null;
- const copied=source?{...o,types:[...source.types],subtypes:[...(source.subtypes||[])],supertypes:[...(source.supertypes||[])],abilities:[...(source.abilities||[])],colors:[...(source.colors||[])],power:source.power,toughness:source.toughness,ptDefinition:source.ptDefinition,oracle_text:source.oracle_text}:o;
- const r=root.JudgeLayers.evaluate({types:copied.types,controller:copied.controller,abilities:copied.abilities||[],colors:copied.colors||[],text:copied.oracle_text||'',power:copied.power,toughness:copied.toughness},root.JudgeEffectModel.subset(built.model,early.filter(e=>e.targetId===o.id&&e.kind!=='copyCharacteristics').map(e=>e.id)));if(!r.supported)return r;before.push({...copied,...r.state,subtypes:copied.subtypes||[],supertypes:copied.supertypes||[]})}
+for(const copied of copiedResult.objects){
+ const r=root.JudgeLayers.evaluate({types:copied.types,controller:copied.controller,abilities:copied.abilities||[],colors:copied.colors||[],text:copied.oracle_text||copied.text||'',power:copied.power,toughness:copied.toughness},root.JudgeEffectModel.subset(built.model,early.filter(e=>e.targetId===copied.id&&e.kind!=='copyCharacteristics').map(e=>e.id)));
+ if(!r.supported)return r;
+ before.push({...copied,...r.state,subtypes:copied.subtypes||[],supertypes:copied.supertypes||[]});
+}
 const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(built.model,layer4.map(e=>e.id))):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
 for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
@@ -71,6 +72,6 @@ const delta=(o.counters?.['+1/+1']||0)-(o.counters?.['-1/-1']||0);
 if(state.power!=null)state.power+=delta;if(state.toughness!=null)state.toughness+=delta;
 if(switches.length){const swapped=root.JudgeLayers.applyOrdered(state,switches);if(!swapped.supported)return swapped;state.power=swapped.state.power;state.toughness=swapped.state.toughness;}
 result.push(state)}
-return {supported:true,objects:result,order:[...middle.order],coverage:'restricted-shared-state',warnings:['Calcolo parziale: dipendenze generali e durata degli effetti non ancora verificate']}}
+return {supported:true,objects:result,order:[...copiedResult.order,...middle.order],coverage:'restricted-shared-state',warnings:['Calcolo parziale: dipendenze generali e durata degli effetti non ancora verificate']}}
 root.JudgeUnifiedContinuous={evaluate};
 })(typeof window!=='undefined'?window:globalThis);
