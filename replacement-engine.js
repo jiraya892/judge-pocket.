@@ -15,6 +15,8 @@ function process(event,effects=[],choices=[]){
  if(effects.some(e=>e.operation==='prevent'&&e.match.type&&e.match.type!=='dealDamage'))return {supported:false,reason:'Prevenzione su evento non danno non supportata'};
  const used=new Set(),trace=[];let current={...event};
  while(true){
+  // An event entirely prevented or reduced to zero does not occur; no later effect can revive it.
+  if(current.type==='dealDamage'&&current.amount===0)break;
   const eligible=effects.filter(e=>!used.has(e.id)&&matches(e,current)&&(e.operation!=='prevent'||current.type==='dealDamage'&&!current.unpreventable));
   if(!eligible.length)break;
   let chosen;
@@ -43,7 +45,7 @@ function process(event,effects=[],choices=[]){
   }
   trace.push({effectId:chosen.id,event:{...current}});
  }
- return {supported:true,event:current,trace,applied:trace.map(t=>t.effectId)};
+ return {supported:true,event:current.type==='dealDamage'&&current.amount===0?null:current,trace,applied:trace.map(t=>t.effectId)};
 }
 root.JudgeReplacements={process,matches};
 })(typeof window!=='undefined'?window:globalThis);
