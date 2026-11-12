@@ -27,6 +27,10 @@ function plan(state,top){
   if(legality&&!top.targets.some(t=>t.id===e.targetId))
    return {supported:false,reason:'Istruzione riferita a un bersaglio non dichiarato',legality};
  }
+ // A target-bound instruction cannot be silently accepted without a
+ // corresponding declared target, even for an otherwise untargeted spell.
+ if(!legality&&events.some(e=>e.targetId!==undefined))
+  return {supported:false,reason:'Riferimento bersaglio senza bersagli dichiarati'};
  if(legality&&legality.results.some(x=>!x.legal)){
   const chosen=top.targets.map(t=>t.id);
   if(new Set(chosen).size!==chosen.length)return {supported:false,reason:'Bersagli ripetuti: riferimento non univoco'};
