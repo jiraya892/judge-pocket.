@@ -4,7 +4,7 @@
 'use strict';
 const has=(o,t)=>o.types.includes(t);
 const isNonbasic=o=>has(o,'land')&&!o.supertypes.includes('basic');
-function snapshot(o){return {types:[...o.types],subtypes:[...o.subtypes],supertypes:[...o.supertypes],abilities:[...o.abilities]}}
+function snapshot(o){return {types:[...o.types],subtypes:[...o.subtypes],supertypes:[...o.supertypes],abilities:[...o.abilities],controller:o.controller,token:!!o.token}}
 function apply(effect,objects){
  const out=objects.map(snapshot);
  for(let i=0;i<out.length;i++){
