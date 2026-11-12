@@ -31,9 +31,9 @@ function run(before,after,options={}){
  const collected=collect({...after,objects:[...after.objects,...before.objects.filter(o=>!after.objects.some(n=>n.id===o.id))]});
  if(!collected.supported)return collected;
  // A source that entered must not be used to trigger an event before its entry.
- const observed=root.JudgeTriggers.observe(after,detected.records,collected.abilities);
+ const observed=root.JudgeDelayedTriggers?root.JudgeDelayedTriggers.observe(after,detected.records,collected.abilities):root.JudgeTriggers.observe(after,detected.records,collected.abilities);
  if(!observed.supported)return observed;
- return {supported:true,events:detected.records,abilities:collected.abilities,pending:observed.pending,firedDelayed:observed.firedDelayed,unsupported:collected.unsupported,trace:observed.trace};
+ return {supported:true,events:detected.records,abilities:collected.abilities,pending:observed.pending,firedDelayed:observed.firedDelayed,delayedTriggers:observed.delayedTriggers||[],unsupported:collected.unsupported,trace:observed.trace};
 }
 root.JudgeTriggerRecognition={collect,run};
 })(typeof window!=='undefined'?window:globalThis);
