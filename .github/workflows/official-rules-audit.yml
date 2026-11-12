@@ -1,0 +1,25 @@
+name: Audit official Wizards rules TXT
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-txt:
+    if: github.ref == 'refs/heads/dev/groups-5f-5h'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Acquire and inspect official TXT (diagnostic only)
+        shell: bash
+        run: node scripts/audit-official-txt.cjs
+      - name: Publish diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-rules-diagnostic
+          path: test-reports/official/diagnostic.json
+          retention-days: 14
