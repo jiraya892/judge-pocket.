@@ -1,6 +1,11 @@
 name: Audit official Wizards rules TXT
 on:
   workflow_dispatch:
+  push:
+    branches: [dev/groups-5f-5h]
+    paths:
+      - '.github/workflows/official-rules-audit.yml'
+      - 'scripts/audit-official-txt.cjs'
 permissions:
   contents: read
 jobs:
