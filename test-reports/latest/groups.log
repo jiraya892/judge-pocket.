@@ -75,4 +75,5 @@ JudgeGroup7CTests: 10/10
 JudgeGroup7DTests: 10/10
 JudgeGroup7ETests: 10/10
 JudgeGroup7FTests: 10/10
-Browser suites: 770/770 passed; 0 execution errors
+JudgeGroup7GTests: 10/10
+Browser suites: 780/780 passed; 0 execution errors
