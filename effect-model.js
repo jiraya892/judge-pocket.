@@ -31,6 +31,11 @@ function build(objects,effects){
  }
  return {supported:true,model:Object.freeze({sourceAbilities:Object.freeze(sources),continuousEffects:Object.freeze(continuous),dependencies:Object.freeze(dependencies)})};
 }
+function subset(model,ids){
+ if(!model||!Array.isArray(model.continuousEffects))return null;
+ const chosen=new Set(ids);
+ return Object.freeze({sourceAbilities:model.sourceAbilities,continuousEffects:model.continuousEffects.filter(e=>chosen.has(e.id)),dependencies:model.dependencies.filter(d=>chosen.has(d.dependentId)&&chosen.has(d.prerequisiteId))});
+}
 function runtime(model){
  if(!model||!Array.isArray(model.continuousEffects)||!Array.isArray(model.dependencies))return {supported:false,reason:'Modello effetti assente'};
  const byId=new Map(model.continuousEffects.map(e=>[e.id,e]));
@@ -46,5 +51,5 @@ function sourceExists(effect,state){
  if(!source||!Array.isArray(source.abilities))return undefined;
  return source.abilities.some(a=>a.id===effect.sourceAbilityId);
 }
-root.JudgeEffectModel={build,runtime,sourceExists};
+root.JudgeEffectModel={build,runtime,subset,sourceExists};
 })(typeof window!=='undefined'?window:globalThis);
