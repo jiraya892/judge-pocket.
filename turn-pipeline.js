@@ -18,9 +18,19 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
   const integrated=root.JudgeTriggerFlow.transition(before,s,applied[0]||null);
   if(!integrated.supported)return integrated;
   Object.assign(s,{pendingTriggers:integrated.state.pendingTriggers,delayedTriggers:integrated.state.delayedTriggers,firedDelayed:integrated.state.firedDelayed,nextTriggerId:integrated.state.nextTriggerId});
+  if(!root.JudgeLocalSBA)return {supported:false,reason:'Modulo SBA 4F.5 non disponibile'};
+  const settled=root.JudgeLocalSBA.stabilize(s);if(!settled.supported)return settled;
+  let sbaQueued=0;
+  for(const change of settled.transitions){
+   const snap={...clone(change.after),pendingTriggers:s.pendingTriggers,delayedTriggers:s.delayedTriggers,firedDelayed:s.firedDelayed,nextTriggerId:s.nextTriggerId};
+   const tr=root.JudgeTriggerFlow.transition(change.before,snap);
+   if(!tr.supported)return tr;
+   Object.assign(s,{objects:tr.state.objects,pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});
+   sbaQueued+=tr.queued;
+  }
   s.pending=s.pendingTriggers;
   s.history.push({kind:'event',event:ev,sba:out.sba,sbaExecuted:out.sbaExecuted});
-  return {supported:true,state:s,event:applied[0]||null,queued:integrated.queued,sba:out.sba,sbaExecuted:out.sbaExecuted,warnings:out.warnings};
+  return {supported:true,state:s,event:applied[0]||null,queued:integrated.queued+sbaQueued,sba:[...out.sba,...settled.changes],sbaExecuted:settled.changes.length>0,warnings:out.warnings};
  }
  if(action.type==='putTriggersOnStack'){
   if(!root.JudgeTriggerFlow)return {supported:false,reason:'Flusso trigger 4F non disponibile'};
