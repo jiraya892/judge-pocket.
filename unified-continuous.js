@@ -8,7 +8,10 @@ if(!Array.isArray(objects))return {supported:false,reason:'Stato non valido'};
  const built=Array.isArray(input)?root.JudgeEffectModel.build(objects,input):{supported:true,model:input};
  if(!built.supported)return built;
  const runtime=root.JudgeEffectModel.runtime(built.model);if(!runtime.supported)return runtime;
- const effects=runtime.effects;
+ const lifetime=root.JudgeEffectLifetime?.prepare(objects,runtime.effects);
+if(!lifetime?.supported)return {supported:false,reason:lifetime?.reason||'Gestione durata effetti mancante'};
+const effects=lifetime.effects;
+const activeModel=root.JudgeEffectModel.subset(built.model,effects.map(e=>e.id));
 if(effects.some(e=>!supported.has(e.kind)||!ranks.includes(String(e.layer))))return {supported:false,reason:'Effetto continuo non supportato'};
 const layer4=effects.filter(e=>String(e.layer)==='4');
 const early=effects.filter(e=>ranks.indexOf(String(e.layer))<ranks.indexOf('4'));
@@ -21,11 +24,11 @@ const copiedResult=root.JudgeCopyLayer.evaluate(objects,copies);
 if(!copiedResult.supported)return copiedResult;
 let before=[];
 for(const copied of copiedResult.objects){
- const r=root.JudgeLayers.evaluate({types:copied.types,controller:copied.controller,abilities:copied.abilities||[],colors:copied.colors||[],text:copied.oracle_text||copied.text||'',power:copied.power,toughness:copied.toughness},root.JudgeEffectModel.subset(built.model,early.filter(e=>e.targetId===copied.id&&e.kind!=='copyCharacteristics').map(e=>e.id)));
+ const r=root.JudgeLayers.evaluate({types:copied.types,controller:copied.controller,abilities:copied.abilities||[],colors:copied.colors||[],text:copied.oracle_text||copied.text||'',power:copied.power,toughness:copied.toughness},root.JudgeEffectModel.subset(activeModel,early.filter(e=>e.targetId===copied.id&&e.kind!=='copyCharacteristics').map(e=>e.id)));
  if(!r.supported)return r;
  before.push({...copied,...r.state,subtypes:copied.subtypes||[],supertypes:copied.supertypes||[]});
 }
-const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(built.model,layer4.map(e=>e.id))):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
+const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(activeModel,layer4.map(e=>e.id))):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
 for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
 
@@ -42,12 +45,8 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
  if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
  let invalid=null;
  const apply=(e,s)=>{const outcome=root.JudgeLayers.evaluate(s,[{...e,dependency:[]}]);if(!outcome.supported){invalid=outcome.reason;return s}return outcome.state};
- const plan=root.JudgeDependencies.order(root.JudgeEffectModel.subset(built.model,group.map(e=>e.id)),planning,{
-  exists:(e,s)=>{
-   if(!e.sourceAbilityId)return true;
-   if(e.sourceId!==o.id)return undefined; // cross-object ability state needs board-wide layer evaluation
-   return s.abilities.some(a=>a.id===e.sourceAbilityId);
-  },
+ const plan=root.JudgeDependencies.order(root.JudgeEffectModel.subset(activeModel,group.map(e=>e.id)),planning,{
+  exists:()=>true, // source checked at generation; CR 613.6 retains generated effects
   affected:(e,s)=>[o.id],
   apply,
   signature:(e,s)=>{
