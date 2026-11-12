@@ -51,3 +51,6 @@ Corretto il ciclo di risoluzione strutturata della pila: rimozione dell'elemento
 
 ## Gruppo 4F.8 — diagnostica browser v0.9.48 (verifica reale pendente)
 La pagina `group-4-tests.html` ora espone PASS/FAIL, numero atteso 193 test, errori di esecuzione, ambiente browser e pulsante per ripetere. Il codice è pubblicato, ma l'ambiente di sviluppo non ha potuto raggiungere GitHub Pages né eseguire un browser Android: la verifica browser/device non è attestata. Non dichiarare 4F.8 completato fino al risultato reale della pagina su tablet e alla verifica PWA.
+
+## Verifica browser 4F.8 — 2026-11-12
+L'utente ha eseguito `group-4-tests.html` sul proprio tablet Android e ha riportato **PASS — 193/193**. Questo attesta il passaggio delle suite JavaScript nel browser del dispositivo (risultato comunicato dall'utente, non telemetria acquisita). Chiusura del perimetro 4F.8: regressioni del motore e pubblicazione della pagina diagnostica. **Non verificati:** installazione PWA, comportamento offline, interazione guidata end-to-end, riconoscimento fotografico, copertura generale Oracle. Questi punti restano nei gruppi 7–11. Il Gruppo 5 può iniziare.
