@@ -59,11 +59,15 @@ JudgeGroup6MTests: 10/10
 JudgeGroup6NTests: 10/10
 JudgeGroup6OTests: 10/10
 JudgeGroup6PTests: 10/10
-JudgeGroup6QTests: 10/10
+JudgeGroup6QTests: 6/10
+FAIL JudgeGroup6QTests: zero defense battle leaves
+FAIL JudgeGroup6QTests: zero defense ignores indestructible
+FAIL JudgeGroup6QTests: battle exit records reason
+FAIL JudgeGroup6QTests: battle exit retains LKI
 JudgeGroup6RTests: 10/10
 JudgeGroup6STests: 10/10
 JudgeGroup6TTests: 10/10
 JudgeGroup6UTests: 10/10
 JudgeGroup6VTests: 10/10
 JudgeGroup6WTests: 10/10
-Browser suites: 680/680 passed; 0 execution errors
+Browser suites: 676/680 passed; 0 execution errors
