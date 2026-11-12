@@ -1,4 +1,4 @@
-const CACHE='judge-pocket-beta-v20';
+const CACHE='judge-pocket-beta-v21';
 const ASSETS=['./','./index.html','./app.js','./engine.js','./rules-core.js','./simulator-ui.js','./autocomplete.js','./updater.js','./version.json','./manifest.webmanifest','./continuous-effects.js','./turn-kernel.js','./turn-ui.js','./turn-lab.html','./turn-tests.html','./turn-tests.js','./effect-executor.js','./effect-tests.js','./effect-tests.html','./layer-engine.js','./layer-tests.js','./layer-tests.html','./oracle-compiler.js','./oracle-tests.js','./oracle-tests.html','./oracle-runtime.js','./runtime-tests.js','./runtime-tests.html','./oracle-playground.js','./land-layer-engine.js','./land-layer-tests.js','./continuous-state.js','./card-continuous-adapter.js'];
 self.addEventListener('install',event=>{
  self.skipWaiting();
