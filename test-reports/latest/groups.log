@@ -163,4 +163,8 @@ JudgeGroup10MTests: 10/10
 JudgeGroup10NTests: 10/10
 JudgeGroup10OTests: 10/10
 JudgeGroup10PTests: 10/10
-Browser suites: 1650/1650 passed; 0 execution errors
+JudgeGroup11ATests: 10/10
+JudgeGroup11BTests: 10/10
+JudgeGroup11CTests: 10/10
+JudgeGroup11DTests: 10/10
+Browser suites: 1690/1690 passed; 0 execution errors
