@@ -1,0 +1,21 @@
+(function(root){'use strict';
+function run(){const results=[],check=(name,ok)=>results.push({name,pass:!!ok});const d=root.JudgeEventDetector;
+const obj=(id,zone,types=['creature'])=>({id,zone,types,controller:'A'});
+let r=d.detect({objects:[obj('x','hand')]},{objects:[obj('x','battlefield')]});
+check('entry detected',r.supported&&r.records[0].event.type==='enterBattlefield');
+check('entry has before and after snapshots',r.records[0].before.object.zone==='hand'&&r.records[0].after.object.zone==='battlefield');
+r=d.detect({objects:[obj('x','battlefield')]},{objects:[obj('x','graveyard')]});
+check('leave battlefield',r.records.some(x=>x.event.type==='leavesBattlefield'));
+check('creature dies',r.records.some(x=>x.event.type==='dies'));
+check('zone movement',r.records.some(x=>x.event.type==='moveZone'));
+r=d.detect({objects:[obj('x','battlefield',['artifact'])]},{objects:[obj('x','graveyard',['artifact'])]});
+check('noncreature does not die',!r.records.some(x=>x.event.type==='dies'));
+r=d.detect({objects:[obj('x','battlefield')]},{objects:[obj('x','battlefield')]});
+check('no transition no event',r.records.length===0);
+r=d.detect({objects:[obj('x','hand'),obj('x','library')]},{objects:[]});
+check('duplicate ID rejected',!r.supported);
+r=d.detect({objects:[]},{objects:[obj('new','battlefield')]});
+check('new object enters',r.records.some(x=>x.event.type==='enterBattlefield'));
+return {passed:results.filter(x=>x.pass).length,total:results.length,tests:results};}
+root.JudgeGroup4ATests={run};
+})(typeof window!=='undefined'?window:globalThis);
