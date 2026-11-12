@@ -21,6 +21,7 @@ function evaluate(base,effects=[]){
  const tagged=effects.map((e,i)=>({...e,_index:i,_id:e.id||'effect-'+i}));
  if(new Set(tagged.map(e=>e._id)).size!==tagged.length)return {supported:false,reason:'Identificatori effetti duplicati'};
  if(tagged.some(e=>e.dependency&&!Array.isArray(e.dependency)))return {supported:false,reason:'Dipendenze esplicite non valide'};
+ if(tagged.some(e=>(e.dependency||[]).some(id=>!tagged.some(x=>x._id===id&&x.layer===e.layer))))return {supported:false,reason:'Dipendenza assente o in layer diverso'};
  const sorted=[];
  for(const layer of ordered){let pending=tagged.filter(e=>String(e.layer)===layer);
   while(pending.length){
