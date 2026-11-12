@@ -57,3 +57,6 @@ L'utente ha eseguito `group-4-tests.html` sul proprio tablet Android e ha riport
 
 ## Gruppo 5A — v0.9.49
 Introdotto `stack-engine.js`: pila LIFO, oggetti di tipo spell/activatedAbility/triggeredAbility, ID univoci, controllori e riferimenti fonte/carta, operazioni push/peek/pop immutabili e controlli fail-closed. Collegato `pushStack` del turn pipeline al modulo. 13 test 5A e 193 regressioni precedenti superati (206/206) in più esecuzioni JavaScript. Pagina browser aggiornata per 206 test, ma nuova versione non ancora verificata sul tablet. Limiti: priorità/risoluzione/bersagli e costi saranno trattati nei gruppi 5B–5H; gli inneschi preesistenti sono ancora inseriti con il modello storico di 4E e richiedono normalizzazione completa nei gruppi successivi.
+
+## Gruppo 5B — v0.9.50
+Introdotto `priority-engine.js`: priorità esplicita, passaggi consecutivi, riavvio dopo azioni, blocco degli inneschi pendenti, richiesta mirata del giocatore attivo quando manca, distinzione fra pila vuota e risoluzione della cima. Collegato a `turn-pipeline.js`. 13 nuovi test, 219/219 complessivi in più esecuzioni JS. Limiti: la risoluzione è ancora parziale e il motore non deduce automaticamente le finestre di priorità da fasi/turni non forniti. Browser Android v0.9.50 non ancora verificato.
