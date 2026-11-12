@@ -10,6 +10,7 @@ function evaluate(base,effects=[]){
  const supported=new Set(['addType','removeType','setColor','addAbility','removeAbility','setPT','modifyPT','definePT','switchPT','addColor','removeColor','removeAllAbilities','copyCharacteristics','setController','replaceText']);
  if(effects.some(e=>!supported.has(e.kind)))return {supported:false,reason:'Operazione layer sconosciuta'};
  if(effects.some(e=>!Number.isSafeInteger(e.timestamp)))return {supported:false,reason:'Timestamp esplicito necessario'};
+ if(effects.some(e=>e.kind==='copyCharacteristics'&&e.layer!=='1a'||e.kind==='setController'&&e.layer!=='2'||e.kind==='replaceText'&&e.layer!=='3'))return {supported:false,reason:'Layer errato per copia, controllo o testo'};
  if(effects.some(e=>(e.kind==='addType'||e.kind==='removeType')&&e.layer!=='4'))return {supported:false,reason:'Tipo fuori layer 4'};
  if(effects.some(e=>['setColor','addColor','removeColor'].includes(e.kind)&&e.layer!=='5'))return {supported:false,reason:'Colore fuori layer 5'};
  if(effects.some(e=>['addAbility','removeAbility','removeAllAbilities'].includes(e.kind)&&e.layer!=='6'))return {supported:false,reason:'Abilità fuori layer 6'};
