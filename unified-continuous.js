@@ -36,7 +36,7 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
  const group=relevant.filter(e=>e.layer===layer);if(!group.length)continue;
  if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
  let invalid=null;
- const apply=(e,s)=>{const outcome=root.JudgeLayers.evaluate(s,[e]);if(!outcome.supported){invalid=outcome.reason;return s}return outcome.state};
+ const apply=(e,s)=>{const outcome=root.JudgeLayers.evaluate(s,[{...e,dependency:[]}]);if(!outcome.supported){invalid=outcome.reason;return s}return outcome.state};
  const plan=root.JudgeDependencies.order(group,planning,{
   affected:(e,s)=>[o.id],
   apply,
