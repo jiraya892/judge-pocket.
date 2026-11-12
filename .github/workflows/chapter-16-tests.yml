@@ -23,4 +23,10 @@ jobs:
         with:
           node-version: '22'
       - name: Run planner tests
-        run: node question-planner.test.cjs
+        run: |
+          node --check question-planner.js
+          node --check guided-bridge.js
+          node --check context-ui.js
+          node --check context-interview.js
+          node --check game-facts.js
+          node question-planner.test.cjs
