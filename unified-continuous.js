@@ -38,6 +38,11 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
  let invalid=null;
  const apply=(e,s)=>{const outcome=root.JudgeLayers.evaluate(s,[{...e,dependency:[]}]);if(!outcome.supported){invalid=outcome.reason;return s}return outcome.state};
  const plan=root.JudgeDependencies.order(group,planning,{
+  exists:(e,s)=>{
+   if(!e.sourceAbilityId)return true;
+   if(e.sourceId!==o.id)return undefined; // cross-object ability state needs board-wide layer evaluation
+   return s.abilities.some(a=>a.id===e.sourceAbilityId);
+  },
   affected:(e,s)=>[o.id],
   apply,
   signature:(e,s)=>{
@@ -45,7 +50,7 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
    // Absolute post-state comparisons incorrectly make independent setPTs dependent.
    if(e.kind==='setPT'||e.kind==='definePT'||e.kind==='modifyPT'||e.kind==='setColor'||e.kind==='setController'||e.kind==='addAbility'||e.kind==='removeAbility'||e.kind==='removeAllAbilities'||e.kind==='addColor'||e.kind==='removeColor')return [e.kind,e.value,e.power,e.toughness,e.values];
    if(e.kind==='switchPT')return [s.power,s.toughness];
-   return undefined;
+   return [e.kind,e.value,e.power,e.toughness,e.values];
 
   }
  });
