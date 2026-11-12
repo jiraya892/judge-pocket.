@@ -19,9 +19,11 @@ const result=[];
 for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
 
 if(o.ptDefinition&& !o.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa: valutazione completa non disponibile'};
-if(o.ptDefinition&&relevant.some(e=>['7a','7b','7c','7d'].includes(e.layer)))return {supported:false,reason:'Definizione dinamica P/T e modifiche successive non ancora integrate'};
+if(o.ptDefinition&&o.ptDefinition.kind!=='landCount')return {supported:false,reason:'Definizione dinamica sconosciuta'};
+if(o.ptDefinition&&relevant.some(e=>e.layer==='7a'))return {supported:false,reason:'Definizioni concorrenti in 7a non ancora integrate'};
 const prior=relevant.filter(e=>e.layer!=='7d');const switches=relevant.filter(e=>e.layer==='7d');
-const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:o.power,toughness:o.toughness},prior);if(!r.supported)return r;
+const count=o.ptDefinition?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
+const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:count??o.power,toughness:count??o.toughness},prior);if(!r.supported)return r;
 const state={...o,...r.state,subtypes:o.subtypes};
 const delta=(o.counters?.['+1/+1']||0)-(o.counters?.['-1/-1']||0);
 if(state.power!=null)state.power+=delta;if(state.toughness!=null)state.toughness+=delta;
