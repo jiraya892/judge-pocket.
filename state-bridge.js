@@ -17,7 +17,7 @@ function evaluate(input){
  for(const o of input.objects){
   if(o.zone!=='battlefield'){results.push({id:o.id,name:o.name,zone:o.zone,status:'not-evaluated'});continue;}
   const applicable=input.effects.filter(e=>e.targetId===o.id||e.targetId==='all');
-  const invalid=applicable.filter(e=>!supported.has(e.kind));
+  const invalid=applicable.filter(e=>!supported.has(e.kind));if((o.oracleUnknown||[]).length){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Testo Oracle non interamente riconosciuto: '+o.oracleUnknown.join(' | ')});continue;}
   if(invalid.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Effetti descritti in testo libero o operazioni non riconosciute: '+invalid.map(x=>x.text||x.kind||'sconosciuto').join('; ')});continue;}
   const effects=applicable.map(e=>({layer:e.layer,kind:e.kind,timestamp:e.timestamp,value:e.value,power:e.power,toughness:e.toughness,values:e.values,from:e.from,to:e.to}));
   const base={types:o.types,controller:o.controller,power:o.power,toughness:o.toughness,abilities:[],colors:[],text:''};
