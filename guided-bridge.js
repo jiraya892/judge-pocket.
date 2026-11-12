@@ -30,6 +30,7 @@ async function evaluate(context){
  if(!outcome.supported)return fail('COORDINATOR_REJECTED',outcome.reason||'Il coordinatore non ha accettato lo stato.');
  details.warnings.push(...(outcome.warnings||[]));
  const sba=root.JudgeSBAPreview?.preview(outcome.results,objects)||{supported:false,reason:'Modulo SBA mancante'};details.sbaPreview=sba;
+ const trust=root.JudgeOutcomeTrust?.fromCoordinator(outcome);details.outcomeTrust=trust?{status:trust.status,reason:trust.reason,reasonCodes:trust.reasonCodes}:null;details.evidenceAudit=root.JudgeEvidenceLedger?.audit({status:trust?.status,supported:outcome.supported,preview:outcome.results,warnings:outcome.warnings},[])||null;
  const incomplete=outcome.results.filter(r=>r.status==='unsupported'||r.status==='not-evaluated');
  if(incomplete.length)return fail('UNSUPPORTED_EFFECTS','Il coordinatore non riesce ancora a calcolare tutti gli effetti delle carte.',{results:outcome.results,unsupportedObjects:incomplete});
  if(details.unsupportedLines.length)return fail('ORACLE_TEXT_UNSUPPORTED','Alcune righe Oracle non sono state interpretate.',{results:outcome.results});

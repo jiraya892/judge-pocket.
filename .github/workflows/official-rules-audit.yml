@@ -1,0 +1,44 @@
+name: Audit official Wizards rules TXT
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev/groups-5f-5h]
+    paths:
+      - '.github/workflows/official-rules-audit.yml'
+      - 'scripts/audit-official-txt.cjs'
+permissions:
+  contents: read
+jobs:
+  official-txt:
+    if: github.ref == 'refs/heads/dev/groups-5f-5h'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Acquire and inspect official TXT (diagnostic only)
+        shell: bash
+        run: node scripts/audit-official-txt.cjs
+      - name: Show diagnostic in workflow summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Wizards Comprehensive Rules — diagnostic only' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo 'This report does not authenticate the publisher and does not enable verified rulings.' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f test-reports/official/diagnostic.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat test-reports/official/diagnostic.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Diagnostic file was not produced.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Publish diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-rules-diagnostic
+          path: test-reports/official/diagnostic.json
+          retention-days: 14
