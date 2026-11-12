@@ -1,0 +1,11 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Judge Pocket · Gruppo 5H SBA</title><style>body{font:16px system-ui;max-width:760px;margin:2rem auto;padding:1rem;background:#101624;color:#f1f5fb}.ok{color:#8ce7c7}.fail{color:#ff9292}</style></head><body><h1>Gruppo 5H — regressioni SBA</h1><p>Test mirati: danni e segnalini nella stessa risoluzione o in risoluzioni separate.</p><pre id="results">Esecuzione…</pre><script src="./local-sba.js"></script><script>
+(function(){
+ const tests=[],test=(name,fn)=>{try{if(!fn())throw Error('Esito inatteso');tests.push({name,pass:true});}catch(e){tests.push({name,pass:false,error:String(e)});}};
+ const state=()=>({players:[{id:'A'},{id:'B'}],objects:[{id:'creature',zone:'battlefield',types:['creature'],toughness:2,damage:0,counters:{}}],effects:[]});
+ test('Danno 2 su 2/2: muore al controllo SBA',()=>{const s=state();s.objects[0].damage=2;const r=JudgeLocalSBA.stabilize(s);return r.supported&&r.state.objects[0].zone==='graveyard'&&r.changes[0].reason==='lethalDamage';});
+ test('Danno 2 poi segnalino +1/+1 durante la stessa risoluzione: sopravvive',()=>{const s=state();s.objects[0].damage=2;s.objects[0].counters['+1/+1']=1;const r=JudgeLocalSBA.stabilize(s);return r.supported&&r.state.objects[0].zone==='battlefield'&&r.changes.length===0;});
+ test('Danno 2 e controllo SBA prima del segnalino: creatura già al cimitero',()=>{const s=state();s.objects[0].damage=2;const r=JudgeLocalSBA.stabilize(s);return r.supported&&r.state.objects[0].zone==='graveyard';});
+ test('Creatura indistruttibile: danno letale non la distrugge',()=>{const s=state();s.objects[0].damage=2;s.objects[0].indestructible=true;const r=JudgeLocalSBA.stabilize(s);return r.supported&&r.changes.length===0;});
+ const passed=tests.filter(t=>t.pass).length;document.getElementById('results').textContent=passed+'/'+tests.length+' test superati\n'+tests.map(t=>(t.pass?'✓ ':'✕ ')+t.name+(t.error?' — '+t.error:'')).join('\n');document.getElementById('results').className=passed===tests.length?'ok':'fail';window.Judge5HSBAResults={passed,total:tests.length,tests};
+})();
+</script></body></html>
