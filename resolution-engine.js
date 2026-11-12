@@ -22,6 +22,13 @@ function plan(state,top){
   if(new Set(chosen).size!==chosen.length)return {supported:false,reason:'Bersagli ripetuti: riferimento non univoco'};
   if(events.some(e=>typeof e.targetId!=='string'||!chosen.includes(e.targetId)))
    return {supported:false,reason:'Bersagli parzialmente illegali: dipendenze delle istruzioni non esplicite',legality};
+  // A declared target reference must identify the actual event recipient.
+  // Otherwise filtering by metadata alone could apply an effect to an illegal target.
+  for(const e of events){
+   const recipient=['gainLife','loseLife'].includes(e.type)?e.player:e.target;
+   if(typeof recipient!=='string'||recipient!==e.targetId)
+    return {supported:false,reason:'Riferimento bersaglio incoerente con il destinatario dell’evento',legality};
+  }
   const legal=new Set(legality.results.filter(x=>x.legal).map(x=>x.id));
   events=events.filter(e=>legal.has(e.targetId));
  }
