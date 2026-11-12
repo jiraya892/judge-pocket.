@@ -53,7 +53,9 @@ function observe(state,events,abilities,options={}){
    if(a.sourceIdentity!==undefined&&relevant?.objectIdentity!==a.sourceIdentity)continue;
    if(!validSource||!match(a.event,event,record))continue;
    const ctx={event,before:record.before||null,after:record.after||null,source:leaves?source:afterSource,controller:a.controller};
-   if(!condition(a.interveningIf,ctx))continue;
+   const verdict=a.interveningIf==null?true:root.JudgeTriggerConditions.evaluate(a.interveningIf,ctx);
+   if(verdict===null)return {supported:false,reason:'Condizione di innesco non determinabile dai fatti disponibili',requiredFacts:[{key:'triggerCondition:'+a.id+':'+i,question:'Quali fatti mancano per verificare la condizione dell’innesco '+a.id+'?',options:[],reason:'Condizione intervening-if non determinabile'}]};
+   if(verdict!==true)continue;
    const id='trigger:'+i+':'+a.id;
    pending.push({id,abilityId:a.id,controller:a.controller,source:a.source??null,event:clone(event),description:a.description||'',interveningIf:clone(a.interveningIf??null),context:clone(ctx),resolution:'manual'});
    trace.push(id);
