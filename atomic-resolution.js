@@ -4,7 +4,7 @@
 (function(root){'use strict';
 const clone=x=>JSON.parse(JSON.stringify(x));
 function resolve(state,instructions,execute,stabilize){
- if(!state||!Array.isArray(instructions)||!instructions.length||typeof execute!=='function'||typeof stabilize!=='function')
+ if(!state||!Array.isArray(instructions)||typeof execute!=='function'||typeof stabilize!=='function')
   return {supported:false,reason:'Scenario di risoluzione incompleto'};
  let working=clone(state),events=[];
  for(const instruction of instructions){
