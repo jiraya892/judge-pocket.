@@ -28,7 +28,7 @@ function run(before,after,options={}){
  if(!root.JudgeEventDetector||!root.JudgeTriggers||!root.JudgeDelayedTriggers)return {supported:false,reason:'Moduli 4A o inneschi mancanti'};
  const detected=root.JudgeEventDetector.detect(before,after);if(!detected.supported)return detected;
  // Use both snapshots: sources of LTB triggers can disappear from the after-state.
- const collected=collect({...after,objects:[...after.objects,...before.objects.filter(o=>!after.objects.some(n=>n.id===o.id))]});
+ const collected=collect({...after,objects:[...after.objects.filter(o=>o.zone==='battlefield'||!before.objects.some(b=>b.id===o.id&&b.zone==='battlefield')),...before.objects.filter(o=>o.zone==='battlefield'&&!after.objects.some(n=>n.id===o.id&&n.zone==='battlefield'))]});
  if(!collected.supported)return collected;
  // A source that entered must not be used to trigger an event before its entry.
  const observed=root.JudgeDelayedTriggers?root.JudgeDelayedTriggers.observe(after,detected.records,collected.abilities):root.JudgeTriggers.observe(after,detected.records,collected.abilities);
