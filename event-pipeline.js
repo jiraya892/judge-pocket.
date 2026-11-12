@@ -8,7 +8,13 @@ function run(input,events){
  const state=copy(input),initial=root.JudgeCoordinator.evaluate(state);
  if(!initial.supported)return initial;
  const log=[];let blocked=false;
- for(const event of events){
+ const replacements=input.replacements||[];
+ if(!Array.isArray(replacements))return {supported:false,reason:'Sostituzioni non valide'};
+ if(replacements.length&&!root.JudgeReplacements)return {supported:false,reason:'Motore sostituzioni non disponibile'};
+ for(const original of events){
+  const replacement=root.JudgeReplacements?root.JudgeReplacements.process(original,replacements,original.replacementChoices||[]):{supported:true,event:original,trace:[]};
+  if(!replacement.supported)return {...replacement,supported:false};
+  const event=replacement.event;
   if(!types.has(event.type))return {supported:false,reason:'Evento non supportato: '+event.type};
   const amount=event.amount;
   if(['gainLife','loseLife','putCounters','dealDamage'].includes(event.type)&&(!Number.isSafeInteger(amount)||amount<0))return {supported:false,reason:'Quantità non valida'};
@@ -25,7 +31,7 @@ function run(input,events){
    }
    if(event.type==='dealDamage')target.damage=(target.damage||0)+amount;
   }
-  log.push({type:event.type,amount:amount??null,target:event.target||event.player});
+  log.push({type:event.type,amount:amount??null,target:event.target||event.player,replacements:replacement.trace});
  }
  const outcome=root.JudgeCoordinator.evaluate(state);
  if(!outcome.supported)return outcome;
@@ -39,7 +45,7 @@ function run(input,events){
   for(const change of changes)sba.push(change);
   // The core mutates its own copy, not the returned state. Report preview only.
  }
- return {supported:true,state,outcome,events:log,sba,sbaExecuted:false,warnings:[...outcome.warnings,'Eventi espliciti soltanto; non vengono automaticamente applicati sostituzioni, prevenzione o inneschi.']};
+ return {supported:true,state,outcome,events:log,sba,sbaExecuted:false,warnings:[...outcome.warnings,'Eventi espliciti soltanto; sostituzioni strutturate applicate prima degli eventi, inneschi non ancora gestiti.']};
 }
 root.JudgeEventPipeline={run};
 })(typeof window!=='undefined'?window:globalThis);
