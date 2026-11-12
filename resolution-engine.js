@@ -6,6 +6,8 @@ const copy=x=>JSON.parse(JSON.stringify(x));
 const supported=['gainLife','loseLife','putCounters','dealDamage','tap','untap'];
 function plan(state,top){
  if(!state||!top||!Array.isArray(state.stack)||state.stack.at(-1)?.id!==top.id)return {supported:false,reason:'Solo la cima della pila può risolversi'};
+ if(top.targets!==undefined&&(!Array.isArray(top.targets)||top.targets.some(t=>!t||typeof t.id!=='string'||!t.id)))
+  return {supported:false,reason:'Dichiarazione dei bersagli malformata'};
  let legality=null;
  if(top.targets?.length){
   if(!root.JudgeTargets)return {supported:false,reason:'Motore bersagli assente'};
@@ -13,8 +15,6 @@ function plan(state,top){
   if(!legality.supported)return legality;
   if(legality.allIllegal)return {supported:true,step:'allTargetsIllegal',legality,events:[]};
  }
- if(top.targets!==undefined&&(!Array.isArray(top.targets)||top.targets.some(t=>!t||typeof t.id!=='string'||!t.id)))
-  return {supported:false,reason:'Dichiarazione dei bersagli malformata'};
  if(!top.instruction)return {supported:true,step:'resolveManually',events:[],legality};
  const instructions=Array.isArray(top.instruction)?top.instruction:[top.instruction];
  if(!instructions.length||instructions.some(e=>!e||!supported.includes(e.type)))return {supported:false,reason:'Istruzioni di risoluzione non supportate'};
