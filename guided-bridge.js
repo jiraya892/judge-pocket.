@@ -13,7 +13,9 @@ async function evaluate(context){
  if(!Array.isArray(context?.cards)||context.cards.length<2)return fail('CARDS_MISSING','Servono almeno due carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(e){return fail('ORACLE_LOOKUP_FAILED','Impossibile recuperare una carta: '+e.message)}
 
- // Chapter 16A/B: evaluate controller alternatives only as a conservative
+ // Chapter 16A/B: evaluate controller alternatives only when every outcome is verified.
+ // Partial coordinator output must never suppress a required question.
+ // Evaluate controller alternatives only as a conservative
  // diagnostic preview. Partial coordinator results are not rulings.
  if(!context.controllers&&context.board&&root.JudgeQuestionPlanner&&root.JudgeGameFacts){
   const options=[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}];
@@ -32,7 +34,7 @@ async function evaluate(context){
     for(const e of recognized.effects)effects.push({...e,id:'scenario-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:built.timestamps[objects[i].id],duration:'ongoing'});
    }
    const out=root.JudgeCoordinator.evaluate({schemaVersion:1,players:built.players,turn:built.turn,objects,effects});
-   if(!out.supported||out.results.some(r=>r.status!=='partial'))return {supported:false};
+   if(!out.supported||!Array.isArray(out.results)||out.results.some(r=>r.status!=='verified'))return {supported:false};
    return {supported:true,outcome:out.results.map(r=>({types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness}))};
   });
   details.questionPlanning={status:planned.status,reason:planned.reason||null,relevantKeys:planned.relevantKeys||[],scenarios:planned.scenarios||0,previewOnly:true};
