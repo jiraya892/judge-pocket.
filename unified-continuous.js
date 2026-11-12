@@ -28,12 +28,28 @@ if(o.ptDefinition&& !o.abilities.some(a=>a.id===o.ptDefinition.abilityId))return
 if(o.ptDefinition&&o.ptDefinition.kind!=='landCount')return {supported:false,reason:'Definizione dinamica sconosciuta'};
 if(o.ptDefinition&&relevant.some(e=>e.layer==='7a'))return {supported:false,reason:'Definizioni concorrenti in 7a non ancora integrate'};
 const orderedLate=[];
+// The planner evaluates actual state changes, not placeholder identities. Effects that
+// alter whether another effect applies are ordered before it; dependencies are
+// recalculated after each application. Global late-layer effects are scoped per object.
+let planning={types:[...o.types],controller:o.controller,abilities:[...o.abilities],colors:[...(o.colors||[])],text:o.text||'',power:o.power,toughness:o.toughness};
 for(const layer of ['5','6','7a','7b','7c','7d']){
  const group=relevant.filter(e=>e.layer===layer);if(!group.length)continue;
  if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
- const plan=root.JudgeDependencies.order(group,[{id:o.id}],{affected:(e,s)=>[o.id],apply:(e,s)=>s});
+ let invalid=null;
+ const apply=(e,s)=>{const outcome=root.JudgeLayers.evaluate(s,[e]);if(!outcome.supported){invalid=outcome.reason;return s}return outcome.state};
+ const plan=root.JudgeDependencies.order(group,planning,{
+  affected:(e,s)=>[o.id],
+  apply,
+  signature:(e,s)=>{
+   // Compare an effect's own changes, not the absolute post-effect state.
+   const next=apply(e,s);if(invalid)return undefined;
+   const keys=layer==='5'?['colors']:layer==='6'?['abilities']:layer==='7d'?['power','toughness']:['power','toughness'];
+   return keys.map(k=>({key:k,before:s[k],after:next[k]}));
+  }
+ });
+ if(invalid)return {supported:false,reason:invalid};
  if(!plan.supported)return plan;
- orderedLate.push(...plan.order);
+ planning=plan.state;orderedLate.push(...plan.order);
 }
 const prior=orderedLate.filter(e=>e.layer!=='7d');const switches=orderedLate.filter(e=>e.layer==='7d');
 const count=o.ptDefinition?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
