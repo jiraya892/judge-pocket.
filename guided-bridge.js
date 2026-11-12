@@ -37,6 +37,7 @@ async function evaluate(context){
   });
   details.questionPlanning={status:planned.status,reason:planned.reason||null,relevantKeys:planned.relevantKeys||[],scenarios:planned.scenarios||0,previewOnly:true};
  }
+ if(!context.board)return {status:'question',key:'board',question:'Ci sono altri permanenti che possono influire su questa interazione?',options:[{id:'complete',label:'No, soltanto queste carte'},{id:'additional',label:'Sì, ci sono altri permanenti'}],diagnostic:details};
  const facts=root.JudgeGameFacts?.build(context,cards.map(cardObject));if(!facts?.supported)return fail(facts?.code||'FACTS_ENGINE_MISSING',facts?.reason||'Modulo stato mancante');const objects=facts.objects,effects=[];
  for(let i=0;i<cards.length;i++){
   const recognition=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognition.unknown;
