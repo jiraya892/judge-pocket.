@@ -60,3 +60,6 @@ Introdotto `stack-engine.js`: pila LIFO, oggetti di tipo spell/activatedAbility/
 
 ## Gruppo 5B — v0.9.50
 Introdotto `priority-engine.js`: priorità esplicita, passaggi consecutivi, riavvio dopo azioni, blocco degli inneschi pendenti, richiesta mirata del giocatore attivo quando manca, distinzione fra pila vuota e risoluzione della cima. Collegato a `turn-pipeline.js`. 13 nuovi test, 219/219 complessivi in più esecuzioni JS. Limiti: la risoluzione è ancora parziale e il motore non deduce automaticamente le finestre di priorità da fasi/turni non forniti. Browser Android v0.9.50 non ancora verificato.
+
+## Gruppo 5C — v0.9.51
+Introdotto `target-engine.js`: scelta e rivalutazione dei bersagli per zona, tipo, controllore, identità dell'oggetto e condizioni esplicitamente ignote; chiarimenti mirati `requiredFacts`; rimozione dalla pila se tutti i bersagli diventano illegali senza eseguire l'istruzione. Collegato al turn pipeline. 14 test nuovi, 233/233 suite 3–5C superate in esecuzioni JavaScript separate. Limiti: bersagli parzialmente illegali, protezione/hexproof/shroud e condizioni Oracle non strutturate richiedono ulteriori regole; non sono considerate automaticamente legali. Verifica browser Android v0.9.51 non ancora eseguita.
