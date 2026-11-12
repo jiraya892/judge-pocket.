@@ -11,3 +11,7 @@ Test unitari proposti: `node question-planner.test.cjs` (8 casi). Devono essere 
 Il bridge guidato ora usa il pianificatore per enumerare configurazioni di controllori con Oracle recognition e JudgeCoordinator, e registra `diagnostic.questionPlanning` (solo anteprima). Il modulo viene caricato in `context.html`. **Non** nasconde ancora le domande né promuove un risultato parziale a verdetto: il coordinatore segnala esplicitamente copertura incompleta, e la UI non è ancora collegata a un ciclo di domande dinamiche. L'assenza di un contesto board completo continua a bloccare il normale percorso. La verifica Ashaya/Blood Moon e i test end-to-end rimangono aperti.
 
 La GitHub Actions creata esegue solo gli 8 test unitari: non dimostra le 2370+71 regressioni. Non sono disponibili in questa sessione log di un'esecuzione riuscita del workflow; nessun conteggio va presentato come superato.
+
+## Esecuzione locale verificata — 2026-11-12
+
+Eseguito `node question-planner.test.cjs` con Node.js v22.16.0 in una copia locale dei due file del pianificatore: **8/8 PASS** (controller irrilevante, esiti identici, controller rilevante, risposta già nota, scenario unsupported, opzioni invalide, limite scenari, scelte indipendenti). Questo non equivale a un'esecuzione GitHub Actions né alla suite completa del repository. Non sono stati eseguiti i 2370 test di gruppo né i 71 core in questa sessione. La validazione end-to-end Ashaya + Blood Moon resta non completata.
