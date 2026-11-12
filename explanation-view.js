@@ -7,7 +7,8 @@ function present(output){
  const codes=Array.isArray(diag.reasonCodes)?diag.reasonCodes.filter(x=>typeof x==='string').slice(0,30):[];
  const missing=Array.isArray(diag.missingSupport)?diag.missingSupport.filter(x=>typeof x==='string').slice(0,30):[];
  const warnings=Array.isArray(diag.warnings)?diag.warnings.filter(x=>typeof x==='string').slice(0,30):[];
- const verified=output?.status==='verified'&&trust?.status==='verified'&&audit?.verdictAllowed===true&&root.JudgeLocalRulesSource?.status()?.available===true;
+ // A local text match and caller-provided audit flags never authenticate a publisher.
+ const verified=false;
  const partial=output?.status==='partial'||trust?.status==='partial'||audit?.status==='partial';
  const status=verified?'verified':partial?'partial':'unsupported';
  return {status,title:status==='verified'?'Verdetto verificato':status==='partial'?'Risultato parziale — non è un verdetto':'Interazione non ancora supportata',reason:typeof output?.reason==='string'?output.reason:'Il motore non dispone di prove sufficienti.',codes,missing,warnings,ruleSource:root.JudgeLocalRulesSource?.status()?.available?'Testo locale caricato (origine non autenticata)':'Testo ufficiale delle regole non disponibile localmente',references:[],verdict:verified&&typeof output?.verdict==='string'?output.verdict:null};
