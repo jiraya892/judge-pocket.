@@ -23,7 +23,17 @@ function order(effects,state,handlers){
    edges.set(e._id,dependencies);
   }
   const ready=pending.filter(e=>edges.get(e._id).size===0).sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
-  if(!ready.length)return {supported:false,reason:'Dipendenza circolare: serve gestione CR 613.8c'};
+  if(!ready.length){
+   // Ignore only edges within a strongly connected component, preserving dependencies outside it.
+   const reachable=(start,target,seen=new Set())=>{if(start===target)return true;if(seen.has(start))return false;seen.add(start);return [...(edges.get(start)||[])].some(id=>reachable(id,target,seen))};
+   const cyclic=new Set(pending.filter(e=>[...(edges.get(e._id)||[])].some(id=>reachable(id,e._id))).map(e=>e._id));
+   if(!cyclic.size)return {supported:false,reason:'Dipendenze non risolvibili'};
+   // A cyclic node is eligible only if all dependencies outside its SCC are already resolved.
+   const eligible=pending.filter(e=>cyclic.has(e._id)&&[...(edges.get(e._id)||[])].every(id=>cyclic.has(id)&&reachable(id,e._id)));
+   if(!eligible.length)return {supported:false,reason:'Ciclo con dipendenze esterne non risolte'};
+   eligible.sort((a,b)=>a.timestamp-b.timestamp||a._index-b._index);
+   const next=eligible[0];working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);continue;
+  }
   const next=ready[0];working=handlers.apply(next,working);ordered.push(next);pending=pending.filter(e=>e!==next);
  }
  return {supported:true,state:working,order:ordered};
