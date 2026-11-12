@@ -5,7 +5,10 @@ function next(input){const names=(input?.cards||[]).map(x=>String(x||'').trim())
  if(event==='enter'&&!input.entering)return {status:'question',key:'entering',question:'Quale carta sta entrando?',options:names.map((name,i)=>({id:String(i),label:name}))};
  if(event==='cast'&&!input.casting)return {status:'question',key:'casting',question:'Quale carta stai lanciando?',options:names.map((name,i)=>({id:String(i),label:name}))};
  if(event==='other'&&!String(input.description||'').trim())return {status:'question',key:'description',question:'Descrivi brevemente cosa sta succedendo',options:[]};
- return {status:'ready',context:{cards:names,event,entering:event==='enter'?names[Number(input.entering)]:null,casting:event==='cast'?names[Number(input.casting)]:null,description:input.description||''},message:'Situazione raccolta. Il motore deve verificare le regole e gli effetti Oracle prima di fornire un verdetto.'};
+ if(!input.controllers||input.controllers.length!==names.length)return {status:'question',key:'controllers',question:'Chi controlla '+names[(input.controllers||[]).length]+'?',options:[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}]};
+ if(!input.board)return {status:'question',key:'board',question:'Ci sono altri permanenti che potrebbero influire?',options:[{id:'complete',label:'No, soltanto queste carte'},{id:'additional',label:'Sì, ci sono altre carte'}]};
+ if(input.event==='present'&&!input.order)return {status:'question',key:'order',question:'Quale carta è entrata per prima?',options:names.map((name,i)=>({id:String(i),label:name}))};
+ return {status:'ready',context:{cards:names,event,controllers:input.controllers,board:input.board,order:input.order? [Number(input.order),...names.map((_,i)=>i).filter(i=>i!==Number(input.order))]:null,enteringIndex:input.event==='enter'?Number(input.entering):null,castingIndex:input.event==='cast'?Number(input.casting):null,entering:event==='enter'?names[Number(input.entering)]:null,casting:event==='cast'?names[Number(input.casting)]:null,description:input.description||''},message:'Situazione raccolta. Il motore deve verificare le regole e gli effetti Oracle prima di fornire un verdetto.'};
 }
 root.JudgeContextInterview={next};
 })(typeof window!=='undefined'?window:globalThis);
