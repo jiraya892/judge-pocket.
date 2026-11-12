@@ -203,4 +203,8 @@ JudgeGroup13ETests: 10/10
 JudgeGroup13FTests: 10/10
 JudgeGroup13GTests: 10/10
 JudgeGroup13HTests: 10/10
-Browser suites: 2050/2050 passed; 0 execution errors
+JudgeGroup13ITests: 10/10
+JudgeGroup13JTests: 10/10
+JudgeGroup13KTests: 10/10
+JudgeGroup13LTests: 10/10
+Browser suites: 2090/2090 passed; 0 execution errors
