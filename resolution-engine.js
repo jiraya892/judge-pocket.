@@ -17,6 +17,16 @@ function plan(state,top){
  const instructions=Array.isArray(top.instruction)?top.instruction:[top.instruction];
  if(!instructions.length||instructions.some(e=>!e||!supported.includes(e.type)))return {supported:false,reason:'Istruzioni di risoluzione non supportate'};
  let events=copy(instructions);
+ // Validate every explicitly bound instruction even when all targets are legal.
+ // An event's actual recipient must agree with its declared target binding.
+ for(const e of events){
+  if(e.targetId===undefined)continue;
+  const recipient=['gainLife','loseLife'].includes(e.type)?e.player:e.target;
+  if(typeof e.targetId!=='string'||!e.targetId||typeof recipient!=='string'||recipient!==e.targetId)
+   return {supported:false,reason:'Riferimento bersaglio incoerente con il destinatario dell’evento',legality};
+  if(legality&&!top.targets.some(t=>t.id===e.targetId))
+   return {supported:false,reason:'Istruzione riferita a un bersaglio non dichiarato',legality};
+ }
  if(legality&&legality.results.some(x=>!x.legal)){
   const chosen=top.targets.map(t=>t.id);
   if(new Set(chosen).size!==chosen.length)return {supported:false,reason:'Bersagli ripetuti: riferimento non univoco'};
