@@ -13,4 +13,41 @@ jobs:
         with:
           node-version: '22'
       - name: Run deterministic rules and turn tests
-        run: node verify-tests.cjs && node verify-groups-5h.cjs
+        id: regression
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p test-reports
+          node verify-tests.cjs 2>&1 | tee test-reports/core.log
+          node verify-groups-5h.cjs 2>&1 | tee test-reports/groups.log
+      - name: Publish readable test summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Judge Pocket — Regression results'
+            echo ''
+            echo "- Commit: \`$GITHUB_SHA\`"
+            echo "- Result: \`${{ steps.regression.outcome }}\`"
+            echo ''
+            echo '### Core tests'
+            if [ -f test-reports/core.log ]; then
+              grep '^Total:' test-reports/core.log || tail -n 15 test-reports/core.log
+            else
+              echo 'Core runner did not produce a log.'
+            fi
+            echo ''
+            echo '### Group suites'
+            if [ -f test-reports/groups.log ]; then
+              grep '^Browser suites:' test-reports/groups.log || tail -n 15 test-reports/groups.log
+            else
+              echo 'Group runner did not produce a log.'
+            fi
+          } | tee test-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload full test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: judge-pocket-test-report
+          path: test-reports/
+          retention-days: 30
