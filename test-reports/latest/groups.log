@@ -101,11 +101,10 @@ JudgeGroup8CTests: 10/10
 JudgeGroup8DTests: 10/10
 JudgeGroup8ETests: 10/10
 JudgeGroup8FTests: 10/10
-JudgeGroup8GTests: 9/10
-FAIL JudgeGroup8GTests: missing player ID legacy accepted
+JudgeGroup8GTests: 10/10
 JudgeGroup8HTests: 10/10
 JudgeGroup8ITests: 10/10
 JudgeGroup8JTests: 10/10
 JudgeGroup8KTests: 10/10
 JudgeGroup8LTests: 10/10
-Browser suites: 1089/1090 passed; 0 execution errors
+Browser suites: 1090/1090 passed; 0 execution errors
