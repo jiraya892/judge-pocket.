@@ -1,0 +1,16 @@
+(function(root){'use strict';function run(){const t=[],ok=(n,v)=>t.push({name:n,pass:!!v});const d=root.JudgeEventDetector,f=root.JudgeTriggerFlow;const obj=(id,zone,identity,controller='A',abilities=[])=>({id,zone,objectIdentity:identity,controller,types:['creature'],abilities});const st=objects=>({players:[{id:'A'},{id:'B'}],objects,activePlayer:'A',turn:{activePlayer:'A'},stack:[],pendingTriggers:[]});const ability=(id,type)=>({id,kind:'triggered',event:{type}});
+let a=st([obj('x','battlefield','inc1')]),b=st([obj('x','graveyard','inc2')]),r=d.detect(a,b);ok('new identity on zone change',r.supported&&r.records.some(x=>x.event.type==='dies'));ok('LKI identity pre-change',r.records.find(x=>x.event.type==='dies').before.object.objectIdentity==='inc1');ok('moveZone records identities',r.records.find(x=>x.event.type==='moveZone').event.toIdentity==='inc2');
+r=d.detect(a,st([obj('x','graveyard','inc1')]));ok('same identity across zone change rejected',!r.supported);
+r=d.detect(a,st([obj('x','battlefield','inc2')]));ok('unobservable blink rejected',!r.supported);
+r=d.detect(a,st([obj('x','battlefield','inc1','B')]));ok('control change is not zone change',r.supported&&r.records.length===0);
+r=d.detect(a,st([]));ok('disappearance emits leaves',r.supported&&r.records.some(x=>x.event.type==='leavesBattlefield'));ok('unknown destination not assumed death',!r.records.some(x=>x.event.type==='dies'));
+r=d.detect(st([]),a);ok('appearance emits ETB',r.supported&&r.records.some(x=>x.event.type==='enterBattlefield'));
+r=d.detect(st([obj('x','hand','inc0')]),a);ok('hand to battlefield ETB',r.supported&&r.records.some(x=>x.event.type==='enterBattlefield'));
+r=d.detect(a,b);ok('LKI snapshot deep copy',r.records[0].before.object!==a.objects[0]);
+const leave=st([obj('x','battlefield','inc1','A',[ability('old','dies')])]),grave=st([obj('x','graveyard','inc2','A',[ability('new','dies')])]);
+r=f.transition(leave,grave);ok('LKI source ability fires',r.supported&&r.state.pendingTriggers.some(x=>x.abilityId==='old'));ok('new zone ability not retroactive',r.supported&&!r.state.pendingTriggers.some(x=>x.abilityId==='new'));
+const entry=st([obj('x','hand','inc1','A',[ability('old','enterBattlefield')])]),entered=st([obj('x','battlefield','inc2','A',[ability('new','enterBattlefield')])]);
+r=f.transition(entry,entered);ok('new incarnation ETB ability fires',r.supported&&r.state.pendingTriggers.some(x=>x.abilityId==='new'));ok('old incarnation ETB ability excluded',r.supported&&!r.state.pendingTriggers.some(x=>x.abilityId==='old'));
+const returned=st([obj('x','battlefield','inc3')]);let one=d.detect(a,b),two=d.detect(b,returned);ok('two sequential changes preserve distinct identities',one.supported&&two.supported&&two.records.some(x=>x.event.type==='enterBattlefield'&&x.event.objectIdentity==='inc3'));
+ok('controller changes across zones retain LKI controller',one.records.find(x=>x.event.type==='leavesBattlefield').event.controller==='A');
+return {passed:t.filter(x=>x.pass).length,total:t.length,tests:t};}root.JudgeGroup4F3Tests={run};})(typeof window!=='undefined'?window:globalThis);
