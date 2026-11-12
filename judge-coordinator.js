@@ -31,6 +31,8 @@ function evaluate(input){
   const index=source.indexOf(o),landState=landOutcome?.supported?landOutcome.objects[index]:null;
   const landAffected=landEffects.some(e=>e.kind==='setNonbasicLandSubtype'&&landState?.subtypes?.includes(e.subtype)||e.kind==='addLandSubtype'&&landState?.subtypes?.includes(e.subtype));
   const mixed=landAffected&&genericEffects.some(e=>e.layer==='4'||e.layer==='6'||e.layer==='7a');
+  const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
+  if(hasCounters&&genericEffects.some(e=>e.layer==='7d')){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Ordine layer 7c/7d e segnalini non integrato'});continue}
   if(mixed||landEffects.length&&!landOutcome?.supported){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Interazione fra motori non risolta in sicurezza'});continue}
   const types=landState?Array.from(new Set([...outcome.state.types,...landState.types.filter(t=>!o.types.includes(t))])):outcome.state.types;
   const counter=o.counters?.['+1/+1']||0,negative=o.counters?.['-1/-1']||0;
