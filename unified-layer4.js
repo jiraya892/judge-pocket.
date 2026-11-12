@@ -21,7 +21,13 @@ function evaluate(objects,effects){if(!Array.isArray(objects)||!Array.isArray(ef
  if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
  const planned=root.JudgeDependencies.order(effects,objects.map(clone),{
   affected:(e,state)=>state.filter(o=>applies(e,o)).map(o=>o.id).sort(),
-  apply:(e,state)=>apply(e,state)
+  apply:(e,state)=>apply(e,state),
+  exists:(e,state)=>{
+   if(!e.sourceAbilityId)return true;
+   const source=state.find(o=>o.id===e.sourceId);
+   if(!source)return undefined;
+   return source.abilities.some(a=>a.id===e.sourceAbilityId);
+  }
  });
  if(!planned.supported)return planned;
  return {supported:true,objects:planned.state,order:planned.order.map(e=>({kind:e.kind,layer:'4',timestamp:e.timestamp,id:e._id})),coverage:'restricted-layer4'};
