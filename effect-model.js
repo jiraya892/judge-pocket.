@@ -8,6 +8,7 @@ function build(objects,effects){
   if(!o||typeof o.id!=='string'||ids.has(o.id)||!Array.isArray(o.abilities||[]))return {supported:false,reason:'Oggetto sorgente non valido'};
   ids.add(o.id);
   for(const a of o.abilities||[]){
+   if(typeof a==='string')continue; // keyword ability, not a structured source record
    if(!a||typeof a.id!=='string'||!a.id||abilities.has(o.id+'::'+a.id))return {supported:false,reason:'ID abilità sorgente duplicato o mancante'};
    const record=Object.freeze({id:a.id,objectId:o.id,origin:a.origin||'unknown',kind:a.kind||'static',text:a.text||null});
    abilities.set(o.id+'::'+a.id,record);sources.push(record);
