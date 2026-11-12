@@ -22,13 +22,13 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
  }
  if(action.type==='pushStack'){
   if(!validPlayer(action.controller)||!action.description)return {supported:false,reason:'Elemento della pila incompleto'};
-  s.stack.push({id:'stack-'+(s.history.length+1)+'-'+s.stack.length,controller:action.controller,description:action.description,resolution:'manual'});s.passes=0;s.priority=action.controller;return {supported:true,state:s};
+  const instruction=action.instruction||null;if(instruction&&(!['gainLife','loseLife','putCounters','dealDamage','tap','untap'].includes(instruction.type)))return {supported:false,reason:'Istruzione di risoluzione non supportata'};s.stack.push({id:'stack-'+(s.history.length+1)+'-'+s.stack.length,controller:action.controller,description:action.description,resolution:instruction?'structured':'manual',instruction});s.passes=0;s.priority=action.controller;return {supported:true,state:s};
  }
  if(action.type==='passPriority'){
   if(!validPlayer(action.player)||s.priority!==action.player)return {supported:false,reason:'Il giocatore non ha priorità'};
   const i=players.indexOf(action.player);s.passes++;s.priority=players[(i+1)%players.length];if(s.passes<players.length)return {supported:true,state:s,step:'priorityPassed'};
   s.passes=0;s.priority=s.turn?.activePlayer||'A';if(!s.stack.length)return {supported:true,state:s,step:'advanceStepManually'};
-  const top=s.stack.pop();s.history.push({kind:'resolutionRequired',top});return {supported:true,state:s,step:'resolveManually',top,warning:'La risoluzione non è automatica: servono istruzioni strutturate'};
+  const top=s.stack[s.stack.length-1];if(!top.instruction){s.history.push({kind:'resolutionRequired',top});return {supported:true,state:s,step:'resolveManually',top,warning:'Elemento ancora sulla pila: serve una risoluzione strutturata o manuale'};}const resolved=apply(s,{type:'event',event:top.instruction});if(!resolved.supported)return {supported:false,reason:'Risoluzione non eseguita: '+resolved.reason,top};const finished=resolved.state;finished.stack.pop();finished.priority=finished.turn?.activePlayer||'A';finished.passes=0;finished.history.push({kind:'resolved',top});return {supported:true,state:finished,step:'resolved',top,event:resolved.event,sba:resolved.sba,sbaExecuted:resolved.sbaExecuted};
  }
  return {supported:false,reason:'Azione non supportata'};
 }
