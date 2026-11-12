@@ -10,9 +10,9 @@ function run(input,events){
  const log=[],appliedEvents=[];let blocked=false;
  const replacements=input.replacements||[];
  if(!Array.isArray(replacements))return {supported:false,reason:'Sostituzioni non valide'};
- if(replacements.length&&!root.JudgeReplacements)return {supported:false,reason:'Motore sostituzioni non disponibile'};
+ if(!root.JudgeReplacements)return {supported:false,reason:'Motore sostituzioni non disponibile'};
  for(const original of events){
-  const replacement=root.JudgeReplacements?root.JudgeReplacements.process(original,replacements,original.replacementChoices||[]):{supported:true,event:original,trace:[]};
+  const replacement=root.JudgeReplacements.process(original,replacements,original.replacementChoices||[]);
   if(!replacement.supported)return {...replacement,supported:false};
   const event=replacement.event;
   if(event==null){log.push({type:'prevented',replacements:replacement.trace});continue;}
