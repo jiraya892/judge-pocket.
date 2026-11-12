@@ -46,4 +46,5 @@ JudgeGroup5Y5Tests: 8/8
 JudgeGroup6ATests: 10/10
 JudgeGroup6BTests: 8/8
 JudgeGroup6CTests: 10/10
-Browser suites: 480/480 passed; 0 execution errors
+JudgeGroup6DTests: 10/10
+Browser suites: 490/490 passed; 0 execution errors
