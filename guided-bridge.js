@@ -18,7 +18,7 @@ async function evaluate(context){
   for(const e of recognition.effects)effects.push({...e,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:i+1,duration:'ongoing'});
  }
  const state={schemaVersion:1,players:[{id:'A',life:20},{id:'B',life:20}],turn:{activePlayer:'A',priorityPlayer:'A',phase:'main1'},objects,effects};
- details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);
+ details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);details.warnings.push('Controllori, proprietari e ordine temporale degli effetti non sono stati chiesti: valori provvisori A e ordine delle carte; nessun verdetto affidabile può derivarne.');
  // Context enters the engine as an explicit zone/state. Entry timing is not implemented.
  if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
  if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
