@@ -1,98 +1,17 @@
-JudgeGroup4ATests: 9/9
-JudgeGroup4Tests: 15/15
-JudgeGroup4BTests: 10/10
-JudgeGroup4CTests: 16/16
-JudgeGroup4DTests: 14/14
-JudgeGroup4ETests: 16/16
-JudgeGroup4FTests: 19/19
-JudgeGroup4F1Tests: 12/12
-JudgeGroup4F2Tests: 16/16
-JudgeGroup4F3Tests: 17/17
-JudgeGroup4F4Tests: 8/8
-JudgeGroup4F5Tests: 14/14
-JudgeGroup4F6Tests: 7/7
-JudgeGroup4F7Tests: 6/6
-JudgeGroup3Tests: 14/14
-JudgeGroup5ATests: 13/13
-JudgeGroup5BTests: 13/13
-JudgeGroup5CTests: 14/14
-JudgeGroup5DTests: 8/8
-JudgeGroup5ETests: 14/14
-JudgeGroup5FTests: 15/15
-JudgeGroup5FZoneTests: 9/9
-JudgeGroup5FTriggerTests: 9/9
-JudgeGroup5GTests: 9/9
-JudgeGroup5GIntegrationTests: 7/7
-JudgeGroup5GSBATests: 9/9
-JudgeGroup5HTests: 7/7
-JudgeGroup5LTests: 6/6
-JudgeGroup5MTests: 6/6
-JudgeGroup5NTests: 7/7
-JudgeGroup5OTests: 7/7
-JudgeGroup5PTests: 8/8
-JudgeGroup5QTests: 6/6
-JudgeGroup5RTests: 8/8
-JudgeGroup5STests: 7/7
-JudgeGroup5TTests: 7/7
-JudgeGroup5UTests: 7/7
-JudgeGroup5VTests: 6/6
-JudgeGroup5WTests: 6/6
-JudgeGroup5XTests: 8/8
-JudgeGroup5Y1Tests: 7/7
-JudgeGroup5Y2Tests: 8/8
-JudgeGroup5Y3Tests: 10/10
-JudgeGroup5Y4Tests: 10/10
-JudgeGroup5Y5Tests: 8/8
-JudgeGroup6ATests: 10/10
-JudgeGroup6BTests: 8/8
-JudgeGroup6CTests: 10/10
-JudgeGroup6DTests: 10/10
-JudgeGroup6ETests: 10/10
-JudgeGroup6FTests: 10/10
-JudgeGroup6GTests: 10/10
-JudgeGroup6HTests: 10/10
-JudgeGroup6ITests: 10/10
-JudgeGroup6JTests: 10/10
-JudgeGroup6KTests: 10/10
-JudgeGroup6LTests: 10/10
-JudgeGroup6MTests: 10/10
-JudgeGroup6NTests: 10/10
-JudgeGroup6OTests: 10/10
-JudgeGroup6PTests: 10/10
-JudgeGroup6QTests: 10/10
-JudgeGroup6RTests: 10/10
-JudgeGroup6STests: 10/10
-JudgeGroup6TTests: 10/10
-JudgeGroup6UTests: 10/10
-JudgeGroup6VTests: 10/10
-JudgeGroup6WTests: 10/10
-JudgeGroup6XTests: 10/10
-JudgeGroup6YTests: 10/10
-JudgeGroup6ZTests: 10/10
-JudgeGroup7ATests: 10/10
-JudgeGroup7BTests: 10/10
-JudgeGroup7CTests: 10/10
-JudgeGroup7DTests: 10/10
-JudgeGroup7ETests: 10/10
-JudgeGroup7FTests: 10/10
-JudgeGroup7GTests: 10/10
-JudgeGroup7HTests: 10/10
-JudgeGroup7ITests: 10/10
-JudgeGroup7JTests: 10/10
-JudgeGroup7KTests: 10/10
-JudgeGroup7LTests: 10/10
-JudgeGroup7MTests: 10/10
-JudgeGroup7NTests: 10/10
-JudgeGroup7OTests: 10/10
-JudgeGroup7PTests: 10/10
-JudgeGroup7QTests: 10/10
-JudgeGroup7RTests: 10/10
-JudgeGroup7STests: 10/10
-JudgeGroup7TTests: 10/10
-JudgeGroup7UTests: 10/10
-JudgeGroup7VTests: 10/10
-JudgeGroup7WTests: 10/10
-JudgeGroup7XTests: 10/10
-JudgeGroup7YTests: 10/10
-JudgeGroup7ZTests: 10/10
-Browser suites: 970/970 passed; 0 execution errors
+group-8a-tests.js:1
+(function(root){'use strict';function run(){const tests=[],check=(name,fn)=>{try{tests.push({name,pass:!!fn()})}catch(e){tests.push({name,pass:false,error:String(e)})}};const base=(opts={})=>({players:[{id:'A',life:20},{id:'B',life:20}],objects:[{id:'p',objectIdentity:'p1',zone:'battlefield',owner:'A',controller:'B',types:['creature'],toughness:3,counters:{},...opts}],effects:[]});const evaluate=s=>root.JudgeLocalSBA.stabilize(s);check("exile detaches",()=>evaluate(base({pendingExile:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("graveyard detaches",()=>evaluate(base({pendingPutInGraveyard:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("hand detaches",()=>evaluate(base({pendingReturnToHand:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("library detaches",()=>evaluate(base({pendingPutOnTopOfLibrary:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("command detaches",()=>evaluate(base({pendingMoveToCommandZone:true,isCommander:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("sacrifice detaches",()=>evaluate(base({pendingSacrifice:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("destroy detaches",()=>evaluate(base({pendingDestroy:true,attachedTo:'q'})).state.objects[0].attachedTo===null);check("exile preserves unattached",()=>evaluate(base({pendingExile:true})).state.objects[0].attachedTo===undefined);check("exile LKI retains attachment",()=>evaluate(base({pendingExile:true,attachedTo:'q'})).changes.some(c=>c.lastKnown?.attachedTo==='q'));check("battlefield remains attached",()=>evaluate(base({attachedTo:null})).state.objects[0].zone==='battlefield);return {passed:tests.filter(t=>t.pass).length,total:tests.length,tests};}root.JudgeGroup8ATests={run};})(typeof window!=='undefined'?window:globalThis);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
+SyntaxError: missing ) after argument list
+    at new Script (node:vm:117:7)
+    at createScript (node:vm:269:10)
+    at Object.runInContext (node:vm:300:10)
+    at Object.<anonymous> (/home/runner/work/judge-pocket./judge-pocket./verify-groups-5h.cjs:15:5)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+
+Node.js v22.23.4
