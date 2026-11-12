@@ -15,7 +15,7 @@ check('copy followed by later PT layer',later.supported&&later.objects[1].power=
 const multiple=root.JudgeCopyLayer.evaluate([a,b,c],[cp('a','a','c',1),cp('b','b','c',2)]);
 check('later copy timestamp wins',multiple.supported&&multiple.objects[2].types.includes('artifact'));
 const loop=root.JudgeCopyLayer.evaluate([a,b],[cp('a','a','b',1),cp('b','b','a',2)]);
-check('copy cycles fail closed',!loop.supported);
+check('sequential reciprocal copies use timestamp snapshots',loop.supported&&loop.objects[0].types.includes('creature')&&loop.objects[1].types.includes('creature'));
 const self=root.JudgeCopyLayer.evaluate([a],[cp('self','a','a',1)]);
 check('self-copy fails closed',!self.supported);
 const invalid=root.JudgeCopyLayer.evaluate([a,b],[{...cp('ab','a','b',1),faceDown:true}]);
