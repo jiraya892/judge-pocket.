@@ -13,7 +13,11 @@ function apply(e,objects){return objects.map(original=>{const o=clone(original);
  if(e.kind==='addLandSubtype'){if(!o.types.includes('land'))o.types.push('land');if(!o.subtypes.includes(e.subtype))o.subtypes.push(e.subtype)}
  if(e.kind==='setNonbasicLandSubtype'){o.subtypes=o.subtypes.filter(t=>!basic.includes(t));o.subtypes.push(e.subtype);o.abilities=o.abilities.filter(a=>a.origin!=='rulesText'&&a.origin!=='basicLandType');o.abilities.push({id:'intrinsic-mana-'+e.subtype,origin:'basicLandType',kind:'tapForMana',color:mana[e.subtype]})}
  return o})}
-function evaluate(objects,effects){if(!Array.isArray(objects)||!Array.isArray(effects)||objects.some(o=>!o||!o.id||!Array.isArray(o.types)||!Array.isArray(o.abilities)))return {supported:false,reason:'Oggetti layer 4 incompleti'};
+function evaluate(objects,input){const built=Array.isArray(input)?root.JudgeEffectModel?.build(objects,input):{supported:true,model:input};
+ if(!built?.supported)return {supported:false,reason:built?.reason||'Modello effetti non disponibile'};
+ const runtime=root.JudgeEffectModel.runtime(built.model);if(!runtime.supported)return runtime;
+ const effects=runtime.effects;
+ if(!Array.isArray(objects)||!Array.isArray(effects)||objects.some(o=>!o||!o.id||!Array.isArray(o.types)||!Array.isArray(o.abilities)))return {supported:false,reason:'Oggetti layer 4 incompleti'};
  if(effects.some(e=>!e||!kinds.has(e.kind)||!Number.isSafeInteger(e.timestamp)||e.layer!=='4'))return {supported:false,reason:'Effetto layer 4 sconosciuto'};
  if(effects.some(e=>['addLandSubtype','setNonbasicLandSubtype'].includes(e.kind)&&!basic.includes(e.subtype)))return {supported:false,reason:'Sottotipo terra non supportato'};
  if(effects.some(e=>e.kind==='addLandSubtype'&&e.scope!=='nontokenCreaturesYouControl'))return {supported:false,reason:'Ambito terra non supportato'};
