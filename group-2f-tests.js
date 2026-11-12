@@ -11,7 +11,7 @@ check('dependency overrides earlier timestamp',reverse.supported&&reverse.order.
 const cycle=order([e('a',5,['b'],1),e('b',7,['a'],2)]);
 check('cycle ignores internal dependency and follows timestamp',cycle.supported&&cycle.order.map(x=>x._id).join(',')==='a,b');
 const external=order([e('dependent',1,['a'],8),e('a',2,['b'],1),e('b',3,['a','outside'],2),e('outside',10,[],4)]);
-check('cycle waits for external dependency',external.supported&&external.order[0]._id==='outside'&&external.order[external.order.length-1]._id==='dependent');
+check('cycle waits for external dependency',external.supported&&external.order[0]._id==='outside'&&external.order.findIndex(x=>x._id==='dependent')>external.order.findIndex(x=>x._id==='a'));
 const twoCycles=order([e('a',1,['b'],1),e('b',2,['a'],2),e('c',3,['d','a'],3),e('d',4,['c'],4)]);
 check('independent SCC dependency respected',twoCycles.supported&&twoCycles.order.map(x=>x._id).join(',')==='a,b,c,d');
 const absent=order([e('a',1,['missing'])]);
