@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: '22'
       - name: Run deterministic rules and turn tests
-        run: node verify-tests.cjs
+        run: node verify-tests.cjs && node verify-groups-5h.cjs
