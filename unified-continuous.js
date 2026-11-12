@@ -10,7 +10,7 @@ const layer4=effects.filter(e=>String(e.layer)==='4');
 const early=effects.filter(e=>ranks.indexOf(String(e.layer))<ranks.indexOf('4'));
 const late=effects.filter(e=>ranks.indexOf(String(e.layer))>ranks.indexOf('4'));
 if(early.some(e=>e.targetId==='all'))return {supported:false,reason:'Effetti globali nei layer precedenti al 4 non ancora integrati'};
-if(effects.some(e=>e.dependency?.length&&e.layer!=='4'))return {supported:false,reason:'Dipendenze esplicite extra layer 4 non ancora integrate'};
+if(effects.some(e=>e.dependency?.length&&e.layer!=='4'&&(e.dependency||[]).some(id=>!effects.some(x=>x.id===id&&x.layer===e.layer))))return {supported:false,reason:'Dipendenza extra layer mancante o in layer diverso'};
 const copies=early.filter(e=>e.kind==='copyCharacteristics');
 if(copies.some(e=>e.layer!=='1a'||!e.targetId||e.targetId==='all'||!e.sourceId||!objects.some(o=>o.id===e.sourceId)||!Number.isSafeInteger(e.timestamp)))return {supported:false,reason:'Copia senza sorgente o destinazione valida'};
 if(copies.some(e=>copies.some(other=>other!==e&&other.targetId===e.sourceId)))return {supported:false,reason:'Catena di copie non ancora verificata'};
@@ -27,7 +27,15 @@ for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||
 if(o.ptDefinition&& !o.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa: valutazione completa non disponibile'};
 if(o.ptDefinition&&o.ptDefinition.kind!=='landCount')return {supported:false,reason:'Definizione dinamica sconosciuta'};
 if(o.ptDefinition&&relevant.some(e=>e.layer==='7a'))return {supported:false,reason:'Definizioni concorrenti in 7a non ancora integrate'};
-const prior=relevant.filter(e=>e.layer!=='7d');const switches=relevant.filter(e=>e.layer==='7d');
+const orderedLate=[];
+for(const layer of ['5','6','7a','7b','7c','7d']){
+ const group=relevant.filter(e=>e.layer===layer);if(!group.length)continue;
+ if(!root.JudgeDependencies)return {supported:false,reason:'Pianificatore dipendenze mancante'};
+ const plan=root.JudgeDependencies.order(group,[{id:o.id}],{affected:(e,s)=>[o.id],apply:(e,s)=>s});
+ if(!plan.supported)return plan;
+ orderedLate.push(...plan.order);
+}
+const prior=orderedLate.filter(e=>e.layer!=='7d');const switches=orderedLate.filter(e=>e.layer==='7d');
 const count=o.ptDefinition?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
 const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:count??o.power,toughness:count??o.toughness},prior);if(!r.supported)return r;
 if(o.ptDefinition&&!r.state.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa durante il layer 6'};
