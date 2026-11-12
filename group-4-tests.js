@@ -1,0 +1,25 @@
+(function(root){'use strict';
+function run(){const t=[],check=(name,ok)=>t.push({name,pass:!!ok});const k=root.JudgeTriggers;
+const state={players:[{id:'A'},{id:'B'},{id:'C'}],activePlayer:'B',objects:[{id:'x',zone:'battlefield'}],stack:[]};
+const ability=(id,controller,event,extra={})=>({id,controller,event,...extra});
+const etb={type:'enterBattlefield',target:'y',controller:'A'};
+let r=k.observe(state,[etb],[ability('a','A',{type:'enterBattlefield'})]);check('ETB event detected',r.supported&&r.pending.length===1);
+r=k.observe(state,[{type:'gainLife',amount:2}],[ability('a','A',{type:'gainLife'}, {interveningIf:{path:'event.amount',op:'gte',value:3}})]);check('intervening if false suppresses trigger',r.pending.length===0);
+r=k.observe(state,[{type:'gainLife',amount:4}],[ability('a','A',{type:'gainLife'}, {interveningIf:{path:'event.amount',op:'gte',value:3}})]);check('intervening if true triggers',r.pending.length===1);
+check('intervening if rechecked at resolution',!k.recheck(r.pending[0],{objects:[],unused:1}).resolves===false || k.recheck(r.pending[0],{objects:[]}).resolves); 
+const before={objects:[{id:'x',zone:'battlefield'}]},after={objects:[]};
+r=k.observe(state,[{event:{type:'dies',from:'battlefield',target:'x'},before,after}],[ability('death','A',{type:'dies'}, {source:'x'})]);check('LKI leaves battlefield',r.pending.length===1);
+r=k.observe(state,[{event:{type:'dies',from:'battlefield',target:'x'},before:{objects:[]},after}],[ability('death','A',{type:'dies'}, {source:'x'})]);check('no fabricated LKI source',r.pending.length===0);
+r=k.observe(state,[etb,etb],[ability('once','A',{type:'enterBattlefield'},{kind:'delayed'})]);check('delayed trigger once',r.pending.length===1&&r.firedDelayed.includes('once'));
+r=k.observe({...state,firedDelayed:r.firedDelayed},[etb],[ability('once','A',{type:'enterBattlefield'},{kind:'delayed'})]);check('delayed trigger does not refire',r.pending.length===0);
+const pending=[{id:'b1',controller:'B'},{id:'a1',controller:'A'},{id:'c1',controller:'C'}];
+r=k.stackAPNAP(state,pending);check('multiplayer APNAP B C A',r.supported&&r.placements.join(',')==='b1,c1,a1');
+r=k.stackAPNAP(state,[...pending,{id:'b2',controller:'B'}]);check('same controller requires explicit order',!r.supported&&r.player==='B');
+r=k.stackAPNAP(state,[...pending,{id:'b2',controller:'B'}],{B:['b2','b1']});check('explicit APNAP order',r.supported&&r.placements.join(',')==='b2,b1,c1,a1');
+check('input pending not mutated',pending.length===3&&state.stack.length===0);
+check('match supports structured before snapshot',k.match({type:'dies','before.zone':'battlefield'},{type:'dies'},{before:{zone:'battlefield'}}));
+check('unknown condition fails closed',!k.condition({unknown:true},{event:{}}));
+check('condition supports conjunction',k.condition({all:[{path:'event.amount',op:'gt',value:2},{path:'controller',op:'eq',value:'A'}]},{event:{amount:3},controller:'A'}));
+return {passed:t.filter(x=>x.pass).length,total:t.length,tests:t};}
+root.JudgeGroup4Tests={run};
+})(typeof window!=='undefined'?window:globalThis);
