@@ -3,7 +3,7 @@
 const TYPES=['creature','land','artifact','enchantment','planeswalker','instant','sorcery','battle'];
 function cardObject(card,index){
  const line=card.type_line||'';const parts=line.split(/\\s+[—-]\\s+/);const before=parts[0]||'';
- return {id:'guided-'+index,name:card.name,owner:'A',controller:'A',zone:'battlefield',types:TYPES.filter(t=>new RegExp('\\\\b'+t+'\\\\b','i').test(before)),supertypes:['basic','legendary','snow','world'].filter(t=>new RegExp('\\\\b'+t+'\\\\b','i').test(before)),subtypes:parts[1]?parts[1].split(/\\s+/):[],power:/^-?\\d+$/.test(card.power||'')?Number(card.power):null,toughness:/^-?\\d+$/.test(card.toughness||'')?Number(card.toughness):null,counters:{'+1/+1':0},damage:0,tapped:false,token:false,oracle_text:card.oracle_text||''};
+ return {id:'guided-'+index,name:card.name,owner:'A',controller:'A',zone:'battlefield',types:TYPES.filter(t=>new RegExp('\\b'+t+'\\b','i').test(before)),supertypes:['basic','legendary','snow','world'].filter(t=>new RegExp('\\b'+t+'\\b','i').test(before)),subtypes:parts[1]?parts[1].split(/\\s+/):[],power:/^-?\\d+$/.test(card.power||'')?Number(card.power):null,toughness:/^-?\\d+$/.test(card.toughness||'')?Number(card.toughness):null,counters:{'+1/+1':0},damage:0,tapped:false,token:false,oracle_text:card.oracle_text||''};
 }
 async function evaluate(context){
  const details={version:1,cards:context?.cards||[],event:context?.event||null,entering:context?.entering||null,casting:context?.casting||null,reasonCodes:[],unsupportedLines:[],warnings:[]};
