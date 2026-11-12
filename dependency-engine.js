@@ -1,7 +1,10 @@
 /* CR 613 dependency planner for supported, structured effects.
    Dependencies are inferred from changes to the affected set; opaque effects fail closed. */
 (function(root){'use strict';
-function order(effects,state,handlers){
+function order(input,state,handlers){
+ const converted=Array.isArray(input)?{supported:true,effects:input}:root.JudgeEffectModel?.runtime(input);
+ if(!converted?.supported)return {supported:false,reason:converted?.reason||'Modello dipendenze mancante'};
+ const effects=converted.effects;
  const list=effects.map((e,i)=>({...e,_index:i,_id:e.id||'effect-'+i}));
  if(new Set(list.map(e=>e._id)).size!==list.length)return {supported:false,reason:'ID effetti duplicati'};
  if(list.some(e=>!Number.isSafeInteger(e.timestamp)||e.dependency&&!Array.isArray(e.dependency)))return {supported:false,reason:'Timestamp o dipendenze invalidi'};
