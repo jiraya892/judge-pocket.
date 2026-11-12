@@ -24,6 +24,7 @@ if(o.ptDefinition&&relevant.some(e=>e.layer==='7a'))return {supported:false,reas
 const prior=relevant.filter(e=>e.layer!=='7d');const switches=relevant.filter(e=>e.layer==='7d');
 const count=o.ptDefinition?middle.objects.filter(x=>x.controller===o.controller&&x.types.includes('land')).length:null;
 const r=root.JudgeLayers.evaluate({types:o.types,controller:o.controller,abilities:o.abilities,colors:o.colors||[],text:o.text||'',power:count??o.power,toughness:count??o.toughness},prior);if(!r.supported)return r;
+if(o.ptDefinition&&!r.state.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa durante il layer 6'};
 const state={...o,...r.state,subtypes:o.subtypes};
 const delta=(o.counters?.['+1/+1']||0)-(o.counters?.['-1/-1']||0);
 if(state.power!=null)state.power+=delta;if(state.toughness!=null)state.toughness+=delta;
