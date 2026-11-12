@@ -11,14 +11,14 @@ async function evaluate(context){
  if(!root.JudgeOracleRecognition||!root.JudgeCoordinator)return fail('ENGINE_MISSING','Moduli Oracle o coordinatore mancanti.');
  if(!Array.isArray(context?.cards)||context.cards.length<2)return fail('CARDS_MISSING','Servono almeno due carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(e){return fail('ORACLE_LOOKUP_FAILED','Impossibile recuperare una carta: '+e.message)}
- const objects=cards.map(cardObject),effects=[];
+ const facts=root.JudgeGameFacts?.build(context,cards.map(cardObject));if(!facts?.supported)return fail(facts?.code||'FACTS_ENGINE_MISSING',facts?.reason||'Modulo stato mancante');const objects=facts.objects,effects=[];
  for(let i=0;i<cards.length;i++){
   const recognition=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognition.unknown;
   details.unsupportedLines.push(...recognition.unknown.map(line=>({card:cards[i].name,text:line})));
-  for(const e of recognition.effects)effects.push({...e,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:i+1,duration:'ongoing'});
+  for(const e of recognition.effects)effects.push({...e,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:facts.timestamps[objects[i].id],duration:'ongoing'});
  }
- const state={schemaVersion:1,players:[{id:'A',life:20},{id:'B',life:20}],turn:{activePlayer:'A',priorityPlayer:'A',phase:'main1'},objects,effects};
- details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);details.warnings.push('Controllori, proprietari e ordine temporale degli effetti non sono stati chiesti: valori provvisori A e ordine delle carte; nessun verdetto affidabile può derivarne.');
+ const state={schemaVersion:1,players:facts.players,turn:facts.turn,objects,effects};
+ details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);details.knownFacts=facts.knownFacts;details.controllers=context.controllers;details.timestamps=facts.timestamps;
  // Context enters the engine as an explicit zone/state. Entry timing is not implemented.
  if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
  if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
@@ -33,7 +33,7 @@ async function evaluate(context){
  if(incomplete.length)return fail('UNSUPPORTED_EFFECTS','Il coordinatore non riesce ancora a calcolare tutti gli effetti delle carte.',{results:outcome.results,unsupportedObjects:incomplete});
  if(details.unsupportedLines.length)return fail('ORACLE_TEXT_UNSUPPORTED','Alcune righe Oracle non sono state interpretate.',{results:outcome.results});
  // A partial layer computation is NOT a reliable interaction ruling.
- return fail('PARTIAL_RULES_COVERAGE','Le caratteristiche calcolate sono una simulazione parziale, non un verdetto. Restano da verificare controllori, effetti di ingresso, altre carte presenti e azioni basate sullo stato.',{results:outcome.results,preview:outcome.results.map(r=>({card:r.name,types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness,possibleZeroToughness:r.possibleZeroToughness})),missingSupport:['CONTROLLERS_AND_BOARD_STATE','ENTRY_REPLACEMENT_EFFECTS','TRIGGERED_ABILITIES','STACK_AND_PRIORITY','SBA_EXECUTION','FULL_CONTINUOUS_EFFECT_VALIDATION']});
+ return fail('PARTIAL_RULES_COVERAGE','Le caratteristiche calcolate sono una simulazione parziale, non un verdetto. Restano da verificare controllori, effetti di ingresso, altre carte presenti e azioni basate sullo stato.',{results:outcome.results,preview:outcome.results.map(r=>({card:r.name,types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness,possibleZeroToughness:r.possibleZeroToughness})),missingSupport:['ENTRY_REPLACEMENT_EFFECTS','TRIGGERED_ABILITIES','STACK_AND_PRIORITY','SBA_EXECUTION','FULL_CONTINUOUS_EFFECT_VALIDATION']});
 }
 root.JudgeGuidedBridge={evaluate,cardObject};
 })(typeof window!=='undefined'?window:globalThis);
