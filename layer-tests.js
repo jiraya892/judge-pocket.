@@ -14,5 +14,10 @@ test('Layer 6 rimuove tutte le abilità',()=>{const r=k.evaluate({...base,abilit
 test('Layer 7a definisce P/T prima di 7b',()=>{const r=k.evaluate(base,[{layer:'7b',kind:'setPT',power:3,toughness:4,timestamp:1},{layer:'7a',kind:'definePT',power:7,toughness:7,timestamp:2}]);ok(r.supported&&r.state.power===3&&r.state.toughness===4)});
 test('Layer 7d inverte P/T dopo 7c',()=>{const r=k.evaluate(base,[{layer:'7d',kind:'switchPT',timestamp:1},{layer:'7c',kind:'modifyPT',power:1,toughness:3,timestamp:2}]);ok(r.supported&&r.state.power===5&&r.state.toughness===3)});
 test('Rifiuta inversione P/T senza valori',()=>{ok(!k.evaluate({types:['creature']},[{layer:'7d',kind:'switchPT',timestamp:1}]).supported)});
+test('Layer 1a copia caratteristiche',()=>{const r=k.evaluate(base,[{layer:'1a',kind:'copyCharacteristics',source:{types:['artifact'],power:4,toughness:5,colors:['blue']},timestamp:1}]);ok(r.supported&&r.state.types[0]==='artifact'&&r.state.power===4)});
+test('Layer 2 cambia controllore',()=>{const r=k.evaluate({...base,controller:'A'},[{layer:'2',kind:'setController',value:'B',timestamp:1}]);ok(r.supported&&r.state.controller==='B')});
+test('Layer 3 modifica testo',()=>{const r=k.evaluate({...base,text:'Add red mana'},[{layer:'3',kind:'replaceText',from:'red',to:'blue',timestamp:1}]);ok(r.supported&&r.state.text==='Add blue mana')});
+test('Layer 4 dopo la copia',()=>{const r=k.evaluate(base,[{layer:'4',kind:'addType',value:'land',timestamp:1},{layer:'1a',kind:'copyCharacteristics',source:{types:['artifact'],power:2,toughness:2},timestamp:2}]);ok(r.supported&&r.state.types.join(',')==='artifact,land')});
+test('Rifiuta layer sbagliato per cambio controllo',()=>{ok(!k.evaluate(base,[{layer:'3',kind:'setController',value:'B',timestamp:1}]).supported)});
 document.getElementById('layerTestSummary').textContent=passed+' test superati, '+failed+' falliti.';
 })();
