@@ -21,7 +21,9 @@ function evaluate(objects,effects){
  });
  const unsupported=result.find(x=>x.supported===false);
  if(unsupported)return unsupported;
- return {supported:true,objects:result,order:layer.order};
+ const warnings=[];
+ if(objects.some((o,i)=>o.ptDefinition&&!result[i].abilities.some(a=>a.id===o.ptDefinition.abilityId)))warnings.push('Caratteristica definita da abilità rimossa: verificare effetti preesistenti, layer e SBA prima di emettere un verdetto.');
+ return {supported:true,objects:result,order:layer.order,warnings};
 }
 root.JudgeContinuousState={evaluate};
 })(typeof window!=='undefined'?window:globalThis);
