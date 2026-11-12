@@ -38,3 +38,4 @@ Quando GitHub Pages sarà attivo, aprire `rules-tests.html` per vedere il risult
 - `manifest.webmanifest` — manifest
 
 Judge Pocket non è affiliato a Wizards of the Coast. Dati carte/rulings da Scryfall; per le condizioni d'uso del contenuto consultare le rispettive fonti.
+\n## Gruppo 4 (0.9.29)\n\n`trigger-engine.js` espone inneschi dichiarativi per eventi espliciti, condizioni intervening-if, snapshot prima/dopo per last known information, inneschi ritardati una tantum e ordinamento APNAP multiplayer. Gli effetti non vengono risolti automaticamente e il parser Oracle non copre ancora tutte le abilità. Test: `group-4-tests.html`.\n
