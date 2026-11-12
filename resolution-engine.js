@@ -13,6 +13,8 @@ function plan(state,top){
   if(!legality.supported)return legality;
   if(legality.allIllegal)return {supported:true,step:'allTargetsIllegal',legality,events:[]};
  }
+ if(top.targets!==undefined&&(!Array.isArray(top.targets)||top.targets.some(t=>!t||typeof t.id!=='string'||!t.id)))
+  return {supported:false,reason:'Dichiarazione dei bersagli malformata'};
  if(!top.instruction)return {supported:true,step:'resolveManually',events:[],legality};
  const instructions=Array.isArray(top.instruction)?top.instruction:[top.instruction];
  if(!instructions.length||instructions.some(e=>!e||!supported.includes(e.type)))return {supported:false,reason:'Istruzioni di risoluzione non supportate'};
