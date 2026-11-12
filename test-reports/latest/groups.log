@@ -121,4 +121,10 @@ JudgeGroup8WTests: 10/10
 JudgeGroup8XTests: 10/10
 JudgeGroup8YTests: 10/10
 JudgeGroup8ZTests: 10/10
-Browser suites: 1230/1230 passed; 0 execution errors
+JudgeGroup9ATests: 10/10
+JudgeGroup9BTests: 10/10
+JudgeGroup9CTests: 10/10
+JudgeGroup9DTests: 10/10
+JudgeGroup9ETests: 10/10
+JudgeGroup9FTests: 10/10
+Browser suites: 1290/1290 passed; 0 execution errors
