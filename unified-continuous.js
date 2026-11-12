@@ -41,10 +41,12 @@ for(const layer of ['5','6','7a','7b','7c','7d']){
   affected:(e,s)=>[o.id],
   apply,
   signature:(e,s)=>{
-   // Compare an effect's own changes, not the absolute post-effect state.
-   const next=apply(e,s);if(invalid)return undefined;
-   const keys=layer==='5'?['colors']:layer==='6'?['abilities']:layer==='7d'?['power','toughness']:['power','toughness'];
-   return keys.map(k=>({key:k,before:s[k],after:next[k]}));
+   // Only model semantic dependencies that are provable for the operation.
+   // Absolute post-state comparisons incorrectly make independent setPTs dependent.
+   if(e.kind==='setPT'||e.kind==='definePT'||e.kind==='modifyPT'||e.kind==='setColor'||e.kind==='setController'||e.kind==='addAbility'||e.kind==='removeAbility'||e.kind==='removeAllAbilities'||e.kind==='addColor'||e.kind==='removeColor')return [e.kind,e.value,e.power,e.toughness,e.values];
+   if(e.kind==='switchPT')return [s.power,s.toughness];
+   return undefined;
+
   }
  });
  if(invalid)return {supported:false,reason:invalid};
