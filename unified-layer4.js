@@ -24,9 +24,7 @@ function evaluate(objects,effects){if(!Array.isArray(objects)||!Array.isArray(ef
   apply:(e,state)=>apply(e,state),
   exists:(e,state)=>{
    if(!e.sourceAbilityId)return true;
-   const source=state.find(o=>o.id===e.sourceId);
-   if(!source)return undefined;
-   return source.abilities.some(a=>a.id===e.sourceAbilityId);
+   return root.JudgeEffectModel?.sourceExists(e,state);
   }
  });
  if(!planned.supported)return planned;
