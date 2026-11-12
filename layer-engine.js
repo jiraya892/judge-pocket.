@@ -3,7 +3,10 @@
 'use strict';
 const ordered=['1a','1b','2','3','4','5','6','7a','7b','7c','7d'];
 const rank=l=>ordered.indexOf(String(l));
-function evaluate(base,effects=[],options={}){
+function evaluate(base,input=[],options={}){
+ const converted=Array.isArray(input)?{supported:true,effects:input}:root.JudgeEffectModel?.runtime(input);
+ if(!converted?.supported)return {supported:false,reason:converted?.reason||'Modello effetti non disponibile'};
+ const effects=converted.effects;
  if(!base||!Array.isArray(base.types)||!Array.isArray(effects))return {supported:false,reason:'Input non valido'};
  if(effects.some(e=>!e||rank(e.layer)<0||e.kind==='nonbasicMountain'||e.kind==='addForest'))
   return {supported:false,reason:'Dipendenza o modifica di tipo terra non supportata: verifica CR 613 e 305.7'};
