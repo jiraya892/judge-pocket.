@@ -37,7 +37,9 @@ function resolution(trigger,state){
  if(!trigger||!state||!Array.isArray(state.objects)||!trigger.context)return {supported:false,reason:'Contesto risoluzione non valido'};
  if(!valid(trigger.interveningIf))return {supported:false,reason:'Condizione non valida'};
  const source=state.objects.find(x=>x.id===trigger.source)||null;
- return {supported:true,resolves:test(trigger.interveningIf,{...trigger.context,after:state,source,controller:trigger.controller}),conditionChecked:trigger.interveningIf!=null};
+ const verdict=evaluate(trigger.interveningIf,{...trigger.context,after:state,source,controller:trigger.controller});
+ if(verdict===null)return {supported:false,reason:'Condizione intervening-if non determinabile alla risoluzione',requiredFacts:[{key:'resolutionCondition:'+trigger.abilityId,question:'Quali fatti sono necessari per verificare la condizione dell’innesco alla risoluzione?',options:[]}]};
+ return {supported:true,resolves:verdict===true,conditionChecked:trigger.interveningIf!=null};
 }
-root.JudgeTriggerConditions={valid,test,resolution};
+root.JudgeTriggerConditions={valid,test,evaluate,resolution};
 })(typeof window!=='undefined'?window:globalThis);
