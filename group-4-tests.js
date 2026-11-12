@@ -6,7 +6,7 @@ const etb={type:'enterBattlefield',target:'y',controller:'A'};
 let r=k.observe(state,[etb],[ability('a','A',{type:'enterBattlefield'})]);check('ETB event detected',r.supported&&r.pending.length===1);
 r=k.observe(state,[{type:'gainLife',amount:2}],[ability('a','A',{type:'gainLife'}, {interveningIf:{path:'event.amount',op:'gte',value:3}})]);check('intervening if false suppresses trigger',r.pending.length===0);
 r=k.observe(state,[{type:'gainLife',amount:4}],[ability('a','A',{type:'gainLife'}, {interveningIf:{path:'event.amount',op:'gte',value:3}})]);check('intervening if true triggers',r.pending.length===1);
-check('intervening if rechecked at resolution',!k.recheck(r.pending[0],{objects:[],unused:1}).resolves===false || k.recheck(r.pending[0],{objects:[]}).resolves); 
+check('intervening if rechecked at resolution',k.recheck(r.pending[0],{objects:[]}).resolves); 
 const before={objects:[{id:'x',zone:'battlefield'}]},after={objects:[]};
 r=k.observe(state,[{event:{type:'dies',from:'battlefield',target:'x'},before,after}],[ability('death','A',{type:'dies'}, {source:'x'})]);check('LKI leaves battlefield',r.pending.length===1);
 r=k.observe(state,[{event:{type:'dies',from:'battlefield',target:'x'},before:{objects:[]},after}],[ability('death','A',{type:'dies'}, {source:'x'})]);check('no fabricated LKI source',r.pending.length===0);
