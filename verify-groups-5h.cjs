@@ -8,8 +8,8 @@ const scripts=[...html.matchAll(/<script src="([^"]+\.js)"><\/script>/g)].map(x=
 const registry=html.match(/const names=(\[[^;]+\]);function runAll/);
 if(!registry)throw Error('Cannot parse browser suite registry');
 const names=JSON.parse(registry[1].replace(/'/g,'"'));
-names.push('JudgeGroup5HTests','JudgeGroup5LTests','JudgeGroup5MTests','JudgeGroup5NTests','JudgeGroup5OTests','JudgeGroup5PTests','JudgeGroup5QTests','JudgeGroup5RTests','JudgeGroup5STests','JudgeGroup5TTests','JudgeGroup5UTests');
-scripts.push('group-5h-tests.js','group-5l-tests.js','group-5m-tests.js','group-5n-tests.js','group-5o-tests.js','group-5p-tests.js','group-5q-tests.js','group-5r-tests.js','group-5s-tests.js','group-5t-tests.js','group-5u-tests.js');
+names.push('JudgeGroup5HTests','JudgeGroup5LTests','JudgeGroup5MTests','JudgeGroup5NTests','JudgeGroup5OTests','JudgeGroup5PTests','JudgeGroup5QTests','JudgeGroup5RTests','JudgeGroup5STests','JudgeGroup5TTests','JudgeGroup5UTests','JudgeGroup5VTests');
+scripts.push('group-5h-tests.js','group-5l-tests.js','group-5m-tests.js','group-5n-tests.js','group-5o-tests.js','group-5p-tests.js','group-5q-tests.js','group-5r-tests.js','group-5s-tests.js','group-5t-tests.js','group-5u-tests.js','group-5v-tests.js');
 const window={};
 const context=vm.createContext({window,console});
 for(const path of scripts){
@@ -28,4 +28,4 @@ for(const name of names){
  }catch(e){errors++;console.error('ERROR '+name+': '+e.stack)}
 }
 console.log('Browser suites: '+passed+'/'+total+' passed; '+errors+' execution errors');
-if(errors||passed!==total||total<389)process.exitCode=1;
+if(errors||passed!==total||total<395)process.exitCode=1;
