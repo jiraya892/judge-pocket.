@@ -65,8 +65,7 @@ JudgeGroup6STests: 10/10
 JudgeGroup6TTests: 10/10
 JudgeGroup6UTests: 10/10
 JudgeGroup6VTests: 10/10
-JudgeGroup6WTests: 9/10
-FAIL JudgeGroup6WTests: pending deathtouch dies
+JudgeGroup6WTests: 10/10
 JudgeGroup6XTests: 10/10
 JudgeGroup6YTests: 10/10
 JudgeGroup6ZTests: 10/10
@@ -74,4 +73,4 @@ JudgeGroup7ATests: 10/10
 JudgeGroup7BTests: 10/10
 JudgeGroup7CTests: 10/10
 JudgeGroup7DTests: 10/10
-Browser suites: 749/750 passed; 0 execution errors
+Browser suites: 750/750 passed; 0 execution errors
