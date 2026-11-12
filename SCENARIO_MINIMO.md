@@ -48,3 +48,6 @@ SBA locali su creature con costituzione e danni espliciti: costituzione <= 0, da
 
 ## Gruppi 4F.6–4F.7 — v0.9.47
 Corretto il ciclo di risoluzione strutturata della pila: rimozione dell'elemento in risoluzione prima dell'evento, rilevamento nuovi inneschi, SBA locali e blocco della priorità fino alla loro collocazione. Aggiunti 7 test 4F.6 e 6 test incrociati 4F.7; 193/193 test delle suite Gruppi 3 e 4 superati in esecuzioni separate. Limiti: solo eventi/istruzioni strutturate e SBA locali supportate; il motore non implementa ancora la risoluzione completa delle abilità Oracle né tutte le SBA. Nessuna verifica browser o Android eseguita. 4F.8 rimane dedicato alla verifica browser e al rilascio finale.
+
+## Gruppo 4F.8 — diagnostica browser v0.9.48 (verifica reale pendente)
+La pagina `group-4-tests.html` ora espone PASS/FAIL, numero atteso 193 test, errori di esecuzione, ambiente browser e pulsante per ripetere. Il codice è pubblicato, ma l'ambiente di sviluppo non ha potuto raggiungere GitHub Pages né eseguire un browser Android: la verifica browser/device non è attestata. Non dichiarare 4F.8 completato fino al risultato reale della pagina su tablet e alla verifica PWA.
