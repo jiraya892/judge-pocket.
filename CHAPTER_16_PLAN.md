@@ -23,3 +23,9 @@ Eseguito `node question-planner.test.cjs` con Node.js v22.16.0 in una copia loca
 - `.github/workflows/chapter-16-tests.yml`: trigger estesi ai file del percorso guidato e controlli `node --check` aggiunti. Non equivale alla suite 2370+71.
 - Il connettore GitHub disponibile restituisce soltanto esecuzioni associate a pull request. La ricerca per commit `93db6f46bf9e012d5a24d2bb09f01f1f0c9cff17` non ha restituito run: ciò **non dimostra** l'assenza di workflow push. I log delle esecuzioni verdi riferite dall'utente non sono stati consultati.
 - Il test completo Ashaya + Blood Moon e le regressioni 2370+71 restano non verificati. Non dichiarare 16A/16B completati.
+
+## Verifica successiva — 2026-11-12
+
+- `guided-bridge.js` ora rifiuta `cast`, `other`, eventi sconosciuti e una carta in ingresso non corrispondente **prima** di chiedere fatti sul campo di battaglia. Non si devono chiedere dati che non possono sbloccare un calcolo supportato.
+- `chapter-16-guided.test.cjs` include 9 verifiche con moduli simulati, tre delle quali per questo comportamento. Sono test di flusso, non una verifica del motore CR 613 o della combinazione Ashaya/Blood Moon.
+- In questa sessione non è stato possibile clonare il repository dal container (DNS GitHub non raggiungibile). Non sono stati eseguiti localmente i 10 test planner, i 9 di integrazione, né i 2370+71 di regressione. Le esecuzioni GitHub Actions push non sono elencabili tramite l'azione del connettore disponibile, limitata ai run pull request; non dichiarare log consultati.
