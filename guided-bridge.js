@@ -12,6 +12,31 @@ async function evaluate(context){
  if(!root.JudgeOracleRecognition||!root.JudgeCoordinator)return fail('ENGINE_MISSING','Moduli Oracle o coordinatore mancanti.');
  if(!Array.isArray(context?.cards)||context.cards.length<2)return fail('CARDS_MISSING','Servono almeno due carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(e){return fail('ORACLE_LOOKUP_FAILED','Impossibile recuperare una carta: '+e.message)}
+
+ // Chapter 16A/B: evaluate controller alternatives only as a conservative
+ // diagnostic preview. Partial coordinator results are not rulings.
+ if(!context.controllers&&root.JudgeQuestionPlanner&&root.JudgeGameFacts){
+  const options=[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}];
+  const planned=root.JudgeQuestionPlanner.plan({
+   facts:cards.map((_,i)=>({key:'controller'+i,question:'Chi controlla '+cards[i].name+'?',options})),
+   answers:{}
+  },scenario=>{
+   const controllers=cards.map((_,i)=>scenario.answers['controller'+i]);
+   const candidate={...context,controllers,board:context.board||'complete',order:context.event==='present'?(context.order||cards.map((_,i)=>i)):context.order};
+   const built=root.JudgeGameFacts.build(candidate,cards.map(cardObject));
+   if(!built.supported)return {supported:false};
+   const objects=built.objects,effects=[];
+   for(let i=0;i<cards.length;i++){
+    const recognized=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);
+    if(recognized.unknown.length)return {supported:false};
+    for(const e of recognized.effects)effects.push({...e,id:'scenario-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:built.timestamps[objects[i].id],duration:'ongoing'});
+   }
+   const out=root.JudgeCoordinator.evaluate({schemaVersion:1,players:built.players,turn:built.turn,objects,effects});
+   if(!out.supported||out.results.some(r=>r.status!=='partial'))return {supported:false};
+   return {supported:true,outcome:out.results.map(r=>({types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness}))};
+  });
+  details.questionPlanning={status:planned.status,reason:planned.reason||null,relevantKeys:planned.relevantKeys||[],scenarios:planned.scenarios||0,previewOnly:true};
+ }
  const facts=root.JudgeGameFacts?.build(context,cards.map(cardObject));if(!facts?.supported)return fail(facts?.code||'FACTS_ENGINE_MISSING',facts?.reason||'Modulo stato mancante');const objects=facts.objects,effects=[];
  for(let i=0;i<cards.length;i++){
   const recognition=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognition.unknown;
