@@ -15,7 +15,7 @@ function run(cards,enterId){
   const isForest=/nontoken creatures you control are Forest lands in addition to their other types/i.test(t);
   const isMoon=/nonbasic lands are Mountains/i.test(t);
   if(!types.length)return {supported:false,reason:'Tipo di permanente non supportato'};
-  if(/(?:get|gets)\\s+[+-]\\d+\\/[+-]\\d+|lose(?:s)? all abilities/i.test(t))return {supported:false,reason:'Modifiche P/T continue non supportate'};
+  if(/(?:get|gets)\\s+[+-]\\d+[/][+-]\\d+|lose(?:s)? all abilities/i.test(t))return {supported:false,reason:'Modifiche P/T continue non supportate'};
   if(!isForest&&!isMoon&&/\\b(are|become|gets? \\+|loses? all abilities)\\b/i.test(t))return {supported:false,reason:'Altri effetti continui presenti: calcolo non affidabile'};
   const abilities=[];
   if(isForest)abilities.push({id:'forest-'+i,origin:'rulesText'});
