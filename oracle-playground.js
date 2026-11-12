@@ -8,11 +8,12 @@ function render(message){
 }
 function selected(){
  const cards=window.getJudgeSelectedCards?.()||[];
- const menu=$('oracleCard');menu.replaceChildren();
+ const menu=$('oracleCard'),previous=menu.value;menu.replaceChildren();
  const empty=document.createElement('option');empty.value='';empty.textContent='Scegli una carta selezionata';menu.append(empty);
  for(const card of cards){
   const option=document.createElement('option');option.value=card._instanceId;option.textContent=card.name;menu.append(option);
  }
+ if(cards.some(c=>String(c._instanceId)===String(previous)))menu.value=previous;
  $('oracleCardStatus').textContent=cards.length?cards.length+' carte disponibili.':'Aggiungi prima una carta nella sezione 2.';
 }
 function cardText(card){return card.oracle_text||card.card_faces?.map(f=>f.oracle_text).filter(Boolean).join('\n')||''}
