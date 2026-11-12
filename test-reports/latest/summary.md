@@ -1,6 +1,6 @@
 ## Judge Pocket — Regression results
 
-- Commit: `77d4dd207edd3921bb2d21decec7d43728cd25e3`
+- Commit: `1744b0df407ddcd934d29ceda6e0477393c489fa`
 - Result: `success`
 
 ### Core tests
