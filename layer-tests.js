@@ -9,5 +9,10 @@ test('Timestamp determina ordine nel medesimo layer',()=>{const r=k.evaluate(bas
 test('Layer 6 rimuove abilità',()=>{const r=k.evaluate({...base,abilities:['flying']},[{layer:'6',kind:'removeAbility',value:'flying',timestamp:1}]);ok(r.supported&&!r.state.abilities.length)});
 test('Dipendenze non simulate',()=>{ok(!k.evaluate(base,[{layer:'4',kind:'addType',value:'land',timestamp:1,dependency:true}]).supported)});
 test('Blood Moon e Ashaya non producono falso verdetto',()=>{ok(!k.evaluate(base,[{layer:'4',kind:'nonbasicMountain',timestamp:1},{layer:'4',kind:'addForest',timestamp:2}]).supported)});
+test('Layer 5 modifica i colori',()=>{const r=k.evaluate({...base,colors:['red']},[{layer:'5',kind:'addColor',value:'blue',timestamp:1},{layer:'5',kind:'removeColor',value:'red',timestamp:2}]);ok(r.supported&&r.state.colors.join(',')==='blue')});
+test('Layer 6 rimuove tutte le abilità',()=>{const r=k.evaluate({...base,abilities:['flying','haste']},[{layer:'6',kind:'removeAllAbilities',timestamp:1}]);ok(r.supported&&r.state.abilities.length===0)});
+test('Layer 7a definisce P/T prima di 7b',()=>{const r=k.evaluate(base,[{layer:'7b',kind:'setPT',power:3,toughness:4,timestamp:1},{layer:'7a',kind:'definePT',power:7,toughness:7,timestamp:2}]);ok(r.supported&&r.state.power===3&&r.state.toughness===4)});
+test('Layer 7d inverte P/T dopo 7c',()=>{const r=k.evaluate(base,[{layer:'7d',kind:'switchPT',timestamp:1},{layer:'7c',kind:'modifyPT',power:1,toughness:3,timestamp:2}]);ok(r.supported&&r.state.power===5&&r.state.toughness===3)});
+test('Rifiuta inversione P/T senza valori',()=>{ok(!k.evaluate({types:['creature']},[{layer:'7d',kind:'switchPT',timestamp:1}]).supported)});
 document.getElementById('layerTestSummary').textContent=passed+' test superati, '+failed+' falliti.';
 })();
