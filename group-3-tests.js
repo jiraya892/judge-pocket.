@@ -3,7 +3,7 @@ const event={type:'dealDamage',target:'x',amount:5};
 const e=(id,operation,extra={})=>({id,operation,match:{type:'dealDamage'},...extra});
 const run=(ev,fx,choices)=>root.JudgeReplacements.process(ev,fx,choices);
 const prevention=run(event,[e('prevent','prevent',{value:3})]);check('partial prevention',prevention.supported&&prevention.event.amount===2);
-const all=run(event,[e('prevent','prevent')]);check('full prevention',all.supported&&all.event.amount===0);
+const all=run(event,[e('prevent','prevent')]);check('full prevention',all.supported&&all.event===null);
 const unpreventable=run({...event,unpreventable:true},[e('prevent','prevent')]);check('unpreventable damage bypasses prevention',unpreventable.supported&&unpreventable.event.amount===5);
 const doubled=run(event,[e('double','multiply',{value:2})]);check('damage multiplier',doubled.supported&&doubled.event.amount===10);
 const choice=run(event,[e('prevent','prevent',{value:3}),e('double','multiply',{value:2})]);check('ambiguous replacement order asks for choice',!choice.supported&&choice.choices.length===2);
