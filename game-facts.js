@@ -17,5 +17,15 @@ function build(context,cardObjects){const check=validate(context);if(!check.supp
  return {supported:true,objects,timestamps,players:[{id:'A',life:20},{id:'B',life:20}],turn:{activePlayer:'A',priorityPlayer:'A',phase:'main1'},effects:[],knownFacts:{boardComplete:true,controllersExplicit:true,orderExplicit:context.event==='present'||context.event==='enter',additionalPermanents:Math.max(0,objects.length-2)}};
 }
 function cardsIndices(a){return a.map((_,i)=>i)}
-root.JudgeGameFacts={validate,build,zones:[...zones]};
+function move(state,id,to){
+ if(!zones.has(to))return {supported:false,code:'INVALID_ZONE',reason:'Zona sconosciuta'};
+ const original=state?.objects?.find(o=>o.id===id);if(!original)return {supported:false,code:'OBJECT_MISSING',reason:'Oggetto non trovato'};
+ if(original.zone===to)return {supported:false,code:'SAME_ZONE',reason:'L’oggetto è già nella zona indicata'};
+ const next=JSON.parse(JSON.stringify(state));const idx=next.objects.findIndex(o=>o.id===id);
+ const old=next.objects[idx];if(old.token&&to!=='battlefield'){next.objects.splice(idx,1);return {supported:true,state:next,ceasedToken:true,previous:old}}
+ const used=new Set(next.objects.map(o=>o.id));let n=1;let newId=id+'-zone-'+n;while(used.has(newId)){n++;newId=id+'-zone-'+n}
+ next.objects[idx]={...old,id:newId,zone:to,controller:to==='battlefield'?old.controller:old.owner,counters:{},damage:0,tapped:false,deathtouchMarked:false};
+ return {supported:true,state:next,previous:old,object:next.objects[idx]};
+}
+root.JudgeGameFacts={validate,build,move,zones:[...zones]};
 })(typeof window!=='undefined'?window:globalThis);
