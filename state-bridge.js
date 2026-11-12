@@ -16,7 +16,7 @@ function evaluate(input){
  }
  for(const o of input.objects){
   if(o.zone!=='battlefield'){results.push({id:o.id,name:o.name,zone:o.zone,status:'not-evaluated'});continue;}
-  const applicable=input.effects.filter(e=>e.targetId===o.id||e.targetId==='all');
+  const applicable=input.effects.filter(e=>(e.targetId===o.id||e.targetId==='all')&&(!e.oracleGenerated||input.objects.some(source=>source.id===e.sourceId&&source.zone==='battlefield')));
   const invalid=applicable.filter(e=>!supported.has(e.kind));if((o.oracleUnknown||[]).length){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Testo Oracle non interamente riconosciuto: '+o.oracleUnknown.join(' | ')});continue;}
   if(invalid.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Effetti descritti in testo libero o operazioni non riconosciute: '+invalid.map(x=>x.text||x.kind||'sconosciuto').join('; ')});continue;}
   const effects=applicable.map(e=>({layer:e.layer,kind:e.kind,timestamp:e.timestamp,value:e.value,power:e.power,toughness:e.toughness,values:e.values,from:e.from,to:e.to}));
@@ -28,6 +28,7 @@ function evaluate(input){
   const toughness=outcome.state.toughness===null?null:outcome.state.toughness+counter;
   results.push({id:o.id,name:o.name,status:'partial',types:outcome.state.types,controller:outcome.state.controller,power,toughness,damage:o.damage||0,order:outcome.order,possibleZeroToughness:outcome.state.types.includes('creature')&&toughness!==null&&toughness<=0,possibleLethalDamage:outcome.state.types.includes('creature')&&toughness!==null&&toughness>0&&(o.damage||0)>=toughness});
  }
+ if(input.objects.some(o=>o.oracleUnknown?.length))warnings.push('Alcune righe Oracle non sono riconosciute: i risultati su altri permanenti potrebbero essere incompleti.');
  if(input.effects.some(e=>!e.targetId))warnings.push('Effetti senza bersaglio/ambito strutturato non applicati: specifica il permanente interessato.');
  warnings.push('Le caratteristiche delle carte sono quelle inserite manualmente, non verificate con Oracle.');
  warnings.push('Non sono calcolati effetti automatici delle carte, dipendenze generali, prevenzione, indistruttibile, inneschi o azioni basate sullo stato complete.');
