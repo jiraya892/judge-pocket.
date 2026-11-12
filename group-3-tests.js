@@ -14,4 +14,9 @@ const invalid=run(event,[e('bad','multiply',{value:-1})]);check('negative multip
 const wrong=run({type:'gainLife',player:'A',amount:3},[e('prevent','prevent')]);check('nonmatching prevention ignored',wrong.supported&&wrong.event.amount===3);
 const life=run({type:'gainLife',player:'A',amount:3},[{id:'doubleLife',operation:'multiply',match:{type:'gainLife'},value:2}]);check('life gain replacement',life.supported&&life.event.amount===6);
 check('original event unchanged',event.amount===5&&event.target==='x');
+const input={objects:[],effects:[],players:[{id:'A',life:20},{id:'B',life:20}],replacements:[{id:'doubleLife',operation:'multiply',match:{type:'gainLife'},value:2}]};
+const integrated=root.JudgeEventPipeline?.run(input,[{type:'gainLife',player:'A',amount:3}]);
+check('event pipeline applies replacement before state update',integrated?.supported&&integrated.state.players[0].life===26);
+const original=root.JudgeEventPipeline?.run({...input,replacements:[]},[{type:'gainLife',player:'A',amount:3}]);
+check('pipeline input immutable after replaced event',original?.supported&&original.state.players[0].life===23&&input.players[0].life===20);
 return {passed:tests.filter(t=>t.pass).length,total:tests.length,tests};}root.JudgeGroup3Tests={run};})(typeof window!=='undefined'?window:globalThis);
