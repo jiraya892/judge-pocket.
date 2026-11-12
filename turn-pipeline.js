@@ -41,7 +41,7 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
  }
  if(action.type==='pushStack'){
   if(!validPlayer(action.controller)||!action.description)return {supported:false,reason:'Elemento della pila incompleto'};
-  const instruction=action.instruction||null;if(instruction&&(!['gainLife','loseLife','putCounters','dealDamage','tap','untap'].includes(instruction.type)))return {supported:false,reason:'Istruzione di risoluzione non supportata'};s.stack.push({id:'stack-'+(s.history.length+1)+'-'+s.stack.length,controller:action.controller,description:action.description,resolution:instruction?'structured':'manual',instruction});s.passes=0;s.priority=action.controller;return {supported:true,state:s};
+  const instruction=action.instruction||null;if(instruction&&(!['gainLife','loseLife','putCounters','dealDamage','tap','untap'].includes(instruction.type)))return {supported:false,reason:'Istruzione di risoluzione non supportata'};if(!root.JudgeStack)return {supported:false,reason:'Motore pila 5A mancante'};const item={id:action.id||'stack-'+(s.history.length+1)+'-'+s.stack.length,kind:action.kind||'activatedAbility',source:action.source||'explicit:'+action.controller,controller:action.controller,description:action.description,resolution:instruction?'structured':'manual',instruction,...(action.kind==='spell'?{card:action.card}:{} )};const pushed=root.JudgeStack.push(s,item);if(!pushed.supported)return pushed;s.stack=pushed.state.stack;s.passes=0;s.priority=action.controller;return {supported:true,state:s};
  }
  if(action.type==='passPriority'){
   if((s.pendingTriggers||[]).length)return {supported:false,reason:'Inneschi in attesa: inserirli nella pila prima della priorità'};
