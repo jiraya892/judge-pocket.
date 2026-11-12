@@ -167,8 +167,44 @@ JudgeGroup11ATests: 10/10
 JudgeGroup11BTests: 10/10
 JudgeGroup11CTests: 10/10
 JudgeGroup11DTests: 10/10
-JudgeGroup11ETests: 10/10
-JudgeGroup11FTests: 10/10
-JudgeGroup11GTests: 10/10
-JudgeGroup11HTests: 10/10
-Browser suites: 1730/1730 passed; 0 execution errors
+ERROR JudgeGroup11ETests: TypeError: Cannot read properties of undefined (reading 'load')
+    at Object.run (group-11e-tests.js:1:72)
+    at Object.<anonymous> (/home/runner/work/judge-pocket./judge-pocket./verify-groups-5h.cjs:21:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+ERROR JudgeGroup11FTests: TypeError: Cannot read properties of undefined (reading 'load')
+    at Object.run (group-11f-tests.js:1:72)
+    at Object.<anonymous> (/home/runner/work/judge-pocket./judge-pocket./verify-groups-5h.cjs:21:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+ERROR JudgeGroup11GTests: TypeError: Cannot read properties of undefined (reading 'load')
+    at Object.run (group-11g-tests.js:1:72)
+    at Object.<anonymous> (/home/runner/work/judge-pocket./judge-pocket./verify-groups-5h.cjs:21:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+ERROR JudgeGroup11HTests: TypeError: Cannot read properties of undefined (reading 'load')
+    at Object.run (group-11h-tests.js:1:72)
+    at Object.<anonymous> (/home/runner/work/judge-pocket./judge-pocket./verify-groups-5h.cjs:21:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+Browser suites: 1690/1690 passed; 4 execution errors
