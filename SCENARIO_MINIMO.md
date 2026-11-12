@@ -45,3 +45,6 @@ Gli inneschi simultanei vengono ordinati tramite APNAP con richiesta esplicita d
 
 ## Gruppo 4F.5 — v0.9.45
 SBA locali su creature con costituzione e danni espliciti: costituzione <= 0, danno letale, indistruttibile; morti simultanee in un batch atomico; osservazione LKI e coda degli inneschi prima di concedere priorità. Incertezza su caratteristiche effettive produce `requiredFacts`, senza simulare tutto il campo. Test: 180/180 JavaScript (14 nuovi 4F.5, 166 preesistenti) in esecuzioni separate. **Limiti:** non implementa tutte le SBA delle Comprehensive Rules, non ripete ancora cicli SBA fino a punto fisso e non completa la risoluzione generale della pila; queste parti sono previste nei gruppi 4F.6 e 6B. Browser/Android non verificati.
+
+## Gruppi 4F.6–4F.7 — v0.9.47
+Corretto il ciclo di risoluzione strutturata della pila: rimozione dell'elemento in risoluzione prima dell'evento, rilevamento nuovi inneschi, SBA locali e blocco della priorità fino alla loro collocazione. Aggiunti 7 test 4F.6 e 6 test incrociati 4F.7; 193/193 test delle suite Gruppi 3 e 4 superati in esecuzioni separate. Limiti: solo eventi/istruzioni strutturate e SBA locali supportate; il motore non implementa ancora la risoluzione completa delle abilità Oracle né tutte le SBA. Nessuna verifica browser o Android eseguita. 4F.8 rimane dedicato alla verifica browser e al rilascio finale.
