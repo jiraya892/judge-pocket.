@@ -14,6 +14,8 @@ function transition(before,after,event){
  const players=new Set(after.players.map(p=>p.id));
  const converted=[];
  for(let i=0;i<definitions.length;i++){const d=definitions[i];if(!d||typeof d.eventType!=='string'||!players.has(d.controller))return {supported:false,reason:'Definizione innesco non valida'};converted.push({id:d.id||'legacy:'+i,controller:d.controller,event:{type:d.eventType,...(d.player?{player:d.player}:{}),...(d.target?{target:d.target}:{})},description:d.description||'',kind:'normal'});}
+ if(!Array.isArray(after.pendingTriggers)||after.pendingTriggers.some(t=>!t||typeof t.id!=='string'||!t.id))return {supported:false,reason:'Coda inneschi non valida'};
+ if(new Set(after.pendingTriggers.map(t=>t.id)).size!==after.pendingTriggers.length)return {supported:false,reason:'ID innesco duplicato'};
  const observed=root.JudgeDelayedTriggers.observe(after,records,[...collected.abilities,...converted]);
  if(!observed.supported)return observed;
  const previous=after.pendingTriggers||[];
