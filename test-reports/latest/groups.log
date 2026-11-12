@@ -183,4 +183,8 @@ JudgeGroup12ATests: 10/10
 JudgeGroup12BTests: 10/10
 JudgeGroup12CTests: 10/10
 JudgeGroup12DTests: 10/10
-Browser suites: 1850/1850 passed; 0 execution errors
+JudgeGroup12ETests: 10/10
+JudgeGroup12FTests: 10/10
+JudgeGroup12GTests: 10/10
+JudgeGroup12HTests: 10/10
+Browser suites: 1890/1890 passed; 0 execution errors
