@@ -36,3 +36,6 @@ L'intervista `context-interview.js` ora consente `requiredFacts` e non chiede au
 4. Aggiungere un permanente irrilevante non modifica il risultato.
 5. Un effetto aggiuntivo rilevante modifica il risultato o produce una domanda mirata.
 6. I moduli di regole restano deterministici; test e versione a ogni rilascio.
+
+## Chiusura 4F.3 (v0.9.43)
+Verificate 158/158 regressioni esistenti (Gruppo 3 e Gruppo 4A–4F.3), suddivise in tre esecuzioni dei test dai file GitHub. Aggiunta associazione dell'identità dell'incarnazione alle abilità innescate e richieste strutturate `requiredFacts` per cambi di zona non osservabili. Rieseguiti 17/17 test 4F.3 dopo l'ultima modifica. Limitazione: l'interfaccia guidata non trasforma ancora automaticamente tutti i `requiredFacts` del detector in domande contestuali; la sua integrazione end-to-end e il supporto completo dei cambi di zona restano lavoro successivo. La validazione su tablet/browser non è stata eseguita.
