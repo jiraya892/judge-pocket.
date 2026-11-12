@@ -1,64 +1,36 @@
-/* Unified, conservative orchestration of the existing independent engines. */
+/* 2A: one authoritative continuous-effect evaluation path.
+   Legacy engines are implementation details of JudgeUnifiedContinuous, never alternate rulings. */
 (function(root){'use strict';
-const generic=new Set(['addType','removeType','setColor','addColor','removeColor','addAbility','removeAbility','removeAllAbilities','setPT','definePT','modifyPT','switchPT','setController','replaceText','copyCharacteristics']);
-const land=new Set(['addLandSubtype','setNonbasicLandSubtype']);
+const kinds=new Set(['addType','removeType','setColor','addColor','removeColor','addAbility','removeAbility','removeAllAbilities','setPT','definePT','modifyPT','switchPT','setController','replaceText','copyCharacteristics','addLandSubtype','setNonbasicLandSubtype']);
 function evaluate(input){
  if(!input||!Array.isArray(input.objects)||!Array.isArray(input.effects)||!Array.isArray(input.players))return {supported:false,reason:'Formato stato non valido'};
- if(!root.JudgeRulesCore||!root.JudgeLayers||!root.JudgeContinuousState)return {supported:false,reason:'Moduli del motore mancanti'};
+ if(!root.JudgeRulesCore||!root.JudgeUnifiedContinuous)return {supported:false,reason:'Motore unificato o stato partita mancante'};
  const game=root.JudgeRulesCore.createGame(['A','B']);
- for(const p of input.players){const dest=game.players.find(x=>x.id===p.id);if(!dest||!Number.isInteger(p.life))return {supported:false,reason:'Dati giocatore invalidi'};dest.life=p.life}
+ for(const p of input.players){const dest=game.players.find(x=>x.id===p.id);if(!dest||!Number.isInteger(p.life))return {supported:false,reason:'Giocatore non valido'};dest.life=p.life}
  game.activePlayer=input.turn?.activePlayer||'A';game.priorityPlayer=input.turn?.priorityPlayer||'A';
- const source=input.objects.filter(o=>o.zone==='battlefield'),results=[],warnings=[];
- for(const o of input.objects){if(!o.name||!['A','B'].includes(o.owner)||!['A','B'].includes(o.controller)||!Array.isArray(o.types))return {supported:false,reason:'Oggetto incompleto'};const added=root.JudgeRulesCore.addObject(game,o);added.damage=o.damage||0;added.tapped=!!o.tapped}
- const active=input.effects.filter(e=>!e.oracleGenerated||source.some(o=>o.id===e.sourceId));
- const shared=root.JudgeUnifiedContinuous?.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),active.filter(e=>generic.has(e.kind)||land.has(e.kind)));
- if(shared&&!shared.supported)warnings.push('Pipeline condivisa: '+shared.reason);
- const landEffects=active.filter(e=>land.has(e.kind));
- const layer4=active.filter(e=>e.layer==='4'&&(land.has(e.kind)||generic.has(e.kind)));
- const unified=layer4.length&&root.JudgeUnifiedLayer4?root.JudgeUnifiedLayer4.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),layer4):null;
- if(unified&&!unified.supported)warnings.push('Layer 4 unificato: '+unified.reason);
- const landObjects=source.map(o=>({types:o.types.slice(),subtypes:(o.subtypes||[]).slice(),supertypes:(o.supertypes||[]).slice(),abilities:(o.abilities||[]).slice(),controller:o.controller,token:!!o.token,power:o.power,toughness:o.toughness,ptDefinition:o.ptDefinition}));
- let landOutcome=null;
- if(landEffects.length){
-  if(active.some(e=>generic.has(e.kind)&&e.layer==='4')&&!unified?.supported)warnings.push('Layer 4 misto non verificato.');
-  landOutcome=root.JudgeContinuousState.evaluate(landObjects,landEffects);
-  if(!landOutcome.supported)warnings.push('Motore terre: '+landOutcome.reason);
-  else warnings.push(...(landOutcome.warnings||[]));
+ const source=input.objects.filter(o=>o.zone==='battlefield'),warnings=[],results=[];
+ const ids=new Set();for(const o of input.objects){
+  if(!o.id||ids.has(o.id)||!o.name||!['A','B'].includes(o.owner)||!['A','B'].includes(o.controller)||!Array.isArray(o.types))return {supported:false,reason:'Oggetto invalido o ID duplicato'};
+  ids.add(o.id);const added=root.JudgeRulesCore.addObject(game,o);added.damage=o.damage||0;added.tapped=!!o.tapped;
  }
+ const active=input.effects.filter(e=>!e.oracleGenerated||source.some(o=>o.id===e.sourceId));
+ const unknownEffects=active.filter(e=>!kinds.has(e.kind));
+ const unknownOracle=source.filter(o=>(o.oracleUnknown||[]).length);
+ // An unrecognized global effect may influence every object: never use a fallback engine.
+ const invalidScope=active.filter(e=>!e.targetId||(e.targetId!=='all'&&!source.some(o=>o.id===e.targetId)));
+ const invalidSources=active.filter(e=>e.oracleGenerated&&(!e.sourceId||!source.some(o=>o.id===e.sourceId)));
+ const problems=[...unknownEffects.map(e=>'Operazione sconosciuta: '+(e.kind||e.text||'?')),...invalidScope.map(e=>'Ambito non valido: '+(e.kind||'?')),...invalidSources.map(e=>'Fonte non valida: '+(e.kind||'?')),...unknownOracle.map(o=>'Oracle incompleto: '+o.name)];
+ let shared=null;
+ if(!problems.length){shared=root.JudgeUnifiedContinuous.evaluate(source.map(o=>({...o,abilities:o.abilities||[],subtypes:o.subtypes||[],supertypes:o.supertypes||[]})),active);if(!shared.supported)problems.push(shared.reason||'Effetti non supportati')}
+ if(problems.length)warnings.push(...problems);
  for(const o of input.objects){
   if(o.zone!=='battlefield'){results.push({id:o.id,name:o.name,status:'not-evaluated'});continue}
-  const relevant=active.filter(e=>e.targetId===o.id||e.targetId==='all');
-  const sharedState=shared?.supported?shared.objects[source.indexOf(o)]:null;
-  const unsupported=relevant.filter(e=>!generic.has(e.kind)&&!land.has(e.kind));
-  const unknown=o.oracleUnknown||[];
-  if(unsupported.length||unknown.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:[...unsupported.map(e=>e.text||e.kind||'effetto non strutturato'),...unknown].join(' | ')});continue}
-  const genericEffects=relevant.filter(e=>generic.has(e.kind)&&e.layer!=='4');
-  if(sharedState&&!o.oracleUnknown?.length){results.push({id:o.id,name:o.name,status:'partial',types:sharedState.types,subtypes:sharedState.subtypes||[],controller:sharedState.controller,power:sharedState.power??null,toughness:sharedState.toughness??null,damage:o.damage||0,order:shared.order,coverage:shared.coverage});continue}
-  const combinedLayer4=unified?.supported&&unified.objects[source.indexOf(o)];
-  if(layer4.length&&!combinedLayer4){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Layer 4 unificato non disponibile'});continue}
-  const outcome=root.JudgeLayers.evaluate({types:combinedLayer4?.types||o.types,controller:o.controller,power:o.power,toughness:o.toughness,abilities:combinedLayer4?.abilities||o.abilities||[],colors:o.colors||[],text:o.oracle_text||''},genericEffects);
-  if(!outcome.supported){results.push({id:o.id,name:o.name,status:'unsupported',reason:outcome.reason});continue}
-  const index=source.indexOf(o),landState=landOutcome?.supported?landOutcome.objects[index]:null;
-  const landAffected=landEffects.some(e=>e.kind==='setNonbasicLandSubtype'&&landState?.subtypes?.includes(e.subtype)||e.kind==='addLandSubtype'&&landState?.subtypes?.includes(e.subtype));
-  const cdaRemoved=!!(o.ptDefinition&&(combinedLayer4||landState)&&!(combinedLayer4||landState).abilities.some(a=>a.id===o.ptDefinition.abilityId));
-  if(cdaRemoved){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Abilità che definisce P/T rimossa: calcolo completo dei layer non verificato'});continue}
-  const mixed=landAffected&&genericEffects.some(e=>e.layer==='6'||e.layer==='7a');
-  const hasCounters=!!((o.counters?.['+1/+1']||0)||(o.counters?.['-1/-1']||0));
-  if(hasCounters&&genericEffects.some(e=>e.layer==='7d')){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Ordine layer 7c/7d e segnalini non integrato'});continue}
-  if(mixed||landEffects.length&&!landOutcome?.supported||layer4.length&&unified&&!unified.supported){results.push({id:o.id,name:o.name,status:'unsupported',reason:'Interazione fra motori non risolta in sicurezza'});continue}
-  const types=combinedLayer4?combinedLayer4.types:landState?Array.from(new Set([...outcome.state.types,...landState.types.filter(t=>!o.types.includes(t))])):outcome.state.types;
-  const counter=o.counters?.['+1/+1']||0,negative=o.counters?.['-1/-1']||0;
-  let power=outcome.state.power,toughness=outcome.state.toughness;
-  if(landState&&o.ptDefinition&&genericEffects.length===0){power=landState.power;toughness=landState.toughness}
-  if(power!==null&&power!==undefined)power+=counter-negative;
-  if(toughness!==null&&toughness!==undefined)toughness+=counter-negative;
-  const uncertain=!!(layer4.length&&!unified?.supported);
-  results.push({id:o.id,name:o.name,status:uncertain?'unsupported':'partial',types,subtypes:combinedLayer4?.subtypes||landState?.subtypes||o.subtypes||[],controller:outcome.state.controller,power,toughness,damage:o.damage||0,possibleZeroToughness:types.includes('creature')&&toughness!==null&&toughness<=0,possibleLethalDamage:types.includes('creature')&&toughness!==null&&toughness>0&&(o.damage||0)>=toughness,order:[...(unified?.supported?unified.order:landOutcome?.order||[]),...outcome.order]});
+  if(problems.length){results.push({id:o.id,name:o.name,status:'unsupported',reason:problems.join(' | ')});continue}
+  const s=shared.objects[source.indexOf(o)],power=s.power??null,toughness=s.toughness??null,types=s.types;
+  results.push({id:o.id,name:o.name,status:'partial',types,subtypes:s.subtypes||[],controller:s.controller,power,toughness,damage:o.damage||0,order:shared.order,coverage:shared.coverage,possibleZeroToughness:types.includes('creature')&&toughness!==null&&toughness<=0,possibleLethalDamage:types.includes('creature')&&toughness!==null&&toughness>0&&(o.damage||0)>=toughness})
  }
- if(input.objects.some(o=>o.oracleUnknown?.length))warnings.push('Oracle non completamente interpretato: anche gli altri permanenti potrebbero essere influenzati.');
- if(active.some(e=>!e.targetId))warnings.push('Effetti privi di ambito ignorati.');
- warnings.push('SBA solo segnalate, non eseguite: abilità, dipendenze generali, pila e testo Oracle incompleto possono cambiare il risultato.');
- return {supported:true,game,results,warnings,modules:{gameState:true,genericLayers:true,landLayers:!!landOutcome?.supported,oracleRecognition:!!root.JudgeOracleRecognition,stateBasedActions:'advisory-only'}};
+ warnings.push('Risultati parziali: SBA non eseguite, copertura Oracle e dipendenze CR 613 non complete.');
+ return {supported:true,game,results,warnings,modules:{gameState:true,unifiedContinuous:true,genericLayers:true,landLayers:true,oracleRecognition:!!root.JudgeOracleRecognition,stateBasedActions:'advisory-only'}};
 }
 root.JudgeCoordinator={evaluate};
 })(typeof window!=='undefined'?window:globalThis);
