@@ -15,7 +15,7 @@ function resolve(state,instructions,execute,stabilize){
  }
  const settled=stabilize(working);
  if(!settled||!settled.supported||!settled.state)return {supported:false,reason:settled?.reason||'SBA non determinabili'};
- return {supported:true,state:settled.state,events,sba:settled.changes||[]};
+ return {supported:true,state:settled.state,events,sba:settled.changes||[],transitions:settled.transitions||[]};
 }
 root.JudgeAtomicResolution={resolve};
 })(typeof window!=='undefined'?window:globalThis);
