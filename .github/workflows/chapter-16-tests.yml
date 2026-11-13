@@ -3,6 +3,7 @@ on:
   push:
     branches: [dev/chapter-16-question-planner, dev/beta-engine-integration]
   workflow_dispatch:
+  workflow_call:
 permissions:
   contents: read
 jobs:
