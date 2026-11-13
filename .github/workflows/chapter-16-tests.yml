@@ -29,6 +29,7 @@ jobs:
           node beta-engine.test.cjs
           node case-study-targeting.test.cjs
           node case-study-reels.test.cjs
+          node case-study-forums.test.cjs
           node interaction-story.test.cjs
           node card-data.test.cjs
           node verify-tests.cjs

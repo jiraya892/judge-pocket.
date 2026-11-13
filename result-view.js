@@ -1,6 +1,10 @@
 /* Human-readable computed outcomes, kept separate from source authentication. */
 (function(root){'use strict';
 const rules={
+ '101.1':'Il testo di una carta può modificare la regola generale.',
+ '702.2b':'Un danno positivo da una fonte con tocco letale è sufficiente per distruggere una creatura, salvo effetti come indistruttibile.',
+ '704.5h':'Il tocco letale si controlla per il danno inflitto dall’ultima verifica delle azioni basate sullo stato.',
+ '702.15b':'Il danno di una fonte con legame vitale fa guadagnare altrettante vite al suo controllore, come parte del danno.',
  '613.1d':'Layer 4: effetti che modificano i tipi delle carte.',
  '613.8':'Dipendenze: un effetto può dover essere applicato prima di un altro, anche se è entrato dopo.',
  '305.7':'Impostare un tipo di terra base rimuove le abilità del testo della terra e le dà la corrispondente abilità di mana.',

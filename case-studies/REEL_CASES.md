@@ -1,5 +1,8 @@
 # Casi ricavati dai reel pubblici — 13 novembre 2026
 
+Questo documento registra il primo blocco, commit `8c46c5b`. Le estensioni
+successive di combattimento e interfaccia sono in [PUBLIC_DISCUSSIONS.md](PUBLIC_DISCUSSIONS.md).
+
 Ramo: `dev/media-case-intake`, base `4a76135`. Nessuna pubblicazione o modifica a
 main. I casi provengono da cinque audio realmente acquisiti e trascritti con
 Whisper.cpp tiny. Video, audio e trascrizioni complete restano fuori dal checkout.

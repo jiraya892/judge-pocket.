@@ -17,7 +17,7 @@ function addObject(s,data){
  zone:data.zone||'battlefield',types:(data.types||[]).map(t=>t.toLowerCase()),
  oracle_text:data.oracle_text||'',card_faces:copy(data.card_faces||[]),
  token:!!data.token,power:data.power??null,toughness:data.toughness??null,loyalty:data.loyalty??null,
- counters:copy(data.counters||{}),damage:0,deathtouchMarked:false,tapped:false,indestructible:!!data.indestructible,legendary:!!data.legendary};
+ counters:copy(data.counters||{}),damage:0,deathtouchMarked:data.deathtouchMarked===true,lethalDamageUsesPower:data.lethalDamageUsesPower===true,tapped:false,indestructible:!!data.indestructible,legendary:!!data.legendary};
  if(!o.name)throw Error('Nome oggetto mancante');
  s.objects.push(o);return o;
 }
@@ -205,7 +205,9 @@ function stateBasedActions(s){
   }
   if(typed(o,'creature')&&o.toughness!==null){
    const pt=o.toughness+(o.counters['+1/+1']||0)-(o.counters['-1/-1']||0);
-   if(pt<=0||(!o.indestructible&&(o.damage>=pt||o.deathtouchMarked))){
+   const threshold=o.lethalDamageUsesPower?o.power+(o.counters['+1/+1']||0)-(o.counters['-1/-1']||0):pt;
+   if(o.lethalDamageUsesPower&&pt>0&&!o.indestructible&&o.damage>0&&!o.deathtouchMarked&&!Number.isFinite(o.power))throw Error('Forza necessaria per determinare il danno letale');
+   if(pt<=0||(!o.indestructible&&o.damage>0&&(o.damage>=threshold||o.deathtouchMarked))){
     const reason=pt<=0?'toughness':o.deathtouchMarked?'deathtouch':'damage';
     moveZone(s,o.id,'graveyard');out.push({type:'creatureLeaves',name:o.name,reason});
    }
@@ -214,6 +216,7 @@ function stateBasedActions(s){
    moveZone(s,o.id,'graveyard');out.push({type:'planeswalkerLeaves',name:o.name,reason:'loyalty'});
   }
  }
+ for(const o of battlefield(s))if(o.deathtouchMarked===true)o.deathtouchMarked=false;
  return out;
 }
 root.JudgeRulesCore={createGame,addObject,moveZone,battlefield,modifiers,previewEvent,applyEvent,

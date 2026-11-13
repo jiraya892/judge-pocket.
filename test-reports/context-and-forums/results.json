@@ -1,0 +1,310 @@
+{
+  "date_utc": "2026-11-13T13:07:13.936441+00:00",
+  "results": [
+    {
+      "command": [
+        "node",
+        "question-planner.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 27,
+      "browser": false,
+      "summary": [
+        "PASS scenario budget checked before evaluation",
+        "PASS evaluator cannot mutate planner input",
+        "PASS interaction between unknown facts retained",
+        "27/27 question-planner tests passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "chapter-16-guided.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 20,
+      "browser": false,
+      "summary": [
+        "PASS invalid controller rejected",
+        "PASS invalid order rejected",
+        "PASS build input objects retain subtype and printed numeric values",
+        "20/20 guided bridge integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "chapter-16-real-engine.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 39,
+      "browser": false,
+      "summary": [
+        "PASS real planner asks only the explicit scenario boundary",
+        "PASS actual bridge stabilizes real interaction without controller or order questions",
+        "PASS presentation does not manufacture a verified verdict",
+        "39/39 real-engine integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "beta-engine.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 19,
+      "browser": false,
+      "summary": [
+        "PASS invalid missing-target kind is unsupported, not an illegal known target",
+        "PASS unparsed target abilities rejected by narrow evaluator",
+        "PASS stalled online lookup aborts and reports a recoverable error",
+        "19/19 beta engine integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-targeting.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 16,
+      "browser": false,
+      "summary": [
+        "PASS a known colorless source is distinct from an unknown-color source",
+        "PASS a known protection block makes hexproof ownership irrelevant",
+        "PASS unimplemented protection and conditional keywords stay unsupported",
+        "16/16 targeting case-study checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-reels.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 50,
+      "browser": false,
+      "summary": [
+        "PASS Booster Tutor is not silently treated as a normal draw instruction",
+        "PASS actual replacement core applies each draw replacement once in either order",
+        "PASS draw projections do not claim to execute draws through the event pipeline",
+        "50/50 reel case-study checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-forums.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 16,
+      "browser": false,
+      "summary": [
+        "PASS deathtouch is remembered only until the next SBA check",
+        "PASS Banefire plus a response stays unsupported until X and response resolution are connected",
+        "PASS unpreventable damage does not bypass increased toughness in the core",
+        "16/16 public discussion regression checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "interaction-story.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 5,
+      "browser": false,
+      "summary": [
+        "PASS a scoped count remains partial and distinguishes requested from actual draws",
+        "PASS presentation does not mutate engine evidence or calculation",
+        "PASS a dead attacker is not described as still fighting its blocker",
+        "5/5 explanation boundary checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "card-data.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 10,
+      "browser": false,
+      "summary": [
+        "PASS corrupt compressed bytes are rejected before use",
+        "PASS retry after integrity failure does not cache invalid bytes",
+        "PASS all provider requests remain local and shard reads are deduplicated",
+        "10/10 card database checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "verify-tests.cjs"
+      ],
+      "exit_code": 0,
+      "count": 71,
+      "browser": false,
+      "summary": [
+        "PASS 5H: 2 damage then +1/+1 in same resolution survives",
+        "PASS 5H: 2 damage in separate resolution kills before later counter",
+        "PASS 5H: indestructible 2/2 survives lethal damage",
+        "Total: 71 passed, 0 failed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "verify-groups-5h.cjs"
+      ],
+      "exit_code": 0,
+      "count": 2370,
+      "browser": false,
+      "summary": [
+        "JudgeGroup15FTests: 10/10",
+        "JudgeGroup15GTests: 10/10",
+        "JudgeGroup15HTests: 10/10",
+        "Browser suites: 2370/2370 passed; 0 execution errors"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/verify-official-provenance.test.cjs"
+      ],
+      "exit_code": 0,
+      "count": 6,
+      "browser": false,
+      "summary": [
+        "6/6 provenance fail-closed tests passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/media/test_probe.cjs"
+      ],
+      "exit_code": 0,
+      "count": 3,
+      "browser": false,
+      "summary": [
+        "3/3 reviewed-case probe checks passed (actual rules engine; no media or model download)"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_intake.py"
+      ],
+      "exit_code": 0,
+      "count": 10,
+      "browser": false,
+      "summary": [
+        "----------------------------------------------------------------------",
+        "Ran 10 tests in 0.203s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_ruling_filter.py"
+      ],
+      "exit_code": 0,
+      "count": 14,
+      "browser": false,
+      "summary": [
+        "----------------------------------------------------------------------",
+        "Ran 14 tests in 0.006s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_instagram_public.py"
+      ],
+      "exit_code": 0,
+      "count": 6,
+      "browser": false,
+      "summary": [
+        "----------------------------------------------------------------------",
+        "Ran 6 tests in 0.007s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-chapter-16-browser.py"
+      ],
+      "exit_code": 0,
+      "count": 3,
+      "browser": true,
+      "summary": [
+        "PASS real browser: Oracle -> planner -> real engine -> SBA and source recalculation -> source gate; no controller/order questions",
+        "PASS simulated verified engine: targeted questions, answer revision, no repeat, source gate retained",
+        "PASS stale asynchronous engine response cannot overwrite a restarted interview"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-beta-browser.py"
+      ],
+      "exit_code": 0,
+      "count": 7,
+      "browser": true,
+      "summary": [
+        "PASS real mobile spell flow: Oracle damage, priority, resolution and indestructible",
+        "PASS real mobile entry flow: contextual controller question, triggered ability and stack resolution",
+        "PASS unsupported interaction and recovery: explicit limits, no blank screen or JavaScript errors",
+        "UNRUN WebKit: BrowserType.launch: Executable doesn't exist at /home/agent/.cache/ms-playwright/webkit-2336/pw_run.sh"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-targeting-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "count": 3,
+      "browser": true,
+      "summary": [
+        "PASS real UI: protection blocks the targeting attempt without damage",
+        "PASS real UI: necessary controller question allows your own spell through hexproof",
+        "PASS real UI: opposing spell is blocked and no false resolution is displayed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-reel-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "count": 12,
+      "browser": true,
+      "summary": [
+        "PASS UI: an unparsed added detail is retained and blocks a stale calculation",
+        "PASS UI: edit a previous answer from the result and recompute the limited trigger",
+        "PASS UI: Oracle power-based lethal damage is explained without card-pair exceptions",
+        "PASS UI: lifelink gain against indestructible is explained in plain language"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "context-ui.js": "da6ee7f08376631879228710187e47cd8a00d5ff691f14903b1075576c76ec48",
+    "interaction-story.js": "60d0700c4cf7299a0b6fe0aeaf62a6c23790f7a2483374bd21a5f051ce6cfba4",
+    "guided-bridge.js": "2c835a83554b24844c96f8e59472eec41d98e7fbd46eb811e9f209651727f37f",
+    "combat-scenario.js": "2666adebfdb1620cadedf18d0f5b5ea35d2b59c4fd028367cf0906b93bba3d0e",
+    "rules-core.js": "23ed793a20baa7363d05b37fed0cf98eb6869840e2e5a488924b96e01abe2158",
+    "local-sba.js": "64f52bad901db0faf4bc1595ebae27c775983a3b13bd272d0d21acf9786437ab",
+    "event-pipeline.js": "d795421d6a77b5007eb429740a5253cee237c32d7df5f62b2a268d73e8c30678",
+    "context.html": "b8c6e4a77628fd6b27ac4e605b6af2d55fc5676cc7a0d12d58a853d3405a0693",
+    "sw.js": "1b57e2186c02f5b0bddddd19b73e428a7621604c9b81a9efe0b807c3de3d22c2"
+  },
+  "ci": "not_run_local_changes_not_pushed",
+  "physical_mobile_devices_tested": false
+}

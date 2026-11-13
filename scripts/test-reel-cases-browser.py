@@ -129,4 +129,19 @@ with sync_playwright() as p:
     assert 'non si innesca nessuna' in page.locator('#status').inner_text()
     assert not errors, errors
     print('PASS UI: edit a previous answer from the result and recompute the limited trigger')
+
+    begin('Craw Wurm', 'Zilortha, Strength Incarnate', 'Una creatura attaccante viene bloccata')
+    page.locator('#choices').get_by_role('button', name='Craw Wurm', exact=True).click()
+    confirm()
+    text = details()
+    assert 'forza 7' in text and '6 danni segnati' in text
+    assert 'quindi sopravvive' in text
+    print('PASS UI: Oracle power-based lethal damage is explained without card-pair exceptions')
+
+    begin('Child of Night', 'Darksteel Myr', 'Una creatura attaccante viene bloccata')
+    page.locator('#choices').get_by_role('button', name='Child of Night', exact=True).click()
+    confirm()
+    assert 'guadagna 2 punti vita' in details()
+    assert not errors, errors
+    print('PASS UI: lifelink gain against indestructible is explained in plain language')
     browser.close()

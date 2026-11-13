@@ -33,6 +33,8 @@ function build(output,context={}){
   else if(b?.indestructible&&b.damage>0)model.paragraphs.push(b.name+' resta sul campo con '+b.damage+' danni segnati. Indistruttibile impedisce che il danno la distrugga, perciò continua a bloccare '+a.name+'.');
   else if(b)model.paragraphs.push(b.name+' rimane sul campo e continua a bloccare. Il danno viene assegnato alle creature coinvolte nel blocco.');
   if(outcome.rules.includes('702.4b'))model.paragraphs.push('Con attacco improvviso o doppio attacco c’è una prima sottofase di danno. Chi ha doppio attacco può infliggere danno anche nella sottofase normale, se è ancora in combattimento.');
+  for(const creature of [a,b].filter(Boolean))if(creature.zone==='battlefield'&&!creature.indestructible&&creature.damage>0&&creature.damage>=creature.toughness&&outcome.powerThresholdSources?.length)model.paragraphs.push('Per effetto di '+join(outcome.powerThresholdSources)+', il danno letale si confronta con la forza: '+creature.name+' ha '+creature.damage+' danni segnati e forza '+creature.power+', quindi sopravvive.');
+  for(const [player,amount]of Object.entries(outcome.lifeChanges||{}))if(amount>0)model.paragraphs.push('Chi controlla '+(player==='A'?a.name:b.name)+' guadagna '+amount+' '+(amount===1?'punto vita':'punti vita')+' grazie a legame vitale. Il guadagno avviene insieme al danno, anche se la creatura muore subito dopo.');
  }else{
   const events=outcome.events||[],leaves=events.filter(e=>e.type==='creatureLeaves');
   if(leaves.length&&outcome.rules?.includes('208.5')){

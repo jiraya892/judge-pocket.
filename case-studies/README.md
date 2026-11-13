@@ -3,6 +3,9 @@
 Questi file distinguono candidati, casi provati e meccanismi implementati. Non
 sono una raccolta di risposte da cercare tramite i nomi delle carte.
 
+Ultimo blocco: [discussioni pubbliche e interfaccia leggibile](PUBLIC_DISCUSSIONS.md),
+con nuovi casi su danno letale, tocco letale e legame vitale, e risultati di verifica.
+
 Il blocco successivo, basato su cinque reel realmente trascritti, è documentato in
 [REEL_CASES.md](REEL_CASES.md): conteggi di inneschi, combattimento ristretto e
 sostituzioni delle pescate, con perimetri e limiti distinti.

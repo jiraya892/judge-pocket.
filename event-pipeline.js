@@ -20,6 +20,7 @@ function run(input,events){
   if(!types.has(event.type))return {supported:false,reason:'Evento non supportato: '+event.type};
   const amount=event.amount;
   if(['gainLife','loseLife','putCounters','dealDamage'].includes(event.type)&&(!Number.isSafeInteger(amount)||amount<0))return {supported:false,reason:'Quantità non valida'};
+  if(event.deathtouch!==undefined&&typeof event.deathtouch!=='boolean')return {supported:false,reason:'Proprietà di tocco letale non valida'};
   const player=state.players.find(p=>p.id===event.player),target=state.objects.find(o=>o.id===event.target);
   if(['gainLife','loseLife'].includes(event.type)){
    if(!player)return {supported:false,reason:'Giocatore non valido'};
@@ -31,7 +32,7 @@ function run(input,events){
     if(!event.counterType||!['+1/+1','-1/-1'].includes(event.counterType))return {supported:false,reason:'Tipo segnalino non supportato'};
     target.counters=target.counters||{};target.counters[event.counterType]=(target.counters[event.counterType]||0)+amount;
    }
-   if(event.type==='dealDamage')target.damage=(target.damage||0)+amount;
+   if(event.type==='dealDamage'){target.damage=(target.damage||0)+amount;if(event.deathtouch&&amount>0)target.deathtouchMarked=true;}
   }
   log.push({type:event.type,amount:amount??null,target:event.target||event.player,replacements:replacement.trace});
  }
