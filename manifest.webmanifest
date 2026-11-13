@@ -1,1 +1,26 @@
-{"name":"Judge Pocket Beta","short_name":"Judge Pocket","start_url":"./","display":"standalone","background_color":"#101624","theme_color":"#151b2a","description":"Prototipo mobile per consultare carte Magic e rulings"}
+{
+  "id": "./",
+  "name": "Judge Pocket Beta",
+  "short_name": "Judge Pocket",
+  "lang": "it",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101624",
+  "theme_color": "#151b2a",
+  "description": "Interazioni Magic: calcolo deterministico, spiegazioni e limiti espliciti.",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

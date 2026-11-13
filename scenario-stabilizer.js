@@ -26,7 +26,7 @@ function evaluate(input){
  }
  // Every printed ability must have a recognized semantic implementation.
  for(const o of original)for(const a of o.abilities)if(a.id!==o.ptDefinition?.abilityId&&!effects.some(e=>e.sourceId===o.id&&e.sourceAbilityId===a.id))return unsupported('Abilità riconosciuta senza implementazione completa.');
- const removed=new Map(),events=[],steps=[];
+ const removed=new Map(),events=[],steps=[],rules=new Set();
  let finalObjects=null;
  // At least one permanent must leave on a nonterminal iteration. Thus N+1
  // evaluations suffice; the bound is independent of incoming timestamps.
@@ -35,10 +35,13 @@ function evaluate(input){
   const active=effects.filter(e=>board.some(o=>o.id===e.sourceId));
   const layer=root.JudgeUnifiedLayer4.evaluate(board,active);
   if(!layer.supported)return unsupported(layer.reason);
+  if(active.some(e=>e.kind==='addLandSubtype'))rules.add('613.1d');
+  if(active.some(e=>e.kind==='setNonbasicLandSubtype')&&layer.objects.some(o=>o.abilities.some(a=>a.origin==='basicLandType')))rules.add('305.7');
+  if(active.some(e=>e.kind==='addLandSubtype')&&active.some(e=>e.kind==='setNonbasicLandSubtype'))rules.add('613.8');
   const effective=[];
   for(const afterTypes of layer.objects){
    let o=afterTypes;
-   if(o.ptDefinition&&!o.abilities.some(a=>a.id===o.ptDefinition.abilityId))o={...o,ptDefinition:null,power:0,toughness:0}; // printed */* was checked above: CR 208.5
+   if(o.ptDefinition&&!o.abilities.some(a=>a.id===o.ptDefinition.abilityId)){rules.add('208.5');o={...o,ptDefinition:null,power:0,toughness:0};} // printed */* was checked above: CR 208.5
    const pt=root.JudgePTLayers.evaluate(o,layer.objects,[]);
    if(!pt.supported)return unsupported(pt.reason);
    effective.push({...o,power:pt.power,toughness:pt.toughness});
@@ -48,6 +51,7 @@ function evaluate(input){
   if(batch.changes.some(c=>c.type!=='creatureLeaves'||c.reason!=='toughness'))return unsupported('SBA fuori dal perimetro verificato.');
   steps.push({order:layer.order,objects:copy(effective)});
   if(!batch.changes.length){finalObjects=effective;break;}
+  if(batch.changes.length)rules.add('704.5f');
   for(const change of batch.changes){
    const before=effective.find(o=>o.id===change.id),after=batch.state.objects.find(o=>o.id===change.id);
    if(!before||!after||after.zone!=='graveyard'||removed.has(change.id))return unsupported('Transizione SBA non verificata.');
@@ -62,7 +66,7 @@ function evaluate(input){
   const left=removed.get(originalObject.id),o=left||finalObjects.find(x=>x.id===originalObject.id);
   return left?{id:o.id,name:o.name,status:'verified',zone:'graveyard',departure:{power:o.power,toughness:o.toughness}}:{id:o.id,name:o.name,status:'verified',zone:'battlefield',types:[...o.types].sort(),subtypes:[...o.subtypes].sort(),power:o.power,toughness:o.toughness,abilities:o.abilities.map(a=>({origin:a.origin,kind:a.kind||'static',text:a.text||null,color:a.color||null})).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)))};
  });
- return {supported:true,status:'verified',scope:'clean-static-snapshot',results,events,steps,warnings:[],rules:['305.7','613.8','208.5','704.5f'],coverage:'static-land-types-and-land-count-with-local-sba'};
+ return {supported:true,status:'verified',scope:'clean-static-snapshot',results,events,steps,warnings:[],rules:[...rules].sort(),coverage:'static-land-types-and-land-count-with-local-sba'};
 }
 root.JudgeScenarioStabilizer={evaluate};
 })(typeof window!=='undefined'?window:globalThis);

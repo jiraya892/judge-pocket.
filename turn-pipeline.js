@@ -57,7 +57,21 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
   if((s.pendingTriggers||[]).length)return {supported:false,reason:'Inneschi in attesa: inserirli nella pila prima della priorità'};
   if(!validPlayer(action.player)||s.priority!==action.player)return {supported:false,reason:'Il giocatore non ha priorità'};
   if(!root.JudgePriority)return {supported:false,reason:'Motore priorità mancante'};const passed=root.JudgePriority.pass(s,action.player);if(!passed.supported)return passed;if(passed.step==='priorityPassed'||passed.step==='advanceStepManually')return passed;Object.assign(s,{priority:passed.state.priority,passes:passed.state.passes});
-  const top=s.stack[s.stack.length-1];if(top.interveningIf!=null){if(!root.JudgeTriggers)return {supported:false,reason:'Motore condizioni non disponibile'};const check=root.JudgeTriggers.recheck(top,s);if(!check.supported)return check;if(!check.resolves){s.stack.pop();s.history.push({kind:'triggerConditionFailed',top:top.id});return {supported:true,state:s,step:'triggerConditionFailed',top};}}if(!root.JudgeResolution)return {supported:false,reason:'Motore risoluzione 5D mancante'};const plan=root.JudgeResolution.plan(s,top);if(!plan.supported)return plan;if(plan.step==='allTargetsIllegal'){s.stack.pop();s.history.push({kind:'allTargetsIllegal',top:top.id});return {supported:true,state:s,step:'allTargetsIllegal',top,legality:plan.legality};}if(plan.step==='resolveManually'){s.history.push({kind:'resolutionRequired',top});return {supported:true,state:s,step:'resolveManually',top,warning:'Risoluzione Oracle non strutturata: elemento ancora sulla pila'};}// 5Y.1: a structured spell must have a determinable post-resolution zone.
+  const top=s.stack[s.stack.length-1];if(top.interveningIf!=null){if(!root.JudgeTriggers)return {supported:false,reason:'Motore condizioni non disponibile'};const check=root.JudgeTriggers.recheck(top,s);if(!check.supported)return check;if(!check.resolves){s.stack.pop();s.history.push({kind:'triggerConditionFailed',top:top.id});return {supported:true,state:s,step:'triggerConditionFailed',top};}}if(!root.JudgeResolution)return {supported:false,reason:'Motore risoluzione 5D mancante'};const plan=root.JudgeResolution.plan(s,top);if(!plan.supported)return plan;if(plan.step==='allTargetsIllegal'){
+   s.stack.pop();let next=s,zoneTransition=null;
+   // CR 608.2b: a spell whose targets are all illegal does not resolve, but its
+   // represented card still leaves the stack. Copies simply cease to exist.
+   if(top.kind==='spell'&&!top.isCopy){
+    if(!root.JudgeStackZone)return {supported:false,reason:'Motore cambi zona non disponibile'};
+    const moved=root.JudgeStackZone.transition(next,top,'graveyard');if(!moved.supported)return moved;
+    next=moved.state;zoneTransition=moved.transition;
+    if(!root.JudgeTriggerFlow)return {supported:false,reason:'Flusso inneschi non disponibile'};
+    const triggers=root.JudgeTriggerFlow.transition(moved.before,next);if(!triggers.supported)return triggers;
+    Object.assign(next,{pendingTriggers:triggers.state.pendingTriggers,delayedTriggers:triggers.state.delayedTriggers,firedDelayed:triggers.state.firedDelayed,nextTriggerId:triggers.state.nextTriggerId});
+   }
+   next.pending=next.pendingTriggers;next.passes=0;next.priority=next.turn?.activePlayer||next.activePlayer;
+   next.history.push({kind:'allTargetsIllegal',top:top.id});return {supported:true,state:next,step:'allTargetsIllegal',top,legality:plan.legality,zoneTransition};
+  }if(plan.step==='resolveManually'){s.history.push({kind:'resolutionRequired',top});return {supported:true,state:s,step:'resolveManually',top,warning:'Risoluzione Oracle non strutturata: elemento ancora sulla pila'};}// 5Y.1: a structured spell must have a determinable post-resolution zone.
   // Never silently leave a real spell card in the stack zone.
   let destination=null;
   if(top.kind==='spell'){
@@ -70,17 +84,26 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
     else return {supported:false,reason:'Destinazione della magia non determinata',requiredFacts:[{key:'resolvesTo:'+top.id,question:'La magia risolta entra sul campo di battaglia o va al cimitero?',options:[{id:'battlefield',label:'Campo di battaglia'},{id:'graveyard',label:'Cimitero'}]}]};
    }
   }
-  let resolving=clone(s);resolving.stack.pop();if(!root.JudgeAtomicResolution||!root.JudgeLocalSBA||!root.JudgeTriggerFlow)return {supported:false,reason:'Motore risoluzione atomica, SBA o inneschi mancante'};const atomic=root.JudgeAtomicResolution.resolve(resolving,plan.events,(current,event)=>{const out=apply(current,{type:'event',event,[INTERNAL]:true});return out.supported?{supported:true,state:out.state}:{supported:false,reason:out.reason};},current=>root.JudgeLocalSBA.stabilize(current));if(!atomic.supported)return {supported:false,reason:'Risoluzione non eseguita: '+atomic.reason,top};resolving=atomic.state;
+  let resolving=clone(s);resolving.stack.pop();
+  if(!root.JudgeAtomicResolution||!root.JudgeLocalSBA||!root.JudgeTriggerFlow)return {supported:false,reason:'Motore risoluzione atomica, SBA o inneschi mancante'};
   let resolutionZoneTransition=null;
-  if(top.kind==='spell'&&destination!=='ceasesToExist'){
-   if(!root.JudgeStackZone)return {supported:false,reason:'Motore cambi zona non disponibile'};
-   const moved=root.JudgeStackZone.transition(resolving,top,destination);
-   if(!moved.supported)return moved;
-   resolving=moved.state;resolutionZoneTransition=moved.transition;
-   const tr=root.JudgeTriggerFlow.transition(moved.before,moved.state);
-   if(!tr.supported)return tr;
-   Object.assign(resolving,{pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});
-  }
+  const atomic=root.JudgeAtomicResolution.resolve(resolving,plan.events,(current,event)=>{
+   const out=apply(current,{type:'event',event,[INTERNAL]:true});return out.supported?{supported:true,state:out.state}:{supported:false,reason:out.reason};
+  },current=>{
+   // CR 608.2: finish resolution (including moving the spell card) before
+   // checking SBA. Otherwise replaying an SBA snapshot can resurrect the
+   // spell card in the stack zone after its stack item has been removed.
+   if(top.kind==='spell'&&destination!=='ceasesToExist'){
+    if(!root.JudgeStackZone)return {supported:false,reason:'Motore cambi zona non disponibile'};
+    const moved=root.JudgeStackZone.transition(current,top,destination);if(!moved.supported)return moved;
+    current=moved.state;resolutionZoneTransition=moved.transition;
+    const tr=root.JudgeTriggerFlow.transition(moved.before,current);if(!tr.supported)return tr;
+    Object.assign(current,{pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});
+   }
+   return root.JudgeLocalSBA.stabilize(current);
+  });
+  if(!atomic.supported)return {supported:false,reason:'Risoluzione non eseguita: '+atomic.reason,top};
+  resolving=atomic.state;
   const events=atomic.events;const settled={changes:atomic.sba,transitions:atomic.transitions};let sbaQueued=0;for(const change of settled.transitions){const snap={...clone(change.after),pendingTriggers:resolving.pendingTriggers,delayedTriggers:resolving.delayedTriggers,firedDelayed:resolving.firedDelayed,nextTriggerId:resolving.nextTriggerId};const tr=root.JudgeTriggerFlow.transition(change.before,snap);if(!tr.supported)return tr;Object.assign(resolving,{objects:tr.state.objects,pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});sbaQueued+=tr.queued;}resolving.pending=resolving.pendingTriggers;resolving.priority=resolving.turn?.activePlayer||resolving.activePlayer;resolving.passes=0;resolving.history.push({kind:'resolved',top});return {supported:true,state:resolving,step:'resolved',top,events,zoneTransition:resolutionZoneTransition,event:events[0]||null,sba:[...settled.changes],sbaExecuted:settled.changes.length>0};
  }
  return {supported:false,reason:'Azione non supportata'};

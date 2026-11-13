@@ -26,9 +26,10 @@ function recognize(card,object){
 }
 async function fetchCard(name){
  if(typeof name!=='string'||!name.trim())throw Error('Nome carta mancante');
+ if(root.JudgeCardData){try{const local=await root.JudgeCardData.get(name);if(local)return local;}catch(e){/* Online transport remains an explicit fallback; no missing data is invented. */}}
  const response=await fetch('https://api.scryfall.com/cards/named?exact='+encodeURIComponent(name.trim()),{headers:{Accept:'application/json'}});
  if(!response.ok)throw Error(response.status===404?'Carta non trovata su Scryfall':'Scryfall non disponibile ('+response.status+')');
- const card=await response.json();if(!card.name||(!card.oracle_text&&!card.card_faces))throw Error('Testo Oracle non disponibile');return card;
+ const card=await response.json();if(!card.name||(typeof card.oracle_text!=='string'&&!card.card_faces))throw Error('Testo Oracle non disponibile');return card;
 }
 root.JudgeOracleRecognition={recognize,fetchCard};
 })(typeof window!=='undefined'?window:globalThis);

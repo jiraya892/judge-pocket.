@@ -1,14 +1,14 @@
-name: Chapter 16 planner checks
+name: Judge Pocket engine and beta checks
 on:
   push:
-    branches: [dev/chapter-16-question-planner]
+    branches: [dev/chapter-16-question-planner, dev/beta-engine-integration]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   planner:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,6 +25,39 @@ jobs:
           node question-planner.test.cjs
           node chapter-16-guided.test.cjs
           node chapter-16-real-engine.test.cjs
+          node beta-engine.test.cjs
+          node card-data.test.cjs
           node verify-tests.cjs
           node verify-groups-5h.cjs
           node scripts/verify-official-provenance.test.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify reproducible card and app-shell generation
+        run: |
+          python3 scripts/build-card-database.py
+          python3 scripts/build-app-shell.py
+          git diff --exit-code -- data/oracle sw.js
+      - name: Install browser test dependencies
+        run: |
+          python3 -m pip install playwright==1.56.0
+          python3 -m playwright install --with-deps chromium
+      - name: Run browser and PWA checks
+        shell: bash
+        run: |
+          python3 -m http.server 8000 --bind 127.0.0.1 > /tmp/judge-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          python3 - <<'PYTHON'
+          import time, urllib.request
+          for attempt in range(30):
+              try:
+                  urllib.request.urlopen('http://127.0.0.1:8000/index.html', timeout=1).read(1)
+                  break
+              except OSError:
+                  time.sleep(0.2)
+          else:
+              raise RuntimeError('Local HTTP server failed to start')
+          PYTHON
+          python3 scripts/test-chapter-16-browser.py
+          python3 scripts/test-beta-browser.py
