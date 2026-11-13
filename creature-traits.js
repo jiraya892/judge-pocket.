@@ -9,12 +9,13 @@ function prepare(card,index){
  for(const line of text.split('\n').map(s=>s.trim()).filter(Boolean)){
   const names=[card.name,card.name?.split(',')[0]].filter(Boolean);
   if(names.some(name=>line==='Prevent all damage that would be dealt to '+name+'.')){object.preventsDamage=true;traits.push('preventDamage');continue;}
+  if(line==="This creature can't be blocked."||names.some(name=>line===name+" can't be blocked.")){object.cantBeBlocked=true;traits.push('unblockable');continue;}
   const keywords=line.split(/,\s*/).map(s=>s.toLowerCase());
   const colors={white:'W',blue:'U',black:'B',red:'R',green:'G'};
   for(const keyword of keywords){
    const protection=/^protection from (white|blue|black|red|green)$/.exec(keyword);
    if(protection){object.protectionColors=[...(object.protectionColors||[]),colors[protection[1]]];continue;}
-   if(!['indestructible','flying','reach','vigilance','trample','haste','defender','menace','deathtouch','lifelink','first strike','double strike','hexproof','shroud'].includes(keyword))return fail('Abilità non riconosciuta completamente: '+line);
+   if(!['flash','indestructible','flying','reach','vigilance','trample','haste','defender','menace','deathtouch','lifelink','first strike','double strike','hexproof','shroud'].includes(keyword))return fail('Abilità non riconosciuta completamente: '+line);
    if(['indestructible','hexproof','shroud'].includes(keyword))object[keyword]=true;
   }
   traits.push(...keywords);

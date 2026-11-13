@@ -36,6 +36,7 @@ async function guided(context){
  if(!Number.isInteger(context.castingIndex)||context.castingIndex<0||context.castingIndex>=context.cards.length||context.cards[context.castingIndex]!==context.casting)return fail('CASTING_UNKNOWN','La magia da risolvere non è stata identificata.');
  if(context.cards.length>4)return fail('SCENARIO_DOMAIN_LIMIT','La beta guidata considera fino a quattro carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(error){return fail('ORACLE_LOOKUP_FAILED',error.message)}
+ if(root.JudgeSweeperScenario?.recognize(cards[context.castingIndex]))return root.JudgeSweeperScenario.guided(context,cards);
  const spell=cards[context.castingIndex],permanents=[];
  for(let i=0;i<cards.length;i++){
   if(i===context.castingIndex)continue;

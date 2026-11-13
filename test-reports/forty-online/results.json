@@ -1,0 +1,499 @@
+{
+  "date_utc": "2026-11-13T15:40:54.174653+00:00",
+  "results": [
+    {
+      "command": [
+        "node",
+        "question-planner.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS 512 scenarios accepted",
+        "PASS scenario budget checked before evaluation",
+        "PASS evaluator cannot mutate planner input",
+        "PASS interaction between unknown facts retained",
+        "27/27 question-planner tests passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "chapter-16-guided.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS open scenario is not assumed empty",
+        "PASS invalid controller rejected",
+        "PASS invalid order rejected",
+        "PASS build input objects retain subtype and printed numeric values",
+        "20/20 guided bridge integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "chapter-16-real-engine.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS surviving creature loses the departed source effect after SBA",
+        "PASS real planner asks only the explicit scenario boundary",
+        "PASS actual bridge stabilizes real interaction without controller or order questions",
+        "PASS presentation does not manufacture a verified verdict",
+        "39/39 real-engine integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "beta-engine.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS copy with all illegal targets ceases without moving physical card",
+        "PASS invalid missing-target kind is unsupported, not an illegal known target",
+        "PASS unparsed target abilities rejected by narrow evaluator",
+        "PASS stalled online lookup aborts and reports a recoverable error",
+        "19/19 beta engine integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-targeting.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS unknown source colors are not silently treated as colorless",
+        "PASS a known colorless source is distinct from an unknown-color source",
+        "PASS a known protection block makes hexproof ownership irrelevant",
+        "PASS unimplemented protection and conditional keywords stay unsupported",
+        "16/16 targeting case-study checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-reels.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS Booster Tutor is not silently treated as a normal draw instruction",
+        "PASS actual replacement core applies each draw replacement once in either order",
+        "PASS draw projections do not claim to execute draws through the event pipeline",
+        "PASS unrecognized protection text remains unsupported",
+        "51/51 reel case-study checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-forums.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS zero power requires positive damage and zero toughness still kills",
+        "PASS deathtouch is remembered only until the next SBA check",
+        "PASS Banefire plus a response stays unsupported until X and response resolution are connected",
+        "PASS unpreventable damage does not bypass increased toughness in the core",
+        "16/16 public discussion regression checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-forty.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS web40-34 Protezione dal rosso previene Pyroclasm senza richiedere bersagli",
+        "PASS web40-35 Protezione dal bianco non previene una magia rossa",
+        "PASS web40-36 Indistruttibile conserva i danni segnati",
+        "PASS web40-37 Ricevere danno non attiva legame vitale o tocco letale della vittima",
+        "PASS web40-38 Prevenire il danno e diverso da sopravvivere grazie a indistruttibile",
+        "PASS web40-39 Raggiungere non equivale ad avere volare",
+        "PASS web40-40 Le azioni basate sullo stato seguono la risoluzione del danno collettivo",
+        "40/40 online study scenarios passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "combat-planning.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS an irrelevant continuous-effect controller is suppressed",
+        "PASS scenario expansion is bounded and produces no provisional outcome",
+        "PASS a partial branch cannot be used to suppress a question",
+        "PASS unknown additional Oracle text rejects the entire scenario",
+        "PASS an open battlefield is not assumed empty",
+        "PASS illegal flying combat remains unsupported but legality query explains false",
+        "PASS board confirmation remains mandatory",
+        "14/14 combat planning checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "interaction-story.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS a forged verified verdict cannot become a computed story",
+        "PASS an unverified calculation is not rendered as a result",
+        "PASS a scoped count remains partial and distinguishes requested from actual draws",
+        "PASS presentation does not mutate engine evidence or calculation",
+        "PASS a dead attacker is not described as still fighting its blocker",
+        "5/5 explanation boundary checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "card-data.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS rulings are selected by Oracle ID, not by guessed pair matching",
+        "PASS corrupt compressed bytes are rejected before use",
+        "PASS retry after integrity failure does not cache invalid bytes",
+        "PASS all provider requests remain local and shard reads are deduplicated",
+        "13/13 card database checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "verify-tests.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS 5H: 2 damage kills 2/2 at SBA check",
+        "PASS 5H: 2 damage then +1/+1 in same resolution survives",
+        "PASS 5H: 2 damage in separate resolution kills before later counter",
+        "PASS 5H: indestructible 2/2 survives lethal damage",
+        "Total: 71 passed, 0 failed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "verify-groups-5h.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "JudgeGroup15ETests: 10/10",
+        "JudgeGroup15FTests: 10/10",
+        "JudgeGroup15GTests: 10/10",
+        "JudgeGroup15HTests: 10/10",
+        "Browser suites: 2370/2370 passed; 0 execution errors"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/verify-official-provenance.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "6/6 provenance fail-closed tests passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/media/test_probe.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "3/3 reviewed-case probe checks passed (actual rules engine; no media or model download)"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/test-search-batch.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS recorded unsupported boundary: Urza's Saga + Echoing Deeps",
+        "PASS recorded unsupported boundary: Gond Gate + Azorius Guildgate",
+        "PASS recorded unsupported boundary: Burrenton Forge-Tender + Soul-Scar Mage",
+        "PASS recorded unsupported boundary: Blind Obedience + Xenagos, God of Revels",
+        "5/5 discovered capability-gap checks passed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_intake.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "..........",
+        "----------------------------------------------------------------------",
+        "Ran 10 tests in 0.087s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_ruling_filter.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "..............",
+        "----------------------------------------------------------------------",
+        "Ran 14 tests in 0.003s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_instagram_public.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "......",
+        "----------------------------------------------------------------------",
+        "Ran 6 tests in 0.003s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-chapter-16-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS real browser: Oracle -> planner -> real engine -> SBA and source recalculation -> source gate; no controller/order questions",
+        "PASS simulated verified engine: targeted questions, answer revision, no repeat, source gate retained",
+        "PASS stale asynchronous engine response cannot overwrite a restarted interview"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-beta-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS offline reload: cached app, local Oracle shards and real calculation without network",
+        "PASS real mobile spell flow: Oracle damage, priority, resolution and indestructible",
+        "PASS real mobile entry flow: contextual controller question, triggered ability and stack resolution",
+        "PASS unsupported interaction and recovery: explicit limits, no blank screen or JavaScript errors",
+        "UNRUN WebKit: BrowserType.launch: Executable doesn't exist at /home/agent/.cache/ms-playwright/webkit-2336/pw_run.sh"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-targeting-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS real UI: protection blocks the targeting attempt without damage",
+        "PASS real UI: necessary controller question allows your own spell through hexproof",
+        "PASS real UI: opposing spell is blocked and no false resolution is displayed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-reel-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS UI: first-step death does not unblock the attacker",
+        "PASS UI: actual draw replacements, unchanged put-back instruction and explicit boundary",
+        "PASS UI: unique trample assignment works; unrecognized abilities remain recoverable",
+        "PASS UI: add a third card, preserve old answers and ask only its relevant controller",
+        "PASS UI: an unparsed added detail is retained and blocks a stale calculation",
+        "PASS UI: edit a previous answer from the result and recompute the limited trigger",
+        "PASS UI: Oracle power-based lethal damage is explained without card-pair exceptions",
+        "PASS UI: lifelink gain against indestructible is explained in plain language"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-search-photo-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS autocomplete Blood -> Blood Moon",
+        "PASS typo Ashaia -> Ashaya",
+        "PASS real local WASM OCR: title image -> editable Blood Moon input",
+        "PASS second real OCR image fills second field and preserves first"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-forty-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS UI: legal trample choice and actual player damage",
+        "PASS UI: revise damage assignment and recompute without repeating roles",
+        "PASS UI: double strike remembers prior marked damage",
+        "PASS UI: cannot-be-blocked explained through legality query",
+        "PASS UI: untargeted spell and protection resolved on the real stack",
+        "PASS UI: relevant controller asked; removing trample suppresses damage-choice question",
+        "PASS UI: revising normal damage retains the answered first damage step"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "combat-scenario.js": "a5b80847b0bd176240450d5cec932217d87e8af61ba3ab1972ce58047b28523d",
+    "combat-choices.js": "d34ceeac4e6289fd02cb06a910836e2780d9c5e22b326fa9db00304c636f14c0",
+    "sweeper-scenario.js": "9e7f0ffe169fd42daa57dcc72319558a190e1bb37a418c771a1e5c88530c308f",
+    "creature-traits.js": "13aef47bf5b59bc16d806f2df6f1e3977038d1d3311d5fe8a2c9c4cb463f1c87",
+    "spell-scenario.js": "a399ed65be502a1896297c87236f308b220f8cd887de847baa5eb8c23a2c469b",
+    "interaction-story.js": "820a7832edaf55c392863bfdf156f70f06aa2bf3d8afff342d2e4cf2c255310e",
+    "context-ui.js": "79cd2ad65f0a82b0b86884033aa65faf94d22165bee851aafed78aa74b752b12",
+    "context.html": "6e3e26d9eabf0233f3370aa4b37435010039462c0ca9701a31ca77fea7c5387a",
+    "sw.js": "4671bc698f82e864a334dda98b569084a549e2d7f20640a4d7a9ba323da79d61",
+    "case-studies/forty-online-cases.json": "183fa7bcd98b7752815778474d374a9aba3354d12a90749385fcce90ab5226b4",
+    "case-studies/forty-online-sources.json": "6eb503adb55333cb4d405381072d0bb802ba6d1246f0095c22e332396103d798",
+    "case-study-forty.test.cjs": "580210d347249b144937f282b0ab536e95fc11b99d06bfd38b264b0a3f6eddc2",
+    "combat-planning.test.cjs": "6813f8dcf74254d6f2d51c892e91d62deb4dee3d6860c69def558a77fa612d1a",
+    "case-studies/forty-cr-review.json": "aad5ec66fef3b6e911f6fb90be305ac400ff60047d75d84864644969e8a4825d"
+  },
+  "ocr_fixtures": "Generated English title images, not real photographs",
+  "ci": "not_run_no_push",
+  "final_targeted_rechecks": [
+    {
+      "command": [
+        "node",
+        "case-study-forty.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS web40-34 Protezione dal rosso previene Pyroclasm senza richiedere bersagli",
+        "PASS web40-35 Protezione dal bianco non previene una magia rossa",
+        "PASS web40-36 Indistruttibile conserva i danni segnati",
+        "PASS web40-37 Ricevere danno non attiva legame vitale o tocco letale della vittima",
+        "PASS web40-38 Prevenire il danno e diverso da sopravvivere grazie a indistruttibile",
+        "PASS web40-39 Raggiungere non equivale ad avere volare",
+        "PASS web40-40 Le azioni basate sullo stato seguono la risoluzione del danno collettivo",
+        "40/40 online study scenarios passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "combat-planning.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS an irrelevant continuous-effect controller is suppressed",
+        "PASS scenario expansion is bounded and produces no provisional outcome",
+        "PASS a partial branch cannot be used to suppress a question",
+        "PASS unknown additional Oracle text rejects the entire scenario",
+        "PASS an open battlefield is not assumed empty",
+        "PASS illegal flying combat remains unsupported but legality query explains false",
+        "PASS board confirmation remains mandatory",
+        "14/14 combat planning checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "interaction-story.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS a forged verified verdict cannot become a computed story",
+        "PASS an unverified calculation is not rendered as a result",
+        "PASS a scoped count remains partial and distinguishes requested from actual draws",
+        "PASS presentation does not mutate engine evidence or calculation",
+        "PASS a dead attacker is not described as still fighting its blocker",
+        "5/5 explanation boundary checks passed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-chapter-16-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS real browser: Oracle -> planner -> real engine -> SBA and source recalculation -> source gate; no controller/order questions",
+        "PASS simulated verified engine: targeted questions, answer revision, no repeat, source gate retained",
+        "PASS stale asynchronous engine response cannot overwrite a restarted interview"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-reel-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS UI: first-step death does not unblock the attacker",
+        "PASS UI: actual draw replacements, unchanged put-back instruction and explicit boundary",
+        "PASS UI: unique trample assignment works; unrecognized abilities remain recoverable",
+        "PASS UI: add a third card, preserve old answers and ask only its relevant controller",
+        "PASS UI: an unparsed added detail is retained and blocks a stale calculation",
+        "PASS UI: edit a previous answer from the result and recompute the limited trigger",
+        "PASS UI: Oracle power-based lethal damage is explained without card-pair exceptions",
+        "PASS UI: lifelink gain against indestructible is explained in plain language"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-forty-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS UI: legal trample choice and actual player damage",
+        "PASS UI: revise damage assignment and recompute without repeating roles",
+        "PASS UI: double strike remembers prior marked damage",
+        "PASS UI: cannot-be-blocked explained through legality query",
+        "PASS UI: untargeted spell and protection resolved on the real stack",
+        "PASS UI: relevant controller asked; removing trample suppresses damage-choice question",
+        "PASS UI: revising normal damage retains the answered first damage step"
+      ]
+    }
+  ],
+  "source_review": {
+    "online_oracle_records": 45,
+    "online_local_mismatches": 0,
+    "case_count": 40,
+    "rules_document_effective_date": "2026-04-17",
+    "rules_copy_authenticated_to_current_wizards_publication": false,
+    "official_site_access": "HTTP 403 from managed network proxy",
+    "details": "case-studies/forty-cr-review.json"
+  },
+  "reproducibility": {
+    "card_database": "38779 cards; 64 shards; generator rerun without changes to data/oracle",
+    "app_shell": "98 assets; cache v89",
+    "diff_check": "passed"
+  },
+  "verification_limits": [
+    "Chromium viewport emulation only, no real Android/iOS devices",
+    "WebKit unavailable",
+    "Two chapter browser paths simulate the evaluator protocol; actual new-case UI paths use real rules modules",
+    "No push or deployment; Actions not run for these local modifications"
+  ],
+  "summary_counts": {
+    "node_application_assertions": 2707,
+    "research_probe_checks": 3,
+    "known_unsupported_gap_checks_not_counted_as_implemented_cases": 5,
+    "python_media_unit_tests": 30,
+    "browser_paths": 36,
+    "new_browser_paths": 7,
+    "new_scenarios": 40,
+    "new_combat_planning_checks": 14
+  },
+  "base_commit": "1fa3a57892d1501ef4a3fe408d2663e51cb8b0ea"
+}

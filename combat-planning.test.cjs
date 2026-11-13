@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),zlib=require('node:zlib');
+const index=JSON.parse(fs.readFileSync('data/oracle/index.json')),chunks=new Map();
+function card(name){const [,id]=index.cards.find(([n])=>n===name)||[];assert.ok(id,name);if(!chunks.has(id))chunks.set(id,JSON.parse(zlib.gunzipSync(fs.readFileSync('data/oracle/'+id+'.json.gz'))));return chunks.get(id).find(c=>c.name===name)}
+const root={console,fetch:async url=>({ok:true,json:async()=>structuredClone(card(new URL(url).searchParams.get('exact')))})};root.window=root;vm.createContext(root);
+for(const [,file]of fs.readFileSync('context.html','utf8').matchAll(/<script src="\.\/([^"?]+\.js)"><\/script>/g)){if(file==='context-ui.js')break;vm.runInContext(fs.readFileSync(file,'utf8'),root,{filename:file});}
+const guided=(cards,extra={})=>root.JudgeGuidedBridge.evaluate({cards,event:'combat',attackerIndex:0,blockerIndex:1,board:'complete',...extra});
+let count=0;async function test(name,fn){await fn();count++;console.log('PASS '+name)}
+(async()=>{
+ await test('all legal assignments are asked, including all damage to blocker',async()=>{const r=await guided(['Colossal Dreadmaw','Darksteel Myr']);assert.equal(r.key,'answers.combatDamage:normal');assert.deepEqual(Array.from(r.options,o=>o.id),[1,2,3,4,5,6]);});
+ await test('all-to-blocker is a legal user choice, not automatically minimized',async()=>{const r=await guided(['Colossal Dreadmaw','Darksteel Myr'],{answers:{'combatDamage:normal':6}});assert.equal(r.outcome.playerDamage,0);assert.equal(r.outcome.results[1].damage,6)});
+ await test('illegal or nonnumeric assignment never becomes a ruling',async()=>{for(const value of [-1,0,7,'1',null,1.5]){const r=await guided(['Colossal Dreadmaw','Darksteel Myr'],{answers:{'combatDamage:normal':value}});assert.equal(r.status,'unsupported');assert.equal(r.outcome,undefined)}});
+ await test('a unique first-step choice is suppressed but normal-step choice is asked',async()=>{const r=await guided(['Swiftblade Vindicator','Darksteel Myr']);assert.equal(r.key,'answers.combatDamage:normal');assert.deepEqual(Array.from(r.options,o=>o.id),[0,1])});
+ await test('prior lethal damage permits zero assignment, but does not require it',async()=>{const r=await guided(['Swiftblade Vindicator','Darksteel Myr'],{answers:{'combatDamage:normal':1}});assert.equal(r.outcome.playerDamage,0);assert.equal(r.outcome.results[1].damage,2)});
+ await test('trample deals player damage after a first-step blocker death',async()=>{const r=await guided(['Two-Headed Cerberus','Sedge Scorpion','Archetype of Aggression'],{controllers:['A','B','A']});assert.equal(r.outcome.playerDamage,1);assert.equal(r.outcome.results[1].zone,'graveyard');assert.equal(r.outcome.results[0].zone,'battlefield')});
+ await test('a relevant continuous-effect controller is requested before damage choices',async()=>{const r=await guided(['Colossal Dreadmaw','Darksteel Myr','Archetype of Aggression']);assert.equal(r.key,'answers.combatController2')});
+ await test('an irrelevant continuous-effect controller is suppressed',async()=>{const r=await guided(['Grizzly Bears','Runeclaw Bear','Archetype of Endurance']);assert.equal(r.status,'partial');assert.equal(r.key,undefined)});
+ await test('scenario expansion is bounded and produces no provisional outcome',()=>{const cards=[{...card('Colossal Dreadmaw'),power:'100'},card('Darksteel Myr')];const r=root.JudgeCombatChoices.variants(cards,0,1,['A','B']);assert.equal(r.status,'unsupported');assert.equal(r.outcome,undefined)});
+ await test('a partial branch cannot be used to suppress a question',()=>{const saved=root.JudgeCombatScenario.evaluate;try{root.JudgeCombatScenario.evaluate=()=>({supported:true,status:'partial',outcome:{playerDamage:0}});assert.equal(root.JudgeCombatChoices.variants([card('Grizzly Bears'),card('Runeclaw Bear')],0,1,['A','B']).status,'unsupported')}finally{root.JudgeCombatScenario.evaluate=saved}});
+ await test('unknown additional Oracle text rejects the entire scenario',async()=>{const r=await guided(['Colossal Dreadmaw','Darksteel Myr','Doubling Season']);assert.equal(r.status,'unsupported')});
+ await test('an open battlefield is not assumed empty',async()=>{const r=await guided(['Colossal Dreadmaw','Darksteel Myr'],{board:'additional'});assert.equal(r.status,'unsupported')});
+ await test('illegal flying combat remains unsupported but legality query explains false',async()=>{const cards=['Wind Drake','Grizzly Bears'];assert.equal((await guided(cards)).status,'unsupported');const r=await guided(cards,{event:'block'});assert.equal(r.outcome.canBlock,false);assert.equal(r.diagnostic.calculationVerified,true)});
+ await test('board confirmation remains mandatory',async()=>{const r=await guided(['Colossal Dreadmaw','Darksteel Myr'],{board:null});assert.equal(r.key,'board');assert.match(r.question,/nessuno lascia la partita/)});
+ console.log(count+'/'+count+' combat planning checks passed');
+})().catch(e=>{console.error(e);process.exitCode=1});

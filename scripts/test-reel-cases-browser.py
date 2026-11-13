@@ -85,11 +85,16 @@ with sync_playwright() as p:
 
     begin('Charging Badger', 'Darksteel Myr', 'Una creatura attaccante viene bloccata')
     page.locator('#choices').get_by_role('button', name='Charging Badger', exact=True).click()
-    page.wait_for_function("document.getElementById('resultDetails').textContent.includes('Travolgere')")
-    assert page.locator('#result').get_attribute('data-status') == 'unsupported'
+    confirm()
+    details()
+    assert page.locator('#result').get_attribute('data-status') == 'partial'
+    assert 'non subisce danni' in page.locator('#status').inner_text()
+    begin('Progenitus', 'Darksteel Myr', 'Una creatura attaccante viene bloccata')
+    page.locator('#choices').get_by_role('button', name='Progenitus', exact=True).click()
+    page.wait_for_function("document.getElementById('result').getAttribute('data-status') === 'unsupported'")
     assert 'Regole applicate' not in page.locator('#resultDetails').inner_text()
     assert not errors, errors
-    print('PASS UI: unsupported trample assignment is explicit and recoverable')
+    print('PASS UI: unique trample assignment works; unrecognized abilities remain recoverable')
 
     begin('Dr. Beverly Crusher', 'Exemplar of Light', 'Un giocatore guadagna punti vita')
     confirm()

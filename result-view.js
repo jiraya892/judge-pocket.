@@ -1,6 +1,18 @@
 /* Human-readable computed outcomes, kept separate from source authentication. */
 (function(root){'use strict';
 const rules={
+ '101.2':'Quando un effetto dice che qualcosa può accadere e un altro dice che non può, prevale il divieto.',
+ '613.1f':'Gli effetti che aggiungono o rimuovono abilità si applicano nel layer 6.',
+ '702.19':'Travolgere permette di assegnare danni al giocatore dopo avere assegnato danno letale ai bloccanti, contando danni già segnati e tocco letale.',
+ '702.3b':'Una creatura con difensore non può attaccare.',
+ '509.1b':'La dichiarazione dei bloccanti deve rispettare tutte le restrizioni di blocco applicabili.',
+ '509.1':'La dichiarazione dei bloccanti deve rispettare le restrizioni e le abilità delle creature.',
+ '702.16f':'Una creatura con protezione non può essere bloccata da creature con la qualità protetta.',
+ '702.16e':'La protezione previene il danno da fonti con la qualità protetta.',
+ '702.9':'Volare limita quali creature possono bloccare l’attaccante.',
+ '702.111b':'Minaccia richiede almeno due bloccanti.',
+ '115.1a':'Una magia bersaglia solo se il testo o le regole lo indicano; un effetto su ogni creatura non sceglie bersagli.',
+ '704.3':'Le azioni basate sullo stato vengono controllate dopo la risoluzione, non tra le istruzioni della stessa magia.',
  '101.1':'Il testo di una carta può modificare la regola generale.',
  '702.2b':'Un danno positivo da una fonte con tocco letale è sufficiente per distruggere una creatura, salvo effetti come indistruttibile.',
  '704.5h':'Il tocco letale si controlla per il danno inflitto dall’ultima verifica delle azioni basate sullo stato.',

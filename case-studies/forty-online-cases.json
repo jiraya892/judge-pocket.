@@ -1,0 +1,1286 @@
+{
+  "scope": "40 scenari costruiti da testi Oracle e ruling reperiti online; non 40 trascrizioni di forum. Campo confermato senza altri effetti, un attaccante e un bloccante, nessuna eliminazione durante il danno.",
+  "cases": [
+    {
+      "id": "web40-01",
+      "question": "Travolgere supera un bloccante indistruttibile",
+      "cards": [
+        "Colossal Dreadmaw",
+        "Darksteel Myr"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 5,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          1
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 1
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Colossal%20Dreadmaw",
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr"
+      ],
+      "ruleBasis": [
+        "702.19b",
+        "702.12b"
+      ]
+    },
+    {
+      "id": "web40-02",
+      "question": "La prevenzione non aumenta il danno letale da assegnare",
+      "cards": [
+        "Colossal Dreadmaw",
+        "Cho-Manno, Revolutionary"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 4,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          2,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 2
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Cho-Manno%2C%20Revolutionary",
+        "https://api.scryfall.com/cards/named?exact=Colossal%20Dreadmaw"
+      ],
+      "ruleBasis": [
+        "702.19b",
+        "615.6"
+      ]
+    },
+    {
+      "id": "web40-03",
+      "question": "Protezione dal rosso e attacco improvviso contro travolgere",
+      "cards": [
+        "Charging Monstrosaur",
+        "Silver Knight"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 3,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          2,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 2
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Charging%20Monstrosaur",
+        "https://api.scryfall.com/cards/named?exact=Silver%20Knight"
+      ],
+      "ruleBasis": [
+        "702.19b",
+        "702.16e",
+        "702.7b"
+      ]
+    },
+    {
+      "id": "web40-04",
+      "question": "Protezione dal rosso non previene una fonte nero-verde",
+      "cards": [
+        "Moldering Karok",
+        "Silver Knight"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 1,
+        "zones": [
+          "battlefield",
+          "graveyard"
+        ],
+        "damage": [
+          2,
+          0
+        ],
+        "lifeChanges": {
+          "A": 3,
+          "B": 0
+        }
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 2
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Moldering%20Karok",
+        "https://api.scryfall.com/cards/named?exact=Silver%20Knight"
+      ],
+      "ruleBasis": [
+        "702.16e",
+        "702.15b"
+      ]
+    },
+    {
+      "id": "web40-05",
+      "question": "Legame vitale guadagna solo il danno non prevenuto",
+      "cards": [
+        "Fleetfoot Dancer",
+        "Silver Knight"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 2,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          2,
+          0
+        ],
+        "lifeChanges": {
+          "A": 2,
+          "B": 0
+        }
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 2
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Fleetfoot%20Dancer",
+        "https://api.scryfall.com/cards/named?exact=Silver%20Knight"
+      ],
+      "ruleBasis": [
+        "702.16e",
+        "702.15b",
+        "702.19b"
+      ]
+    },
+    {
+      "id": "web40-06",
+      "question": "Doppio attacco considera il danno gia segnato per travolgere",
+      "cards": [
+        "Swiftblade Vindicator",
+        "Darksteel Myr"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 1,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          1
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 0
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr",
+        "https://api.scryfall.com/cards/named?exact=Swiftblade%20Vindicator"
+      ],
+      "ruleBasis": [
+        "702.4b",
+        "702.19b"
+      ]
+    },
+    {
+      "id": "web40-07",
+      "question": "Doppio attacco non supera una costituzione piu alta",
+      "cards": [
+        "Swiftblade Vindicator",
+        "Wall of Light"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "graveyard",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          2
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Swiftblade%20Vindicator",
+        "https://api.scryfall.com/cards/named?exact=Wall%20of%20Light"
+      ],
+      "ruleBasis": [
+        "702.4b",
+        "704.5g"
+      ]
+    },
+    {
+      "id": "web40-08",
+      "question": "Travolgere e danno simultaneo con tocco letale del bloccante",
+      "cards": [
+        "Charging Monstrosaur",
+        "Sedge Scorpion"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 4,
+        "zones": [
+          "graveyard",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 1
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Charging%20Monstrosaur",
+        "https://api.scryfall.com/cards/named?exact=Sedge%20Scorpion"
+      ],
+      "ruleBasis": [
+        "702.2b",
+        "702.19b"
+      ]
+    },
+    {
+      "id": "web40-09",
+      "question": "Tocco letale e legame vitale del bloccante non fermano travolgere",
+      "cards": [
+        "Colossal Dreadmaw",
+        "Vampire of the Dire Moon"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 5,
+        "zones": [
+          "graveyard",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 1
+        }
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 1
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Colossal%20Dreadmaw",
+        "https://api.scryfall.com/cards/named?exact=Vampire%20of%20the%20Dire%20Moon"
+      ],
+      "ruleBasis": [
+        "702.2b",
+        "702.19b",
+        "702.15b"
+      ]
+    },
+    {
+      "id": "web40-10",
+      "question": "Forza insufficiente non produce eccesso da travolgere",
+      "cards": [
+        "Charging Badger",
+        "Wall of Wood"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          1
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Charging%20Badger",
+        "https://api.scryfall.com/cards/named?exact=Wall%20of%20Wood"
+      ],
+      "ruleBasis": [
+        "702.19b"
+      ]
+    },
+    {
+      "id": "web40-11",
+      "question": "Danno in eccesso senza travolgere non raggiunge il giocatore",
+      "cards": [
+        "Scaled Wurm",
+        "Darksteel Myr"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          7
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr",
+        "https://api.scryfall.com/cards/named?exact=Scaled%20Wurm"
+      ],
+      "ruleBasis": [
+        "510.1c"
+      ]
+    },
+    {
+      "id": "web40-12",
+      "question": "Prevenzione e legame vitale non fanno guadagnare vita sul danno evitato",
+      "cards": [
+        "Fleetfoot Dancer",
+        "Cho-Manno, Revolutionary"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 2,
+        "zones": [
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          2,
+          0
+        ],
+        "lifeChanges": {
+          "A": 2,
+          "B": 0
+        }
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 2
+      },
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Cho-Manno%2C%20Revolutionary",
+        "https://api.scryfall.com/cards/named?exact=Fleetfoot%20Dancer"
+      ],
+      "ruleBasis": [
+        "702.15b",
+        "615.6",
+        "702.19b"
+      ]
+    },
+    {
+      "id": "web40-13",
+      "question": "Tocco letale rende sufficiente un danno anche contro indistruttibile",
+      "cards": [
+        "Daggerback Basilisk",
+        "Darksteel Gargoyle",
+        "Archetype of Aggression"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 1,
+        "zones": [
+          "graveyard",
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          1,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "answers": {
+        "combatDamage:normal": 1
+      },
+      "controllers": [
+        "A",
+        "B",
+        "A"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Aggression",
+        "https://api.scryfall.com/cards/named?exact=Daggerback%20Basilisk",
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Gargoyle"
+      ],
+      "ruleBasis": [
+        "702.2c",
+        "702.19b",
+        "702.12b"
+      ]
+    },
+    {
+      "id": "web40-14",
+      "question": "Non puo avere travolgere prevale sulla parola chiave stampata",
+      "cards": [
+        "Colossal Dreadmaw",
+        "Darksteel Myr",
+        "Archetype of Aggression"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "battlefield",
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          6,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "B"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Aggression",
+        "https://api.scryfall.com/cards/named?exact=Colossal%20Dreadmaw",
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr"
+      ],
+      "ruleBasis": [
+        "101.2",
+        "613.1f"
+      ]
+    },
+    {
+      "id": "web40-15",
+      "question": "Due effetti opposti: non puo prevale anche sul conferimento",
+      "cards": [
+        "Colossal Dreadmaw",
+        "Darksteel Myr",
+        "Archetype of Aggression",
+        "Archetype of Aggression"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "battlefield",
+          "battlefield",
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "A",
+        "B"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Aggression",
+        "https://api.scryfall.com/cards/named?exact=Colossal%20Dreadmaw",
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr"
+      ],
+      "ruleBasis": [
+        "101.2",
+        "613.1f"
+      ]
+    },
+    {
+      "id": "web40-16",
+      "question": "Attacco improvviso conferito evita il danno di ritorno",
+      "cards": [
+        "Grizzly Bears",
+        "Runeclaw Bear",
+        "Archetype of Courage"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "battlefield",
+          "graveyard",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          0,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "A"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Courage",
+        "https://api.scryfall.com/cards/named?exact=Grizzly%20Bears",
+        "https://api.scryfall.com/cards/named?exact=Runeclaw%20Bear"
+      ],
+      "ruleBasis": [
+        "613.1f",
+        "702.7b"
+      ]
+    },
+    {
+      "id": "web40-17",
+      "question": "Rimozione di attacco improvviso stampato e conferimento al bloccante",
+      "cards": [
+        "Youthful Knight",
+        "Grizzly Bears",
+        "Archetype of Courage"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "graveyard",
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          0,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "B"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Courage",
+        "https://api.scryfall.com/cards/named?exact=Grizzly%20Bears",
+        "https://api.scryfall.com/cards/named?exact=Youthful%20Knight"
+      ],
+      "ruleBasis": [
+        "613.1f",
+        "702.7b"
+      ]
+    },
+    {
+      "id": "web40-18",
+      "question": "Tocco letale conferito distrugge una creatura piu grande",
+      "cards": [
+        "Memnite",
+        "Craw Wurm",
+        "Archetype of Finality"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "graveyard",
+          "graveyard",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          0,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "A"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Finality",
+        "https://api.scryfall.com/cards/named?exact=Craw%20Wurm",
+        "https://api.scryfall.com/cards/named?exact=Memnite"
+      ],
+      "ruleBasis": [
+        "702.2b",
+        "613.1f"
+      ]
+    },
+    {
+      "id": "web40-19",
+      "question": "Perdere tocco letale cambia la sopravvivenza del bloccante",
+      "cards": [
+        "Sedge Scorpion",
+        "Craw Wurm",
+        "Archetype of Finality"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "graveyard",
+          "battlefield",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          1,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "B"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Finality",
+        "https://api.scryfall.com/cards/named?exact=Craw%20Wurm",
+        "https://api.scryfall.com/cards/named?exact=Sedge%20Scorpion"
+      ],
+      "ruleBasis": [
+        "702.2b",
+        "613.1f"
+      ]
+    },
+    {
+      "id": "web40-20",
+      "question": "Raggiungere blocca anche volare conferito",
+      "cards": [
+        "Grizzly Bears",
+        "Giant Spider",
+        "Archetype of Imagination"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "A"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Imagination",
+        "https://api.scryfall.com/cards/named?exact=Giant%20Spider",
+        "https://api.scryfall.com/cards/named?exact=Grizzly%20Bears"
+      ],
+      "ruleBasis": [
+        "702.9b",
+        "613.1f"
+      ]
+    },
+    {
+      "id": "web40-21",
+      "question": "Perdere volare rende legale un blocco prima impossibile",
+      "cards": [
+        "Wind Drake",
+        "Grizzly Bears",
+        "Archetype of Imagination"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "B"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Imagination",
+        "https://api.scryfall.com/cards/named?exact=Grizzly%20Bears",
+        "https://api.scryfall.com/cards/named?exact=Wind%20Drake"
+      ],
+      "ruleBasis": [
+        "702.9b",
+        "613.1f"
+      ]
+    },
+    {
+      "id": "web40-22",
+      "question": "Velo e antimalocchio non impediscono di bloccare",
+      "cards": [
+        "Craw Wurm",
+        "Deadly Insect",
+        "Archetype of Endurance"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "controllers": [
+        "A",
+        "B",
+        "B"
+      ],
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Archetype%20of%20Endurance",
+        "https://api.scryfall.com/cards/named?exact=Craw%20Wurm",
+        "https://api.scryfall.com/cards/named?exact=Deadly%20Insect"
+      ],
+      "ruleBasis": [
+        "702.11b",
+        "702.18a",
+        "509.1b"
+      ]
+    },
+    {
+      "id": "web40-23",
+      "question": "Protezione da uno dei colori della fonte multicolore previene tutto",
+      "cards": [
+        "Slippery Bogle",
+        "Yavimaya Barbarian"
+      ],
+      "event": "combat",
+      "expected": {
+        "playerDamage": 0,
+        "zones": [
+          "graveyard",
+          "battlefield"
+        ],
+        "damage": [
+          0,
+          0
+        ]
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Slippery%20Bogle",
+        "https://api.scryfall.com/cards/named?exact=Yavimaya%20Barbarian"
+      ],
+      "ruleBasis": [
+        "702.16e"
+      ]
+    },
+    {
+      "id": "web40-24",
+      "question": "La protezione dell attaccante impedisce il blocco",
+      "cards": [
+        "Goblin Outlander",
+        "Silver Knight"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": false
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Goblin%20Outlander",
+        "https://api.scryfall.com/cards/named?exact=Silver%20Knight"
+      ],
+      "ruleBasis": [
+        "702.16f"
+      ]
+    },
+    {
+      "id": "web40-25",
+      "question": "Un artefatto incolore non e una fonte bianca",
+      "cards": [
+        "Ihsan's Shade",
+        "Darksteel Myr"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr",
+        "https://api.scryfall.com/cards/named?exact=Ihsan%27s%20Shade"
+      ],
+      "ruleBasis": [
+        "702.16f"
+      ]
+    },
+    {
+      "id": "web40-26",
+      "question": "Protezione impedisce il blocco anche a chi ha raggiungere",
+      "cards": [
+        "Coast Watcher",
+        "Giant Spider"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": false
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Coast%20Watcher",
+        "https://api.scryfall.com/cards/named?exact=Giant%20Spider"
+      ],
+      "ruleBasis": [
+        "702.16f",
+        "702.9b"
+      ]
+    },
+    {
+      "id": "web40-27",
+      "question": "Difensore impedisce di attaccare ma permette di bloccare",
+      "cards": [
+        "Grizzly Bears",
+        "Wall of Light"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Grizzly%20Bears",
+        "https://api.scryfall.com/cards/named?exact=Wall%20of%20Light"
+      ],
+      "ruleBasis": [
+        "702.3b",
+        "509.1b"
+      ]
+    },
+    {
+      "id": "web40-28",
+      "question": "Una creatura volante puo bloccare una creatura terrestre",
+      "cards": [
+        "Goblin Piker",
+        "Wall of Air"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Goblin%20Piker",
+        "https://api.scryfall.com/cards/named?exact=Wall%20of%20Air"
+      ],
+      "ruleBasis": [
+        "702.9b"
+      ]
+    },
+    {
+      "id": "web40-29",
+      "question": "Raggiungere non supera non puo essere bloccato",
+      "cards": [
+        "Phantom Warrior",
+        "Giant Spider"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": false
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Giant%20Spider",
+        "https://api.scryfall.com/cards/named?exact=Phantom%20Warrior"
+      ],
+      "ruleBasis": [
+        "509.1b",
+        "101.1"
+      ]
+    },
+    {
+      "id": "web40-30",
+      "question": "Non puo essere bloccato non impedisce di bloccare altre creature",
+      "cards": [
+        "Charging Monstrosaur",
+        "Phantom Warrior"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": true
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Charging%20Monstrosaur",
+        "https://api.scryfall.com/cards/named?exact=Phantom%20Warrior"
+      ],
+      "ruleBasis": [
+        "509.1b",
+        "101.1"
+      ]
+    },
+    {
+      "id": "web40-31",
+      "question": "Minaccia richiede almeno due bloccanti",
+      "cards": [
+        "Boggart Brute",
+        "Wall of Wood"
+      ],
+      "event": "block",
+      "expected": {
+        "canBlock": false
+      },
+      "attackerIndex": 0,
+      "blockerIndex": 1,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Boggart%20Brute",
+        "https://api.scryfall.com/cards/named?exact=Wall%20of%20Wood"
+      ],
+      "ruleBasis": [
+        "702.111b"
+      ]
+    },
+    {
+      "id": "web40-32",
+      "question": "Antimalocchio non ferma danni senza bersaglio",
+      "cards": [
+        "Pyroclasm",
+        "Gladecover Scout"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "graveyard",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Gladecover%20Scout",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm"
+      ],
+      "ruleBasis": [
+        "115.1a",
+        "702.11b"
+      ]
+    },
+    {
+      "id": "web40-33",
+      "question": "Velo non ferma danni senza bersaglio",
+      "cards": [
+        "Pyroclasm",
+        "Pincher Beetles"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "graveyard",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Pincher%20Beetles",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm"
+      ],
+      "ruleBasis": [
+        "115.1a",
+        "702.18a"
+      ]
+    },
+    {
+      "id": "web40-34",
+      "question": "Protezione dal rosso previene Pyroclasm senza richiedere bersagli",
+      "cards": [
+        "Pyroclasm",
+        "Silver Knight"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "battlefield",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm",
+        "https://api.scryfall.com/cards/named?exact=Silver%20Knight"
+      ],
+      "ruleBasis": [
+        "702.16e"
+      ]
+    },
+    {
+      "id": "web40-35",
+      "question": "Protezione dal bianco non previene una magia rossa",
+      "cards": [
+        "Pyroclasm",
+        "Black Knight"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "graveyard",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Black%20Knight",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm"
+      ],
+      "ruleBasis": [
+        "702.16e"
+      ]
+    },
+    {
+      "id": "web40-36",
+      "question": "Indistruttibile conserva i danni segnati",
+      "cards": [
+        "Pyroclasm",
+        "Darksteel Myr"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "battlefield",
+          "graveyard"
+        ],
+        "damage": [
+          2,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Darksteel%20Myr",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm"
+      ],
+      "ruleBasis": [
+        "702.12b"
+      ]
+    },
+    {
+      "id": "web40-37",
+      "question": "Ricevere danno non attiva legame vitale o tocco letale della vittima",
+      "cards": [
+        "Pyroclasm",
+        "Vampire of the Dire Moon",
+        "Craw Wurm"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "graveyard",
+          "battlefield",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          2,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Craw%20Wurm",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm",
+        "https://api.scryfall.com/cards/named?exact=Vampire%20of%20the%20Dire%20Moon"
+      ],
+      "ruleBasis": [
+        "702.15b",
+        "702.2b",
+        "115.1a"
+      ]
+    },
+    {
+      "id": "web40-38",
+      "question": "Prevenire il danno e diverso da sopravvivere grazie a indistruttibile",
+      "cards": [
+        "Pyroclasm",
+        "Cho-Manno, Revolutionary"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "battlefield",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Cho-Manno%2C%20Revolutionary",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm"
+      ],
+      "ruleBasis": [
+        "615.6"
+      ]
+    },
+    {
+      "id": "web40-39",
+      "question": "Raggiungere non equivale ad avere volare",
+      "cards": [
+        "Tremor",
+        "Deadly Recluse",
+        "Wind Drake"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "battlefield",
+          "battlefield",
+          "graveyard"
+        ],
+        "damage": [
+          1,
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Tremor",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Deadly%20Recluse",
+        "https://api.scryfall.com/cards/named?exact=Tremor",
+        "https://api.scryfall.com/cards/named?exact=Wind%20Drake"
+      ],
+      "ruleBasis": [
+        "702.9b",
+        "115.1a"
+      ]
+    },
+    {
+      "id": "web40-40",
+      "question": "Le azioni basate sullo stato seguono la risoluzione del danno collettivo",
+      "cards": [
+        "Pyroclasm",
+        "Grizzly Bears",
+        "Child of Night"
+      ],
+      "event": "cast",
+      "expected": {
+        "zones": [
+          "graveyard",
+          "graveyard",
+          "graveyard"
+        ],
+        "damage": [
+          0,
+          0,
+          0
+        ],
+        "lifeChanges": {
+          "A": 0,
+          "B": 0
+        }
+      },
+      "casting": "Pyroclasm",
+      "castingIndex": 0,
+      "sources": [
+        "https://api.scryfall.com/cards/named?exact=Child%20of%20Night",
+        "https://api.scryfall.com/cards/named?exact=Grizzly%20Bears",
+        "https://api.scryfall.com/cards/named?exact=Pyroclasm"
+      ],
+      "ruleBasis": [
+        "704.3",
+        "608.2c"
+      ]
+    }
+  ]
+}

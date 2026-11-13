@@ -30,6 +30,8 @@ jobs:
           node case-study-targeting.test.cjs
           node case-study-reels.test.cjs
           node case-study-forums.test.cjs
+          node case-study-forty.test.cjs
+          node combat-planning.test.cjs
           node interaction-story.test.cjs
           node scripts/test-search-batch.cjs
           node card-data.test.cjs
@@ -75,7 +77,7 @@ jobs:
           else:
               raise RuntimeError('Local HTTP server failed to start')
           PYTHON
-          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py scripts/test-targeting-cases-browser.py scripts/test-reel-cases-browser.py scripts/test-search-photo-browser.py; do
+          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py scripts/test-targeting-cases-browser.py scripts/test-reel-cases-browser.py scripts/test-search-photo-browser.py scripts/test-forty-cases-browser.py; do
             set +e
             python3 -u "$test_script" > /tmp/judge-browser-test.log 2>&1
             test_exit=$?

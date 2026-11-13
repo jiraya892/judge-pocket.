@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),zlib
 async function probe(file){
  const root=path.resolve(__dirname,'../..'),draft=JSON.parse(fs.readFileSync(file,'utf8'));
  if(draft.reviewed!==true||!draft.context||!Array.isArray(draft.context.cards)||draft.context.cards.length<2||draft.context.cards.length>4||draft.context.cards.some(c=>typeof c!=='string'||!c.trim()))throw Error('A reviewed scenario with 2–4 confirmed card names is required');
- if(!['cast','present','enter','other','gainLife','putCounters','beginEndStep','combat','drawCards'].includes(draft.context.event))throw Error('Scenario event is missing or invalid');
+ if(!['cast','present','enter','other','gainLife','putCounters','beginEndStep','combat','block','drawCards'].includes(draft.context.event))throw Error('Scenario event is missing or invalid');
  const manifest=JSON.parse(fs.readFileSync(path.join(root,'data/oracle/index.json'),'utf8')),cache=new Map();
  function card(name){const entry=manifest.cards.find(([n])=>n.toLowerCase()===name.toLowerCase());if(!entry)throw Error('Card absent from supplied Oracle snapshot: '+name);
   const id=entry[1];if(!cache.has(id)){const bytes=fs.readFileSync(path.join(root,'data/oracle',id+'.json.gz'));if(crypto.createHash('sha256').update(bytes).digest('hex')!==manifest.shards[id].sha256)throw Error('Oracle shard integrity failed');cache.set(id,JSON.parse(zlib.gunzipSync(bytes)))}

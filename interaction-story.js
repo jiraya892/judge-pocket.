@@ -26,12 +26,14 @@ function build(output,context={}){
   model.note='Questo è il numero di pescate richieste; il contenuto del grimorio e gli inneschi successivi non sono stati simulati.';
  }else if(outcome.scope==='single-blocked-combat'){
   const a=model.results.find(r=>r.id===outcome.attackerId),b=model.results.find(r=>r.id===outcome.blockerId);
-  model.lead='Il giocatore in difesa non subisce danni.';
+  model.lead=outcome.playerDamage?'Il giocatore in difesa subisce '+outcome.playerDamage+' '+(outcome.playerDamage===1?'danno.':'danni.'):'Il giocatore in difesa non subisce danni.';
   if(a?.zone==='graveyard'&&b?.zone==='graveyard')model.paragraphs.push('Entrambe le creature vengono distrutte dal danno.');
   else if(a?.zone==='graveyard')model.paragraphs.push(a.name+' viene distrutta dal danno, mentre '+b.name+' resta sul campo.');
-  else if(b?.zone==='graveyard')model.paragraphs.push(b.name+' muore per il danno, ma '+a.name+' rimane una creatura bloccata fino alla fine del combattimento. Aver eliminato il bloccante non fa arrivare danni al giocatore senza travolgere.');
+  else if(b?.zone==='graveyard')model.paragraphs.push(b.name+' muore per il danno. '+a.name+' rimane una creatura bloccata fino alla fine del combattimento; i danni al giocatore dipendono da travolgere e dall’assegnazione.');
   else if(b?.indestructible&&b.damage>0)model.paragraphs.push(b.name+' resta sul campo con '+b.damage+' danni segnati. Indistruttibile impedisce che il danno la distrugga, perciò continua a bloccare '+a.name+'.');
   else if(b)model.paragraphs.push(b.name+' rimane sul campo e continua a bloccare. Il danno viene assegnato alle creature coinvolte nel blocco.');
+  if(outcome.globalKeywordSources?.length)model.paragraphs.push('Le abilità usate nel calcolo tengono conto degli effetti di '+join(outcome.globalKeywordSources)+' e dei controllori indicati. Un divieto di avere un’abilità prevale sugli effetti che la conferiscono.');
+  if(outcome.playerDamage)model.paragraphs.push('Travolgere permette di assegnare al giocatore i danni che superano quelli necessari al bloccante. La prevenzione e indistruttibile non riducono il danno da assegnare prima al bloccante.');
   if(outcome.rules.includes('702.4b'))model.paragraphs.push('Con attacco improvviso o doppio attacco c’è una prima sottofase di danno. Chi ha doppio attacco può infliggere danno anche nella sottofase normale, se è ancora in combattimento.');
   for(const creature of [a,b].filter(Boolean))if(creature.zone==='battlefield'&&!creature.indestructible&&creature.damage>0&&creature.damage>=creature.toughness&&outcome.powerThresholdSources?.length)model.paragraphs.push('Per effetto di '+join(outcome.powerThresholdSources)+', il danno letale si confronta con la forza: '+creature.name+' ha '+creature.damage+' danni segnati e forza '+creature.power+', quindi sopravvive.');
   for(const [player,amount]of Object.entries(outcome.lifeChanges||{}))if(amount>0)model.paragraphs.push('Chi controlla '+(player==='A'?a.name:b.name)+' guadagna '+amount+' '+(amount===1?'punto vita':'punti vita')+' grazie a legame vitale. Il guadagno avviene insieme al danno, anche se la creatura muore subito dopo.');

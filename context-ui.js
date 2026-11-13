@@ -2,12 +2,15 @@
 (function(){'use strict';
 const $=id=>document.getElementById(id);
 let state={cards:[]},request=0;
-const events={gainLife:'Un giocatore guadagna punti vita',putCounters:'Una carta riceve segnalini +1/+1',beginEndStep:'Inizia la sottofase finale',combat:'Una creatura attaccante viene bloccata',drawCards:'Un effetto fa pescare carte'};
+const events={block:'Verifico se il blocco è legale',gainLife:'Un giocatore guadagna punti vita',putCounters:'Una carta riceve segnalini +1/+1',beginEndStep:'Inizia la sottofase finale',combat:'Una creatura attaccante viene bloccata',drawCards:'Un effetto fa pescare carte'};
 function error(id,message){$(id).textContent=message;$(id).hidden=!message;}
 function revise(key){
  const revised=window.JudgeConditionalFacts.clear(state.answers||{},key);
  if(!revised.supported)return;
- state.answers=revised.answers;
+ state.answers=Object.fromEntries(Object.entries(revised.answers).filter(([k])=>{
+  if(key==='combatDamage:first')return k!=='combatDamage:normal';
+  return !key.startsWith('combat')||key.startsWith('combatDamage:')||!k.startsWith('combatDamage:');
+ }));
  $('contextEditor').hidden=true;
  show();
 }
@@ -29,7 +32,7 @@ function appendCard(name){
  if(state.cards.length>=4)return false;
  state.cards=[...state.cards,name];state.orderChoices=null;
  // A range such as "less than five" cannot answer a new one-life threshold.
- state.answers=Object.fromEntries(Object.entries(state.answers||{}).filter(([key])=>!['entryOrder','lifeGainedA','lifeGainedB'].includes(key)));
+ state.answers=Object.fromEntries(Object.entries(state.answers||{}).filter(([key])=>!['entryOrder','lifeGainedA','lifeGainedB'].includes(key)&&!key.startsWith('combatDamage:')));
  return true;
 }
 function choose(question,option){
