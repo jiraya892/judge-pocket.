@@ -14,6 +14,9 @@ async function evaluate(context){
  const fail=(code,reason,extra={})=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{...details,reasonCodes:[code],...extra}});
  if(!Array.isArray(context?.cards)||context.cards.length<2||context.cards.some(n=>typeof n!=='string'||!n.trim()))return fail('CARDS_MISSING','Servono almeno due nomi di carte.');
  if(typeof context.additionalDescription==='string'&&context.additionalDescription.trim())return fail('ADDITIONAL_CONTEXT_UNPARSED','Ho conservato il dettaglio aggiunto, ma non riesco ancora a tradurlo in uno scenario calcolabile. Non lo considero assente: serve specificarlo con informazioni supportate dal motore.');
+ if(context.phase&&context.phase!=='combat'&&['combat','block'].includes(context.event))return fail('PHASE_CONFLICT','La fase indicata non coincide con questo evento di combattimento.');
+ if(context.step&&((context.event==='beginUpkeep'&&context.step!=='upkeep')||(context.event==='beginEndStep'&&context.step!=='endStep')))return fail('STEP_EVENT_CONFLICT','La sottofase indicata non coincide con l’evento descritto.');
+ if(context.event==='beginUpkeep'&&root.JudgeUpkeepScenario)return root.JudgeUpkeepScenario.guided(context);
  if(['gainLife','putCounters','beginEndStep'].includes(context.event)&&root.JudgeTriggerScenario)return root.JudgeTriggerScenario.guided(context);
  if(['combat','block'].includes(context.event)&&root.JudgeCombatScenario)return root.JudgeCombatScenario.guided(context);
  if(context.event==='drawCards'&&root.JudgeDrawScenario)return root.JudgeDrawScenario.guided(context);

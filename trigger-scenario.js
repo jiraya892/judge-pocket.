@@ -52,10 +52,11 @@ function evaluate(prepared,event,answers,targetIndex){
  }
  if(objects.some((o,i)=>o.supertypes.includes('legendary')&&objects.some((other,j)=>j!==i&&other.name===o.name&&other.controller===o.controller)))return fail('La regola delle leggende deve essere verificata prima di questo evento.');
  if(event==='putCounters'&&(!Number.isInteger(targetIndex)||!objects[targetIndex]))return fail('La carta che riceve i segnalini non è indicata.');
- const state={players:[{id:'A',life:20},{id:'B',life:20}],objects,pendingTriggers:[],delayedTriggers:[],effects:[],turn:{activePlayer:'A',turnNumber:1},triggerUsage:{turnNumber:1,counts},lifeGained:{A:answers.lifeGainedA??0,B:answers.lifeGainedB??0}};
+ const eventPlayer=answers.eventPlayer??'A';if(!['A','B'].includes(eventPlayer))return fail('Giocatore dell’evento non determinato.');
+ const state={players:[{id:'A',life:20},{id:'B',life:20}],objects,pendingTriggers:[],delayedTriggers:[],effects:[],turn:{activePlayer:event==='beginEndStep'?eventPlayer:'A',turnNumber:1},triggerUsage:{turnNumber:1,counts},lifeGained:{A:answers.lifeGainedA??0,B:answers.lifeGainedB??0}};
  // Positive amount is representative for this grammar: none of its supported
  // gain-life/counter triggers depends on the size of this single event.
- const ev=event==='gainLife'?{type:event,player:'A',amount:1}:event==='putCounters'?{type:event,target:objects[targetIndex].id,counterType:'+1/+1',amount:1}:{type:event,player:'A'};
+ const ev=event==='gainLife'?{type:event,player:eventPlayer,amount:1}:event==='putCounters'?{type:event,target:objects[targetIndex].id,counterType:'+1/+1',amount:1}:{type:event,player:eventPlayer};
  const transition=root.JudgeTriggerFlow.transition(state,clone(state),ev);
  if(!transition.supported)return fail(transition.reason);
  const pending=transition.state.pendingTriggers;
@@ -71,16 +72,18 @@ async function guided(context){
  const prepared=prepare(cards);if(!prepared.supported)return unsupported(prepared.reason);
  const targetIndex=context.counterTargetIndex??(/^\d+$/.test(context.answers?.counterTarget||'')?Number(context.answers.counterTarget):null);
  if(context.event==='putCounters'&&targetIndex==null)return {status:'question',key:'answers.counterTarget',question:'Quale carta riceve uno o più segnalini +1/+1?',options:cards.map((c,i)=>({id:String(i),label:c.name}))};
- const answers={...(context.answers||{})},facts=[];
+ const answers={...(context.answers||{})},facts=[],speakerFrame=context.playerFrame==='speaker';
+ if(speakerFrame&&['gainLife','beginEndStep'].includes(context.event)){facts.push({key:'eventPlayer',question:context.event==='gainLife'?'Chi guadagna punti vita?':'Di chi sta iniziando la sottofase finale?',options:[{id:'A',label:'Tu'},{id:'B',label:'Il tuo avversario'}]});if(context.eventPlayer)answers.eventPlayer=context.eventPlayer;else if(context.event==='beginEndStep'&&context.activePlayer)answers.eventPlayer=context.activePlayer;}
  for(let i=0;i<prepared.objects.length;i++){
   const o=prepared.objects[i];
   facts.push({key:'triggerController'+i,question:'Chi controlla '+o.name+' rispetto al giocatore '+(context.event==='beginEndStep'?'di cui finisce il turno?':'che guadagna vite?'),options:[{id:'A',label:'Lo stesso giocatore'},{id:'B',label:'Un avversario'}]});
+  if(speakerFrame){facts[facts.length-1].question='Chi controlla '+o.name+'?';facts[facts.length-1].options=[{id:'A',label:'Tu'},{id:'B',label:'Il tuo avversario'}];}
   if(context.controllers?.[i]!=null)answers['triggerController'+i]=context.controllers[i];
   for(const a of o.abilities.filter(a=>a.maxPerTurn!==undefined))facts.push({key:'triggerUsed:'+a.id,question:'L’abilità di '+o.name+(a.eventKind==='putCounters'?' legata ai segnalini +1/+1':a.eventKind==='gainLife'?' legata al guadagno di vite':' di fine turno')+' si è già innescata in questo turno, da quando questa carta è sul campo?',options:[{id:'no',label:'No, non ancora'},{id:'yes',label:'Sì, si è già innescata'}]});
  }
  const thresholds=[...new Set(prepared.objects.flatMap(o=>o.abilities.map(a=>a.lifeThreshold).filter(Number.isSafeInteger)))].sort((a,b)=>a-b);
  if(context.event==='beginEndStep')for(const player of ['A','B']){const key='lifeGained'+player,n=answers[key];if(Number.isSafeInteger(n)&&n>=0)answers[key]=thresholds.filter(t=>t<=n).pop()??0;}
- if(context.event==='beginEndStep'&&thresholds.length)for(const player of ['A','B'])facts.push({key:'lifeGained'+player,question:'Quante vite ha guadagnato complessivamente in questo turno '+(player==='A'?'il giocatore di turno':'il suo avversario')+'?',options:[0,...thresholds].map((n,i,ns)=>({id:n,label:n===0?(ns[i+1]===1?'Nessuna':'Meno di '+ns[i+1]+' punti vita'):ns[i+1]?n+'–'+(ns[i+1]-1)+' punti vita':n+' o più punti vita'}))});
+ if(context.event==='beginEndStep'&&thresholds.length)for(const player of ['A','B'])facts.push({key:'lifeGained'+player,question:'Quante vite ha guadagnato complessivamente in questo turno '+(speakerFrame?(player==='A'?'tu':'il tuo avversario'):(player==='A'?'il giocatore di turno':'il suo avversario'))+'?',options:[0,...thresholds].map((n,i,ns)=>({id:n,label:n===0?(ns[i+1]===1?'Nessuna':'Meno di '+ns[i+1]+' punti vita'):ns[i+1]?n+'–'+(ns[i+1]-1)+' punti vita':n+' o più punti vita'}))});
  const plan=root.JudgeQuestionPlanner.plan({facts,answers},s=>evaluate(prepared,context.event,s.answers,targetIndex));
  if(plan.status==='unsupported')return unsupported('Un’alternativa necessaria non è completamente verificabile nel perimetro degli inneschi.');
  if(!context.board)return {status:'question',key:'board',question:'Considero soltanto gli inneschi all’evento indicato, queste carte scoperte sul campo e nessun altro effetto. Le abilità in pila non vengono risolte. Confermi?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}]};

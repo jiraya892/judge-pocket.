@@ -1,6 +1,8 @@
 /* Human-readable computed outcomes, kept separate from source authentication. */
 (function(root){'use strict';
 const rules={
+ '503.1':'All’inizio del mantenimento si innescano le abilità pertinenti; il giocatore attivo riceve priorità dopo i controlli e la messa in pila degli inneschi.',
+ '603.6a':'Gli inneschi di ingresso si verificano quando un permanente entra sul campo di battaglia.',
  '101.2':'Quando un effetto dice che qualcosa può accadere e un altro dice che non può, prevale il divieto.',
  '613.1f':'Gli effetti che aggiungono o rimuovono abilità si applicano nel layer 6.',
  '702.19':'Travolgere permette di assegnare danni al giocatore dopo avere assegnato danno letale ai bloccanti, contando danni già segnati e tocco letale.',

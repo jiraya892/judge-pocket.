@@ -2,7 +2,7 @@
 (function(){'use strict';
 const $=id=>document.getElementById(id);
 let state={cards:[]},request=0;
-const events={block:'Verifico se il blocco è legale',gainLife:'Un giocatore guadagna punti vita',putCounters:'Una carta riceve segnalini +1/+1',beginEndStep:'Inizia la sottofase finale',combat:'Una creatura attaccante viene bloccata',drawCards:'Un effetto fa pescare carte'};
+const events={beginUpkeep:'Inizia il mantenimento',block:'Verifico se il blocco è legale',gainLife:'Un giocatore guadagna punti vita',putCounters:'Una carta riceve segnalini +1/+1',beginEndStep:'Inizia la sottofase finale',combat:'Una creatura attaccante viene bloccata',drawCards:'Un effetto fa pescare carte'};
 function error(id,message){$(id).textContent=message;$(id).hidden=!message;}
 function revise(key){
  const revised=window.JudgeConditionalFacts.clear(state.answers||{},key);
@@ -77,6 +77,7 @@ function outputView(output,context,current){
  $('copyDiagnostic').onclick=async()=>{try{await navigator.clipboard.writeText(report);$('diagnosticMessage').textContent='Rapporto copiato.';}catch(e){$('diagnosticMessage').textContent='Copia non disponibile: '+e.message;}};
 }
 function show(){
+ $('sceneSource').hidden=!state.sourceDescription;$('sceneSourceText').textContent=state.sourceDescription||'';
  const current=++request,result=window.JudgeContextInterview.next(state);
  $('answerReview').hidden=true;$('contextEditor').hidden=true;
  $('step').hidden=result.status!=='question';$('result').hidden=!['ready','unsupported'].includes(result.status);
@@ -123,6 +124,8 @@ $('begin').onclick=()=>{
  error('inputError','');state={cards};show();
 };
 $('restart').onclick=()=>{request++;state={cards:[]};show();};
+window.JudgeContextSession={start:context=>{request++;state={...context};show();}};
+$('editScene').onclick=()=>{const text=state.sourceDescription||'';request++;state={cards:[]};show();$('sceneText').value=text;$('sceneText').focus();};
 function connection(){
  $('connectionStatus').textContent=(!window.DecompressionStream||!window.crypto?.subtle)?(navigator.onLine?'Questo browser richiede una connessione per recuperare le carte.':'Sei offline: riconnettiti per recuperare le carte con questo browser.'):navigator.onLine?'Le carte consultate restano disponibili dopo il primo caricamento.':'Sei offline: puoi usare le carte già caricate su questo dispositivo.';
 }

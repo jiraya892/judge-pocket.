@@ -14,7 +14,7 @@ function build(context,cardObjects){const check=validate(context);if(!check.supp
  const objects=cardObjects.map((o,i)=>({...o,owner:context.controllers[i],controller:context.controllers[i],zone:context.event==='cast'&&i===context.castingIndex?'stack':'battlefield'}));
  const order=context.event==='enter'?[...cardsIndices(objects).filter(i=>i!==context.enteringIndex),context.enteringIndex]:context.order||cardsIndices(objects);
  const timestamps=Object.fromEntries(order.map((i,j)=>[objects[i].id,j+1]));
- return {supported:true,objects,timestamps,players:[{id:'A',life:20},{id:'B',life:20}],turn:{activePlayer:'A',priorityPlayer:'A',phase:'main1'},effects:[],knownFacts:{boardComplete:true,controllersExplicit:true,orderExplicit:context.event==='present'||context.event==='enter',additionalPermanents:Math.max(0,objects.length-2)}};
+ return {supported:true,objects,timestamps,players:[{id:'A',life:20},{id:'B',life:20}],turn:{activePlayer:'A',priorityPlayer:'A',phase:context.phase||null,step:context.step||null},effects:[],knownFacts:{boardComplete:true,controllersExplicit:true,orderExplicit:context.event==='present'||context.event==='enter',additionalPermanents:Math.max(0,objects.length-2)}};
 }
 function cardsIndices(a){return a.map((_,i)=>i)}
 function move(state,id,to){

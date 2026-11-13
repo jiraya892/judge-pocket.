@@ -24,6 +24,11 @@ function build(output,context={}){
   if(factor>2)model.paragraphs.push('I moltiplicatori si applicano uno dopo l’altro. Per questi effetti l’ordine non cambia il numero finale.');
   if(outcome.putBackInstructions)model.paragraphs.push('L’istruzione di rimettere '+outcome.putBackInstructions+' carte non viene moltiplicata: è un passaggio separato dalla pescata.');
   model.note='Questo è il numero di pescate richieste; il contenuto del grimorio e gli inneschi successivi non sono stati simulati.';
+ }else if(outcome.scope==='upkeep-life-gain'){
+  const gains=Object.entries(outcome.lifeChanges).filter(([,amount])=>amount>0);
+  model.lead=gains.length?join(gains.map(([player,amount])=>(player==='A'?'Guadagni ':'Il tuo avversario guadagna ')+amount+' '+(amount===1?'punto vita':'punti vita')))+'.':outcome.triggerCount?'L’abilità si innesca, ma non vengono guadagnati punti vita.':'In questo mantenimento queste carte non fanno guadagnare punti vita.';
+  if(outcome.triggerCount)model.paragraphs.push('Le abilità si innescano all’inizio del mantenimento, vengono messe in pila e si risolvono se nessuno risponde.');
+  model.paragraphs.push(...outcome.events.filter(e=>e.type==='optionalDeclined').map(e=>e.description));
  }else if(outcome.scope==='single-blocked-combat'){
   const a=model.results.find(r=>r.id===outcome.attackerId),b=model.results.find(r=>r.id===outcome.blockerId);
   model.lead=outcome.playerDamage?'Il giocatore in difesa subisce '+outcome.playerDamage+' '+(outcome.playerDamage===1?'danno.':'danni.'):'Il giocatore in difesa non subisce danni.';
@@ -40,9 +45,11 @@ function build(output,context={}){
  }else{
   const events=outcome.events||[],leaves=events.filter(e=>e.type==='creatureLeaves');
   if(leaves.length&&outcome.rules?.includes('208.5')){
-   model.lead=join(leaves.map(e=>e.name+' va nel cimitero'))+'.';
+   const entering=events.find(e=>e.type==='entersBattlefield');
+   model.lead=entering&&leaves.some(e=>e.id===entering.id)?entering.name+' entra sul campo di battaglia e poi va nel cimitero.':join(leaves.map(e=>e.name+' va nel cimitero'))+'.';
    model.paragraphs.push('Gli effetti sui tipi di terra si applicano seguendo le dipendenze. Impostare un tipo di terra base fa perdere le abilità del testo: se viene persa la definizione di forza e costituzione, il valore * diventa 0.');
    model.paragraphs.push('Una creatura con costituzione 0 va nel cimitero. Dopo la sua uscita vengono ricalcolati gli effetti sulle carte rimaste.');
+   if(entering)model.paragraphs.push('Il controllo avviene dopo l’ingresso e prima che un giocatore riceva priorità.');
   }else{
    const descriptions=events.map(e=>e.description||(e.type==='creatureLeaves'?e.name+' viene distrutta per danno letale.':'')).filter(Boolean);
    model.lead=descriptions.shift()||'Le carte restano sul campo con le caratteristiche calcolate.';

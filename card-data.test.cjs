@@ -17,6 +17,7 @@ function provider(corrupt=false){
   }assert.equal(count,index.count);assert.equal(index.cards.length,index.count);
  });
  const {data,hits}=provider();
+ await check('natural-input catalogue exposes an immutable copy of names',async()=>{const names=await data.names();assert.equal(names.length,index.count);names[0]='modified';assert.notEqual((await data.names())[0],'modified')});
  await check('local name search finds canonical card without network APIs',async()=>assert.ok((await data.suggest('Blood Moo')).includes('Blood Moon')));
  await check('short prefix suggests Blood Moon among the first choices',async()=>assert.ok((await data.suggest('Blood')).indexOf('Blood Moon')>=0));
  await check('one-letter typo suggests the canonical Ashaya name',async()=>assert.ok((await data.suggest('Ashaia')).includes('Ashaya, Soul of the Wild')));

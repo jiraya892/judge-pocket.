@@ -20,6 +20,8 @@ async function guided(context,cards,a,b){
  const fail=reason=>({status:'unsupported',reason,title:'Situazione non ancora supportata',diagnostic:{reasonCodes:['COMBAT_DOMAIN_UNSUPPORTED']}});
  const parsed=root.JudgeCombatScenario.prepare(cards);
  if(parsed.some(p=>!p.supported))return fail('Una delle abilità non è ancora riconosciuta completamente.');
+ if(context.step==='endCombat')return fail('Hai indicato la fine del combattimento: i danni sono già avvenuti. Questo percorso ricostruisce il combattimento a partire dal blocco.');
+ if(context.step==='combatDamage'&&parsed.some((p,i)=>(i===a||i===b)&&p.object.baseCombatTraits.some(k=>['first strike','double strike'].includes(k))||p.object.keywordRule==='first strike'))return fail('Per iniziare dalla sottofase di danno normale con attacco improvviso o doppio attacco occorre collegare lo stato dopo la prima sottofase. Non rieseguo il primo danno per ipotesi.');
  const facts=parsed.flatMap((p,i)=>(p.object.lethalRule||p.object.keywordRule)&&i!==a&&i!==b?[{key:'combatController'+i,question:'Chi controlla '+cards[i].name+'?',options:[{id:'A',label:'Il giocatore che attacca'},{id:'B',label:'Il giocatore che blocca'}]}]:[]);
  const answers={...(context.answers||{})};
  for(const f of facts){const index=Number(f.key.slice('combatController'.length));if(context.controllers?.[index]!=null)answers[f.key]=context.controllers[index];}

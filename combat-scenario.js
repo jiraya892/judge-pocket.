@@ -52,7 +52,8 @@ function evaluate(cards,attackerIndex,blockerIndex,options={}){
  const initial=settle(state);if(!initial.supported||initial.changes.length)return fail('Il campo iniziale richiede altre azioni basate sullo stato prima del combattimento.');state=initial.state;
  if(options.legalityOnly)return blockOutcome();
  let playerDamage=0;const resolvedAssignments={},choiceDomains=[];
- const events=[],stages=first.size?['first','normal']:['normal'];
+ const window=root.JudgeTurnStructure?.next('declareBlockers',{needsFirstStrike:first.size>0});if(window&&!window.supported)return fail('La sequenza del danno non è determinata.');
+ const events=[],stages=(window?window.window.id==='firstStrikeDamage':first.size>0)?['first','normal']:['normal'];
  for(const stage of stages){
   const a=state.objects.find(o=>o.id===attacker.id),b=state.objects.find(o=>o.id===blocker.id);
   if(a.zone!=='battlefield')break;

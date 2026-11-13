@@ -57,5 +57,5 @@ async function rulings(oracleId){
  if(!index.rulingShards)throw Error('Database ruling locale non disponibile');
  return (await load(shard,{shards:index.rulingShards},'rulings-')).filter(r=>r.oracle_id===oracleId).map(r=>({...r}));
 }
-root.JudgeCardData={get,suggest,rulings,info:async()=>{const m=await manifest();return {count:m.count,source:m.source,version:m.version}}};
+root.JudgeCardData={get,suggest,rulings,names:async()=>{const m=await manifest();return m.cards.map(([name])=>name)},info:async()=>{const m=await manifest();return {count:m.count,source:m.source,version:m.version}}};
 })(typeof window!=='undefined'?window:globalThis);

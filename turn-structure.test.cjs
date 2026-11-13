@@ -1,0 +1,23 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');const root={};vm.createContext(root);vm.runInContext(fs.readFileSync('turn-structure.js','utf8'),root);const t=root.JudgeTurnStructure;
+let count=0;async function test(name,fn){await fn();count++;console.log('PASS '+name)}
+const state=()=>({players:[{id:'A',life:20},{id:'B',life:20}],objects:[],stack:[],pendingTriggers:[],turn:{activePlayer:'A'}});
+(async()=>{
+ await test('all five phases and 13 windows including conditional first damage are explicit',()=>{assert.equal(t.windows.length,13);assert.equal(new Set(t.windows.map(w=>w.phase)).size,5);assert.equal(t.windows[0].priority,false);assert.equal(t.windows.at(-1).priority,false)});
+ await test('the ordinary full turn has an exact connected sequence',()=>{const expected=['untap','upkeep','draw','main1','beginCombat','declareAttackers','declareBlockers','firstStrikeDamage','combatDamage','endCombat','main2','endStep','cleanup','untap'];for(let i=0;i<expected.length-1;i++)assert.equal(t.next(expected[i],{hasAttackers:true,needsFirstStrike:true,skipDrawStep:false,repeatCleanup:false}).window.id,expected[i+1])});
+ await test('no declared attackers skips blockers and combat damage windows',()=>assert.equal(t.next('declareAttackers',{hasAttackers:false}).window.id,'endCombat'));
+ await test('first strike damage is not invented when its condition is unknown or false',()=>{assert.equal(t.next('declareBlockers').supported,false);assert.equal(t.next('declareBlockers',{needsFirstStrike:false}).window.id,'combatDamage')});
+ await test('a skipped draw step is explicit and never silently assumed',()=>{assert.equal(t.next('upkeep').supported,false);assert.equal(t.next('upkeep',{skipDrawStep:true}).window.id,'main1')});
+ await test('cleanup repeats on an explicit exception before opening a new turn',()=>{assert.equal(t.next('cleanup').supported,false);assert.equal(t.next('cleanup',{repeatCleanup:true}).newTurn,false);assert.equal(t.next('cleanup',{repeatCleanup:false}).newTurn,true)});
+ await test('unknown phase actions stop advancement rather than being marked complete',async()=>{const r=await t.enter(state(),'draw');assert.equal(r.status,'unsupported');assert.equal(r.requiredAction,'observeWindowStart')});
+ await test('even a window without turn-based actions must observe beginning triggers and SBA',async()=>{const calls=[];const r=await t.enter(state(),'upkeep',async(s,a)=>{calls.push(a.type);return {supported:true,status:'verified',state:s}});assert.deepEqual(calls,['observeWindowStart','stabilizeAndCollectTriggers']);assert.equal(r.state.priority,'A')});
+ await test('partial action adapters cannot unlock priority',async()=>{const r=await t.enter(state(),'draw',async s=>({supported:true,status:'partial',state:s}));assert.equal(r.status,'unsupported');assert.equal(r.state,undefined)});
+ await test('untap keeps triggers waiting and never opens priority',async()=>{const r=await t.enter(state(),'untap',async(s,a)=>({supported:true,status:'verified',state:{...s,pendingTriggers:[{id:'queued'}]}}));assert.equal(r.state.priority,null);assert.equal(r.requiresTriggerPlacement,false)});
+ await test('cleanup with a newly triggered ability opens the exceptional placement/priority window',async()=>{const r=await t.enter(state(),'cleanup',async(s,a)=>({supported:true,status:'verified',state:{...s,pendingTriggers:[{id:'queued'}]}}));assert.equal(r.priorityWindow,true);assert.equal(r.requiresTriggerPlacement,true)});
+ await test('an unresolved stack cannot be skipped by entering a new step',async()=>{const s=state();s.stack=[{id:'spell'}];assert.equal((await t.enter(s,'main2')).status,'unsupported')});
+ await test('main phases have no fictional substeps',()=>{assert.equal(t.interpret('prima fase principale').step,null);assert.equal(t.interpret('seconda fase principale').step,null)});
+ await test('unknown extra/skip-turn modifications are rejected',()=>assert.equal(t.next('main1',{extraCombat:true}).supported,false));
+ await test('leaving a combat step coordinates expirations, combat removal and phase mana',async()=>{const s=state();s.turn.window='endCombat';const calls=[];const r=await t.leave(s,'main2',async(state,a)=>{calls.push(a.type);return {supported:true,status:'verified',state}});assert.equal(r.status,'verified');assert.deepEqual(calls,['endStepEffectsAndMana','removeFromCombat','endPhaseEffectsAndMana'])});
+ await test('missing end-of-step effect/mana logic cannot be silently skipped',async()=>{const s=state();s.turn.window='upkeep';assert.equal((await t.leave(s,'draw')).status,'unsupported')});
+ console.log(count+'/'+count+' turn structure checks passed');
+})().catch(e=>{console.error(e);process.exitCode=1});
