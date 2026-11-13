@@ -169,15 +169,15 @@
       ],
       "exit_code": 0,
       "summary": [
-        "PASS a short reference to the only fully introduced legendary card is not a missing extra card",
+        "PASS case variations in a repeated short name preserve the already introduced Oracle identity",
         "PASS casting legality is not confused with result of resolving a spell",
         "PASS known card omitted behind broad evidence is caught during grounding",
         "PASS unknown Oracle identity stays unresolved",
         "PASS ambiguous short names retain all actual Oracle choices despite model preference",
         "PASS speaker-frame spell distinguishes your hexproof target from opponent caster",
-        "26/26 AI protocol and real-engine checks passed; extraction fixtures, no real model inference"
+        "27/27 AI protocol and real-engine checks passed; extraction fixtures, no real model inference"
       ],
-      "date_utc": "2026-11-13T20:47:49.801092+00:00"
+      "date_utc": "2026-11-13T20:51:46.386741+00:00"
     },
     {
       "command": [
@@ -632,11 +632,28 @@
         "PASS simulated microphone denial leaves typing and actual analysis available"
       ],
       "date_utc": "2026-11-13T20:48:03.130962+00:00"
+    },
+    {
+      "command": [
+        "node",
+        "scene-ai.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS case variations in a repeated short name preserve the already introduced Oracle identity",
+        "PASS casting legality is not confused with result of resolving a spell",
+        "PASS known card omitted behind broad evidence is caught during grounding",
+        "PASS unknown Oracle identity stays unresolved",
+        "PASS ambiguous short names retain all actual Oracle choices despite model preference",
+        "PASS speaker-frame spell distinguishes your hexproof target from opponent caster",
+        "27/27 AI protocol and real-engine checks passed; extraction fixtures, no real model inference"
+      ],
+      "date_utc": "2026-11-13T20:51:46.386741+00:00"
     }
   ],
   "source_sha256": {
     "scene-intake.js": "0f8a4c5c35fb5e1b1027fb3bd3cab83d1ad7d59bb304a6b303cc90b5c0bd6b45",
-    "scene-ai-protocol.js": "836ab855241dc8b624db0d17fd0daf93699451c399352b368e9e59228f9b72c4",
+    "scene-ai-protocol.js": "11b9682fce28499e6160a0144f7985dcaa860789d38f932d226c837cb5e8640d",
     "scene-ai-client.js": "734b884ea64cbd248d1f131d9cd8b5ef3f6e856532e564aa8004e8a5a768efce",
     "scene-input-ui.js": "7a4ddef776fa2f456587c97bf111078bfc2fb4b0da7b7275cb6263999d3968e0",
     "interpreter/server.py": "d9a7c7f51d5f31019ad2fa4134e93b8077616991fa30d8a1bd993543d92c1606",
@@ -644,7 +661,8 @@
     "interpreter/prompt.py": "9f4542b26fdabbe8365827fd7de620f43608065ea9636e47310afd843d181ed2",
     "interpreter/preview.py": "8e16fbc4cbc77f0b46a75c481a8df757e000a1827ed8ba82a9b9db851d9355af",
     "data/ai/scene-schema.json": "b0b74da1d335bbd9c8fa2d5301ee5018d4d1d4260ca41903e524b55c5b3e8080",
-    "data/ai/config.json": "89acb9f3d90dbb7ad32cd791e93d0337466843ba8114fe1b6f2741832427fb27"
+    "data/ai/config.json": "89acb9f3d90dbb7ad32cd791e93d0337466843ba8114fe1b6f2741832427fb27",
+    "scene-ai.test.cjs": "c9b6bee74d5d84d84fee5bcde69472bca64dbeaeb0266918612ed0022b1e32a2"
   },
   "real_inference_reports": [
     "real-model.json",

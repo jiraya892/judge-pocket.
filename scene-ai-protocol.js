@@ -52,13 +52,13 @@ async function ground(proposal,text,catalogue,resolver,{resolutions={}}={}){
  for(const card of proposal.cards){
   const mention=root.JudgeSceneIntake.parse(card.mention,catalogue);if((mention.mentions||[]).length>1)return {supported:false,errors:['Un singolo nome contiene più carte: '+card.mention]};const ambiguity=mention.ambiguities?.find(a=>a.text===card.mention),exact=mention.mentions?.find(m=>m.text===card.mention&&m.name);
   let names=ambiguity?.candidates|| (exact?[exact.name]:card.name?[card.name]:[]);
-  const choices=[];for(const name of [...new Set(names)].slice(0,8)){try{const data=await resolver(name);if(data&&data.name===name&&data.oracle_id)choices.push({name:data.name,oracleId:data.oracle_id,oracleText:data.oracle_text||'',typeLine:data.type_line||''})}catch(e){}}
+  const choices=[];for(const name of [...new Set(names)].slice(0,8)){try{const data=await resolver(name);if(data&&data.name.toLowerCase()===name.toLowerCase()&&data.oracle_id)choices.push({name:data.name,oracleId:data.oracle_id,oracleText:data.oracle_text||'',typeLine:data.type_line||''})}catch(e){}}
   const prior=[...new Set((baseline.mentions||[]).filter(m=>m.text===card.mention&&resolutions[m.key]===m.name&&m.name).map(m=>m.name))];const selected=prior.length===1&&choices.some(c=>c.name===prior[0])?prior[0]:choices.length===1?choices[0].name:null;
   cards.push({...card,choices,selected,mappingProposed:!exact&&!ambiguity});
  }
  // A known card in the original may not vanish inside a model's broad quotation.
- for(const mention of baseline.mentions||[]){const represented=cards.some(c=>c.mention===mention.text||mention.name&&c.choices.some(choice=>choice.name===mention.name)&&(mention.text.includes(c.mention)||c.mention.includes(mention.text)));if(represented)continue;
-  const candidates=baseline.ambiguities?.find(a=>a.key===mention.key)?.candidates||[],introduced=cards.filter(c=>c.mention.startsWith(mention.text+',')&&c.choices.some(choice=>candidates.includes(choice.name)));const prefix=text.slice(Math.max(0,mention.start-40),mention.start);if(introduced.length===1&&!/\b(?:another|altr[oa]|un altr[oa]|second[oa])\s*$/i.test(prefix))continue;
+ for(const mention of baseline.mentions||[]){const represented=cards.some(c=>c.mention===mention.text||mention.name&&c.choices.some(choice=>choice.name===mention.name)&&(mention.text.toLowerCase().includes(c.mention.toLowerCase())||c.mention.toLowerCase().includes(mention.text.toLowerCase())));if(represented)continue;
+  const candidates=baseline.ambiguities?.find(a=>a.key===mention.key)?.candidates||[],introduced=cards.filter(c=>c.mention.toLowerCase().startsWith(mention.text.toLowerCase()+',')&&c.choices.some(choice=>candidates.includes(choice.name)));const prefix=text.slice(Math.max(0,mention.start-40),mention.start);if(introduced.length===1&&!/\b(?:another|altr[oa]|un altr[oa]|second[oa])\s*$/i.test(prefix))continue;
   return {supported:false,errors:['La carta citata «'+mention.text+'» è stata omessa o il riferimento è ambiguo.']};}
  const reconciled=clone(proposal),corrections=[];
  // Reuse only explicit, recognized timing from the deterministic intake. This
