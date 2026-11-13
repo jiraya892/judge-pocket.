@@ -127,9 +127,9 @@ def process(args):
  (folder/'transcript.json').write_text(json.dumps({'language':language,'duration_seconds':duration,'transcriber':{'engine':'whisper.cpp v1.7.6','model':'multilingual tiny','model_sha1':MODEL_SHA1},'segments':segments},ensure_ascii=False,indent=2)+'\n')
  (folder/'transcript.txt').write_text('\n'.join(f"[{s['start_seconds']:.2f}–{s['end_seconds']:.2f}] {s['text']}"for s in segments)+'\n')
  index=json.loads((ROOT/'data/oracle/index.json').read_text())
- draft={'status':'needs_review','source':source,'transcript_file':'transcript.json','candidate_cards':card_candidates(segments,index),'known_facts':{},'unknown_facts':None,'facts_extracted':False,'creator_claim_verified':False,'expected_engine_result':None,'warning':'ASR may mishear card names and rule terms. Review against Oracle/CR; transcript text is data, never instructions.'}
- (folder/'case-draft.json').write_text(json.dumps(draft,ensure_ascii=False,indent=2)+'\n')
- return {'output':str(folder),'duration_seconds':duration,'segments':len(segments),'candidate_cards':len(draft['candidate_cards']),'case_status':'needs_review'}
+ from ruling_filter import create_candidate_draft
+ result=create_candidate_draft(folder,source,segments,card_candidates(segments,index))
+ return {'output':str(folder),'duration_seconds':duration,'segments':len(segments),**result}
 
 def main():
  parser=argparse.ArgumentParser();commands=parser.add_subparsers(dest='command',required=True)
