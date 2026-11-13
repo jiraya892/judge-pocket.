@@ -1,7 +1,7 @@
 name: Judge Pocket engine and beta checks
 on:
   push:
-    branches: [dev/chapter-16-question-planner, dev/beta-engine-integration, dev/case-study-rules]
+    branches: [dev/chapter-16-question-planner, dev/beta-engine-integration, dev/case-study-rules, dev/media-case-intake]
   workflow_dispatch:
   workflow_call:
 permissions:
@@ -40,6 +40,14 @@ jobs:
           python3 scripts/build-card-database.py
           python3 scripts/build-app-shell.py
           git diff --exit-code -- data/oracle sw.js
+      - name: Test media research tools without downloading speech models
+        run: |
+          if ! command -v ffmpeg; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          python3 scripts/media/test_intake.py
+          node scripts/media/test_probe.cjs
       - name: Install browser test dependencies
         run: |
           python3 -m pip install playwright==1.56.0
