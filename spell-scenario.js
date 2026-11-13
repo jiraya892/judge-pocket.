@@ -26,7 +26,7 @@ function evaluate(spell,permanents,targetId){
 async function guided(context){
  const fail=(code,reason)=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{reasonCodes:[code]}});
  if(!Number.isInteger(context.castingIndex)||context.castingIndex<0||context.castingIndex>=context.cards.length||context.cards[context.castingIndex]!==context.casting)return fail('CASTING_UNKNOWN','La magia da risolvere non è stata identificata.');
- if(context.cards.length>3)return fail('SCENARIO_DOMAIN_LIMIT','La beta guidata considera fino a tre carte.');
+ if(context.cards.length>4)return fail('SCENARIO_DOMAIN_LIMIT','La beta guidata considera fino a quattro carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(error){return fail('ORACLE_LOOKUP_FAILED',error.message)}
  const spell=cards[context.castingIndex],permanents=[];
  for(let i=0;i<cards.length;i++){

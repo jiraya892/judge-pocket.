@@ -20,7 +20,7 @@ certificato. Non sono state disabilitate verifiche di sicurezza o eliminati test
 
 | Situazione | Funzionamento e confine |
 | --- | --- |
-| Due o tre carte già sul campo | Tipi di terra, dipendenze layer 4, P/T numerica o conteggio terre, SBA per costituzione non positiva, ricalcolo delle fonti |
+| Da due a quattro carte già sul campo | Tipi di terra, dipendenze layer 4, P/T numerica o conteggio terre, SBA per costituzione non positiva, ricalcolo delle fonti |
 | Una magia sta per risolversi | Frase Oracle completa di danno fisso a una creatura; bersaglio tra le creature indicate; priorità, pila, risoluzione, cambio zona e SBA |
 | Indistruttibile | Il danno viene segnato, ma il danno letale non distrugge la creatura; non impedisce le SBA per costituzione non positiva |
 | Prevenzione | Frase completa che previene ogni danno alla creatura stessa, interpretata come effetto di prevenzione prima dell'evento |
@@ -42,7 +42,7 @@ nomi o eccezioni per coppie di carte nell'implementazione.
 ## Dati, ricerca e spiegazioni
 
 - 38.779 record Oracle nello snapshot fornito, con ricerca locale per sottostringa.
-- Due selezioni iniziali e pulsante per una terza carta; rimozione della terza.
+- Due selezioni iniziali e pulsanti per una terza e una quarta carta, entrambe rimovibili.
 - Testi Oracle e ruling consultabili nel risultato. Un ruling relativo a una
   carta non è presentato come prova automatica dell'interazione della coppia.
 - Database prodotti dagli archivi esistenti, senza download: indice e 64 shard
@@ -69,7 +69,7 @@ Rigenerazione: `python3 scripts/build-card-database.py` e
    la carta magia nella zona pila nonostante la pila fosse vuota.
 3. Un tipo di bersaglio sconosciuto è rifiutato anche se l'ID non è presente.
 4. Le creature senza testo Oracle hanno una lista abilità vuota esplicita e
-   vengono valutate correttamente nel percorso a tre carte.
+   vengono valutate correttamente nel percorso a quattro carte.
 5. Il controllo sulle fonti non fa più scomparire dalla vista il calcolo parziale:
    la diagnostica conserva la proiezione computata, distinta dal verdetto.
 6. Il service worker viene registrato da entrambe le pagine d'ingresso; include
@@ -88,7 +88,7 @@ Comandi dalla root del checkout (Node 24.22.1, Python 3.12.14):
 | `node question-planner.test.cjs` | 27/27 PASS |
 | `node chapter-16-guided.test.cjs` | 20/20 PASS, protocollo con valutatore simulato |
 | `node chapter-16-real-engine.test.cjs` | 39/39 PASS, Oracle e motore reali |
-| `node beta-engine.test.cjs` | 18/18 PASS, danni, prevenzione, inneschi e zone reali |
+| `node beta-engine.test.cjs` | 19/19 PASS, danni, prevenzione, inneschi e zone reali |
 | `node card-data.test.cjs` | 10/10 PASS, tutti i 128 shard, integrità, lookup e ruling |
 | `node verify-tests.cjs` | 71/71 PASS |
 | `node verify-groups-5h.cjs` | 2370/2370 PASS, nessun errore di esecuzione |
@@ -96,7 +96,7 @@ Comandi dalla root del checkout (Node 24.22.1, Python 3.12.14):
 | `python3 scripts/test-beta-browser.py` | 7 percorsi PASS in Chromium |
 | `python3 scripts/test-chapter-16-browser.py` | 3 percorsi PASS in Chromium |
 
-Totale suite Node: 2561 test. Le prove browser sono separate, non aggiunte al
+Totale suite Node: 2562 test. Le prove browser sono separate, non aggiunte al
 conteggio dei test del motore. La prova beta avvia e interrompe un server isolato per verificare realmente
 l’assenza della rete anche nei service worker. Per la prova del Capitolo 16
 avviare prima `python3 -m http.server 8000 --bind 127.0.0.1`. Il primo tentativo di installabilità usava una
@@ -175,3 +175,11 @@ GitHub Pages rimangono applicate; non vengono aggirate in caso di rifiuto.
 
 La proposta di anteprima è separata da una release e da un merge in main. Non
 viene fornito un link di beta pubblica fino al deployment e alla verifica reale.
+
+## Estensione autorizzata a quattro carte
+
+Il planner mantiene il limite complessivo di 512 scenari. Le alternative di un
+singolo fatto possono ora arrivare a 32: con quattro carte, 16 combinazioni di
+controllori per 24 ordini temporali generano 384 scenari, senza tagliare casi o
+usare risultati parziali. Sono verificati il caso statico reale a quattro carte
+e il percorso mobile con aggiunta della quarta carta.

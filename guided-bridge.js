@@ -25,7 +25,7 @@ async function evaluate(context){
  if(!root.JudgeOracleRecognition||!root.JudgeCoordinator||!root.JudgeGameFacts||!root.JudgeQuestionPlanner)return fail('ENGINE_MISSING','Moduli del motore o pianificatore mancanti.');
  // A controller and a permutation of entry order form the current finite domain.
  // Additional effects/objects have an open domain: never enumerate them as absent.
- if(context.cards.length>3)return fail('SCENARIO_DOMAIN_LIMIT','La modalità guidata non può ancora verificare tutte le alternative con più di tre carte.');
+ if(context.cards.length>4)return fail('SCENARIO_DOMAIN_LIMIT','La modalità guidata non può ancora verificare tutte le alternative con più di quattro carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(e){return fail('ORACLE_LOOKUP_FAILED','Impossibile recuperare una carta: '+e.message)}
  const ids=cards.map((_,i)=>i),facts=cards.map((card,i)=>({key:'controller'+i,question:'Chi controlla '+card.name+'?',options:[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}]}));
  const answers={...(context.answers||{})};

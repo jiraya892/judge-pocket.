@@ -40,3 +40,8 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published HTTPS beta and exact deployed commit
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python3 checkouts/beta/scripts/verify-deployed-beta.py --url "$PAGES_URL" --commit "$GITHUB_SHA"

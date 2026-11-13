@@ -39,13 +39,13 @@ function evaluate(prepared,enteringIndex,answers){
 }
 async function guided(context){
  const fail=reason=>({status:'unsupported',title:'Ingresso non ancora supportato',reason,diagnostic:{reasonCodes:['ENTRY_SCENARIO_UNSUPPORTED']}});
- if(context.cards.length>3)return fail('La beta guidata considera fino a tre carte.');
+ if(context.cards.length>4)return fail('La beta guidata considera fino a quattro carte.');
  let cards;try{cards=await Promise.all(context.cards.map(name=>root.JudgeOracleRecognition.fetchCard(name)))}catch(e){return fail(e.message)}
  const p=prepare(cards,context.enteringIndex);if(!p.supported)return fail('L’ingresso guidato riconosce soltanto creature con le abilità esplicitamente implementate e inneschi obbligatori di guadagno vita.');
  const facts=[];for(let i=0;i<p.objects.length;i++)if(p.objects[i].abilities.some(a=>a.kind==='triggered'))facts.push({key:'entryController'+i,question:'Chi controlla '+p.objects[i].name+'?',options:[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}]});
  const plan=root.JudgeQuestionPlanner.plan({facts,answers:context.answers||{}},scenario=>evaluate(p,context.enteringIndex,scenario.answers));
  if(plan.status==='unsupported')return fail('Una delle alternative di ingresso non è completamente verificabile.');
- if(!context.board)return {status:'question',key:'board',question:'Considero una sola creatura che entra, le altre carte già sul campo, nessuna risposta, pedina, comandante, segnalino, danno o altro effetto. Confermi?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}]};
+ if(!context.board)return {status:'question',key:'board',question:'Considero una sola creatura che entra, le alquattro carte già sul campo, nessuna risposta, pedina, comandante, segnalino, danno o altro effetto. Confermi?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}]};
  if(context.board!=='complete')return fail('L’ingresso con altri effetti o risposte deve essere specificato e non viene simulato per ipotesi.');
  if(plan.status==='question')return {...plan,key:'answers.'+plan.key};
  const outcome=plan.outcome;

@@ -1,13 +1,13 @@
 # Judge Pocket — beta sperimentale
 
-PWA per scegliere due o tre carte Magic e analizzare interazioni comprese in un
+PWA per scegliere da due a quattro carte Magic e analizzare interazioni comprese in un
 perimetro deterministico esplicito. Motore e interpretazione Oracle sono collegati
 all'interfaccia; i casi non supportati vengono segnalati senza inventare risposte.
 
 ## Stato effettivo
 
 Ricerca locale su 38.779 carte, testi Oracle e ruling dello snapshot fornito,
-selezione di una terza carta, spiegazioni con regole e funzionamento offline per
+selezione di una carta aggiuntiva, spiegazioni con regole e funzionamento offline per
 le carte già caricate. Supportati scenari ristretti di layer/dipendenze/SBA,
 risoluzione di danni, indistruttibile, prevenzione e inneschi obbligatori di
 entrata con guadagno vite. Nessuna eccezione per coppie di carte e nessuna API IA.

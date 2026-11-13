@@ -26,7 +26,7 @@ function plan(input, evaluator){
  const answers=input.answers??{};
  if(!answers||typeof answers!=='object'||Array.isArray(answers))return {status:'unsupported',reason:'Invalid answers'};
  if(facts.length>64)return {status:'unsupported',reason:'Too many facts'};
- if(facts.some(f=>!Array.isArray(f.options)||f.options.length<1||f.options.length>8||f.options.some(o=>!o||!validId(o.id))||new Set(f.options.map(o=>String(o.id))).size!==f.options.length))return {status:'unsupported',reason:'Invalid fact options'};
+ if(facts.some(f=>!Array.isArray(f.options)||f.options.length<1||f.options.length>32||f.options.some(o=>!o||!validId(o.id))||new Set(f.options.map(o=>String(o.id))).size!==f.options.length))return {status:'unsupported',reason:'Invalid fact options'};
  if(facts.some(f=>own(answers,f.key)&&!f.options.some(o=>o.id===answers[f.key])))return {status:'unsupported',reason:'Answer outside fact domain'};
  const unknown=facts.filter(f=>!own(answers,f.key));
  if(unknown.length>10)return {status:'unsupported',reason:'Too many unknown facts'};
