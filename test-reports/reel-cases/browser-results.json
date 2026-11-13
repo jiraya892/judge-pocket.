@@ -64,5 +64,6 @@
         "PASS UI: unsupported trample assignment is explicit and recoverable"
       ]
     }
-  ]
+  ],
+  "tested_implementation_commit": "8c46c5b"
 }

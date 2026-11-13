@@ -37,7 +37,7 @@ function evaluate(cards,attackerIndex,blockerIndex){
   }
  }
  events.push({type:'playerCombatDamage',description:'Il giocatore in difesa subisce 0 danni: l’attaccante è bloccata e non ha travolgere.'});
- return {supported:true,status:'verified',outcome:{scope:'single-blocked-combat',playerDamage:0,events,results:state.objects.map(o=>({id:o.id,name:o.name,status:'verified',zone:o.zone,types:o.types,subtypes:o.subtypes,power:o.power,toughness:o.toughness,damage:o.damage||0})),rules:['510.1c','704.5g',...(first.size?['702.4b']:[]),...([attacker,blocker].some(o=>o.indestructible)?['702.12b']:[])]}};
+ return {supported:true,status:'verified',outcome:{scope:'single-blocked-combat',attackerId:attacker.id,blockerId:blocker.id,playerDamage:0,events,results:state.objects.map(o=>({id:o.id,name:o.name,status:'verified',zone:o.zone,types:o.types,subtypes:o.subtypes,power:o.power,toughness:o.toughness,indestructible:!!o.indestructible,damage:o.damage||0})),rules:['510.1c','704.5g',...(first.size?['702.4b']:[]),...([attacker,blocker].some(o=>o.indestructible)?['702.12b']:[])]}};
 }
 async function guided(context){
  const unsupported=reason=>({status:'unsupported',title:'Combattimento non ancora supportato',reason,diagnostic:{reasonCodes:['COMBAT_SCENARIO_UNSUPPORTED']}});

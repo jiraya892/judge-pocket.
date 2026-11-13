@@ -31,10 +31,10 @@ with sync_playwright() as p:
     for _ in range(2):
         page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
     text = details()
-    assert text.count('si innesca 2 volte') == 2
-    assert 'Conteggio degli inneschi, prima della risoluzione' in text
+    assert page.locator('#status').inner_text().count('si innesca 2 volte') == 2
+    assert 'intera catena' in text
     assert 'Situazione finale' not in text
-    assert 'non è un verdetto' in page.locator('#status').inner_text()
+    assert page.locator('#result').get_attribute('data-status') == 'partial'
     page.screenshot(path='/tmp/judge-reel-trigger.png', full_page=True)
     print('PASS UI: actual life-gain triggers, no irrelevant cap-history question')
 
@@ -43,8 +43,8 @@ with sync_playwright() as p:
     confirm()
     page.get_by_role('button', name='No, non ancora', exact=True).click()
     text = details()
-    assert text.count('si innesca 1 volta') == 1
-    assert 'si innesca 2 volte' not in text
+    assert page.locator('#status').inner_text().count('si innesca 1 volta') == 1
+    assert 'si innesca 2 volte' not in page.locator('#status').inner_text()
     print('PASS UI: recipient retained, once-per-turn history requested and used')
 
     begin('Dr. Beverly Crusher', 'Resplendent Angel', 'Inizia la sottofase finale')
@@ -52,7 +52,8 @@ with sync_playwright() as p:
     assert 'Resplendent Angel' in page.locator('#question').inner_text()
     page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
     page.get_by_role('button', name='5 o più punti vita', exact=True).click()
-    assert details().count('si innesca 1 volta') == 1
+    details()
+    assert page.locator('#status').inner_text().count('si innesca 1 volta') == 1
     print('PASS UI: end-step threshold, irrelevant doctor controller omitted')
 
     begin('Ridgetop Raptor', 'Darksteel Myr', 'Una creatura attaccante viene bloccata')
@@ -60,7 +61,7 @@ with sync_playwright() as p:
     confirm()
     text = details()
     assert '4 danni segnati' in text
-    assert 'subisce 0 danni' in text
+    assert 'non subisce danni' in page.locator('#status').inner_text()
     assert 'CR 510.1c' in text
     page.screenshot(path='/tmp/judge-reel-combat.png', full_page=True)
     print('PASS UI: double strike marks both steps, indestructible blocker survives')
@@ -69,25 +70,63 @@ with sync_playwright() as p:
     page.locator('#choices').get_by_role('button', name='Ridgetop Raptor', exact=True).click()
     confirm()
     text = details()
-    assert 'resta bloccata' in text and 'Nel cimitero' in text
-    assert 'subisce 0 danni' in text
+    assert 'rimane una creatura bloccata' in text and 'muore' in text
+    assert 'non subisce danni' in page.locator('#status').inner_text()
     print('PASS UI: first-step death does not unblock the attacker')
 
     begin('Mr. Spock, Science Officer', 'Brainstorm', 'Un effetto fa pescare carte')
     confirm()
     page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
     text = details()
-    assert '6 pescate singole' in text
-    assert 'Istruzioni di pescata, senza risoluzione completa' in text
-    assert 'carte effettivamente pescate' in text
+    assert '6 pescate' in page.locator('#status').inner_text()
+    assert 'contenuto del grimorio' in text
     page.screenshot(path='/tmp/judge-reel-draw.png', full_page=True)
     print('PASS UI: actual draw replacements, unchanged put-back instruction and explicit boundary')
 
     begin('Charging Badger', 'Darksteel Myr', 'Una creatura attaccante viene bloccata')
     page.locator('#choices').get_by_role('button', name='Charging Badger', exact=True).click()
-    page.wait_for_function("document.getElementById('status').textContent.includes('Travolgere')")
-    assert page.locator('#resultDetails').inner_text() == ''
-    assert 'non ancora supportata' in page.locator('#status').inner_text()
+    page.wait_for_function("document.getElementById('resultDetails').textContent.includes('Travolgere')")
+    assert page.locator('#result').get_attribute('data-status') == 'unsupported'
+    assert 'Regole applicate' not in page.locator('#resultDetails').inner_text()
     assert not errors, errors
     print('PASS UI: unsupported trample assignment is explicit and recoverable')
+
+    begin('Dr. Beverly Crusher', 'Exemplar of Light', 'Un giocatore guadagna punti vita')
+    confirm()
+    for _ in range(2):page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
+    details()
+    page.locator('#moreContext').click()
+    page.locator('#contextCard').fill("Ajani's Pridemate")
+    page.locator('#suggestContext').get_by_role('option', name="Ajani's Pridemate", exact=True).click()
+    page.locator('#applyContext').click()
+    confirm()
+    assert "Ajani's Pridemate" in page.locator('#question').inner_text()
+    page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
+    details()
+    assert page.locator('#status').inner_text().count('si innesca 2 volte') == 3
+    assert 'non autenticata' not in page.locator('#resultDetails').inner_text()
+    print('PASS UI: add a third card, preserve old answers and ask only its relevant controller')
+
+    page.locator('#moreContext').click()
+    page.locator('#contextNote').fill('Ci sono già due danni segnati sulla creatura.')
+    page.locator('#applyContext').click()
+    page.wait_for_function("document.getElementById('result').dataset.status === 'unsupported'")
+    assert 'Ho conservato il dettaglio' in page.locator('#resultDetails').inner_text()
+    assert 'si innesca 2 volte' not in page.locator('#status').inner_text()
+    page.locator('#moreContext').click()
+    assert page.locator('#contextNote').input_value() == 'Ci sono già due danni segnati sulla creatura.'
+    print('PASS UI: an unparsed added detail is retained and blocks a stale calculation')
+
+    begin('Dr. Beverly Crusher', 'Exemplar of Light', 'Una carta riceve segnalini +1/+1')
+    page.locator('#choices').get_by_role('button', name='Exemplar of Light', exact=True).click()
+    confirm()
+    page.get_by_role('button', name='No, non ancora', exact=True).click()
+    details()
+    page.locator('#moreContext').click()
+    page.locator('#contextAnswerReview button').filter(has_text='si è già innescata').click()
+    page.get_by_role('button', name='Sì, si è già innescata', exact=True).click()
+    details()
+    assert 'non si innesca nessuna' in page.locator('#status').inner_text()
+    assert not errors, errors
+    print('PASS UI: edit a previous answer from the result and recompute the limited trigger')
     browser.close()

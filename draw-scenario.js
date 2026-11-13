@@ -42,7 +42,7 @@ function evaluate(prepared,answers){
  if(!Number.isSafeInteger(requestedDraws))return fail('Numero di pescate fuori intervallo.');
  const events=[{type:'drawInstructions',description:prepared.source.name+' richiede '+requestedDraws+' pescate singole al posto delle '+prepared.source.amount+' iniziali. Ogni sostituzione si applica una sola volta a ciascuna pescata originaria e alle pescate che ne derivano.'}];
  if(prepared.source.putBack)events.push({type:'putBackInstructions',description:'L’istruzione successiva richiede di mettere '+prepared.source.putBack+' carte dalla mano in cima al grimorio. Le sostituzioni delle pescate non modificano questo numero.'});
- return {supported:true,status:'verified',outcome:{scope:'draw-instructions',results:[],originalDraws:prepared.source.amount,requestedDraws,putBackInstructions:prepared.source.putBack,events,rules:['121.2','614.1a','614.5','616.1']}};
+ return {supported:true,status:'verified',outcome:{scope:'draw-instructions',sourceName:prepared.source.name,results:[],originalDraws:prepared.source.amount,requestedDraws,putBackInstructions:prepared.source.putBack,events,rules:['121.2','614.1a','614.5','616.1']}};
 }
 async function guided(context){
  const unsupported=reason=>({status:'unsupported',title:'Pescate non ancora supportate',reason,diagnostic:{reasonCodes:['DRAW_SCENARIO_UNSUPPORTED']}});

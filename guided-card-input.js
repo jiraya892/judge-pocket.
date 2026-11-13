@@ -5,14 +5,14 @@ function bind(field,list){let timer,seq=0;
  field.addEventListener('input',()=>{clearTimeout(timer);const q=field.value.trim(),run=++seq;clear();if(q.length<2)return;
   timer=setTimeout(async()=>{try{
    let names;try{names=await window.JudgeCardData.suggest(q);}catch(e){const response=await fetch('https://api.scryfall.com/cards/autocomplete?q='+encodeURIComponent(q));if(!response.ok)throw Error('Ricerca non disponibile');names=(await response.json()).data||[];}
-   if(run!==seq||field.value.trim()!==q)return;
+   if(run!==seq||field.value.trim()!==q||field.closest('[hidden]'))return;
    for(const name of names.slice(0,10)){const button=document.createElement('button');button.type='button';button.textContent=name;button.setAttribute('role','option');button.onclick=()=>{field.value=name;clear()};list.append(button)}list.hidden=!list.children.length;
   }catch(e){if(run===seq){list.textContent='Ricerca non disponibile. Puoi inserire il nome completo e riprovare.';list.hidden=false}}
   },180);
  });
  field.addEventListener('keydown',e=>{if(e.key==='Escape')clear()});field.addEventListener('blur',()=>setTimeout(clear,180));
 }
-for(const [fieldId,listId] of [['card1','suggest1'],['card2','suggest2']])bind(document.getElementById(fieldId),document.getElementById(listId));
+for(const [fieldId,listId] of [['card1','suggest1'],['card2','suggest2'],['contextCard','suggestContext'],['extraName','suggestExtra']])bind(document.getElementById(fieldId),document.getElementById(listId));
 const add=document.getElementById('addCard');
 function refreshExtraCards(){
  const extras=Array.from(document.querySelectorAll('[data-extra-card]'));

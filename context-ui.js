@@ -1,8 +1,128 @@
-(function(){'use strict';const $=id=>document.getElementById(id);let state={cards:[]},request=0;function review(){const holder=$('answerReview');holder.replaceChildren();const entries=Object.entries(state.answers||{});for(const [key,value] of entries){const b=document.createElement('button');b.className='option';b.textContent=key+': '+String(value)+' — modifica';b.onclick=()=>{const revised=window.JudgeConditionalFacts.clear(state.answers||{},key);if(!revised.supported)return;state.answers=revised.answers;holder.hidden=true;show()};holder.append(b)}if(!entries.length)holder.textContent='Nessuna risposta aggiuntiva da correggere.'}const reviewButton=$('reviewAnswers');if(reviewButton)reviewButton.onclick=()=>{const holder=$('answerReview');holder.hidden=!holder.hidden;if(!holder.hidden)review()};function show(){const current=++request;const result=window.JudgeContextInterview.next(state);if($('answerReview'))$('answerReview').hidden=true;$('step').hidden=result.status!=='question';$('result').hidden=!['ready','unsupported'].includes(result.status);$('start').hidden=result.status!=='needCards';$('copyDiagnostic').hidden=true;$('resultDetails')?.replaceChildren();$('cardSources')?.replaceChildren();if(result.status==='unsupported'){$('summary').textContent='Situazione da chiarire';$('status').textContent=result.reason||'Le informazioni fornite non sono valide.';}if(result.status==='question'){$('question').textContent=result.question;$('choices').replaceChildren();$('description').hidden=result.key!=='description';$('extraName').hidden=result.key!=='extraCards';$('addExtra').hidden=result.key!=='extraCards';$('sendDescription').hidden=result.key!=='description';for(const option of result.options){const button=document.createElement('button');button.className='option';button.textContent=option.label;button.onclick=()=>{if(result.key==='orderChoices')state.orderChoices=[...(state.orderChoices||[]),Number(option.id)];else if(result.key==='controllers')state.controllers=[...(state.controllers||[]),option.id];else if(result.key==='extraCards')state.extraComplete=true;else if(result.key.startsWith('answers.')){const saved=window.JudgeRequiredFacts.preserve(state.answers||{},result.key.slice(8),option.id);if(saved.supported)state.answers=saved.answers;}else state[result.key]=option.id;show()};$('choices').append(button)}$('addExtra').onclick=()=>{const name=$('extraName').value.trim();if(!name)return;state.cards.push(name);$('extraName').value='';state.orderChoices=null;show()};$('sendDescription').onclick=()=>{state.description=$('description').value.trim();show()}}if(result.status==='ready'){$('summary').textContent=result.context.cards.join(' + ')+' · '+(result.context.event==='enter'?result.context.entering+' sta entrando nel campo di battaglia':result.context.event==='present'?'Entrambe sono sul campo di battaglia':result.context.event==='cast'?result.context.casting+' viene lanciata':({gainLife:'Un giocatore guadagna punti vita',putCounters:'Una carta riceve segnalini +1/+1',beginEndStep:'Inizia la sottofase finale',combat:'Una creatura attaccante viene bloccata',drawCards:'Un effetto fa pescare carte'})[result.context.event]||result.context.description);$('status').textContent='Verifica del testo Oracle e del motore in corso…';window.JudgeGuidedBridge.evaluate(result.context).then(out=>{if(current!==request)return;
-if(out?.status==='question'){
- $('result').hidden=true;$('step').hidden=false;$('question').textContent=out.question;
- $('choices').replaceChildren();$('description').hidden=true;$('extraName').hidden=true;$('addExtra').hidden=true;$('sendDescription').hidden=true;
- for(const option of out.options||[]){const button=document.createElement('button');button.className='option';button.textContent=option.label;button.onclick=()=>{if(out.key==='board'){state.board=option.id;state.requireBoard=option.id==='additional';}else if(out.key==='controllers'){state.controllers=[...(state.controllers||[]),option.id];}else if(out.key==='orderChoices'){state.orderChoices=[...(state.orderChoices||[]),Number(option.id)];}else if(out.key.startsWith('answers.'))state.answers={...(state.answers||{}),[out.key.slice(8)]:option.id};show()};$('choices').append(button)}
- return;
+/* Guided flow with a single explanation and reversible context refinement. */
+(function(){'use strict';
+const $=id=>document.getElementById(id);
+let state={cards:[]},request=0;
+const events={gainLife:'Un giocatore guadagna punti vita',putCounters:'Una carta riceve segnalini +1/+1',beginEndStep:'Inizia la sottofase finale',combat:'Una creatura attaccante viene bloccata',drawCards:'Un effetto fa pescare carte'};
+function error(id,message){$(id).textContent=message;$(id).hidden=!message;}
+function revise(key){
+ const revised=window.JudgeConditionalFacts.clear(state.answers||{},key);
+ if(!revised.supported)return;
+ state.answers=revised.answers;
+ $('contextEditor').hidden=true;
+ show();
 }
-out=window.JudgeGuidedTrustGate?.guard(out)||{status:'unsupported',title:'Interazione non ancora supportata',reason:'Verifica della fonte non disponibile',diagnostic:{reasonCodes:['TRUST_GATE_MISSING']}};const view=window.JudgeExplanationView?.present(out);$('status').textContent=view?[view.title,view.reason,view.ruleSource,...view.warnings].filter(Boolean).join('\n'):[out.title,out.reason].filter(Boolean).join('\n');window.JudgeResultView?.render($('resultDetails'),out);window.JudgeResultView?.cards($('cardSources'),result.context.cards,()=>current===request);const report=JSON.stringify({context:result.context,diagnostic:out.diagnostic},null,2);$('copyDiagnostic').hidden=false;$('copyDiagnostic').onclick=async()=>{try{await navigator.clipboard.writeText(report);$('status').textContent+='\nRapporto copiato: puoi incollarlo nella chat per sviluppare il caso.'}catch(e){$('status').textContent+='\nCopia non disponibile: '+e.message}}}).catch(e=>{if(current===request)$('status').textContent='Errore tecnico: '+e.message})}}$('begin').onclick=()=>{const cards=Array.from(document.querySelectorAll('[data-card-input]'),field=>field.value.trim());if(cards.length<2||cards.some(x=>!x)){$('inputError').textContent='Inserisci il nome di tutte le carte selezionate.';$('inputError').hidden=false;return}$('inputError').hidden=true;state={cards};show()};$('restart').onclick=()=>{request++;state={cards:[]};show()};const connection=()=>{const label=$('connectionStatus');if(label)label.textContent=(!window.DecompressionStream||!window.crypto?.subtle)?(navigator.onLine?'Questo browser richiede una connessione per recuperare le carte.':'Sei offline: riconnettiti per recuperare le carte con questo browser.'):navigator.onLine?'Database locale disponibile. Le carte consultate restano disponibili dopo il primo caricamento.':'Sei offline: puoi usare le carte già caricate su questo dispositivo.'};window.addEventListener('online',connection);window.addEventListener('offline',connection);connection();$('begin').disabled=false;$('begin').textContent='Continua';show()})();
+function review(holder){
+ holder.replaceChildren();
+ for(const [key,value]of Object.entries(state.answers||{})){
+  const label=state.answerLabels?.[key];
+  const button=document.createElement('button');button.type='button';button.className='option';
+  button.textContent=(label?label.question+' '+label.answer:'Risposta: '+String(value))+' — modifica';
+  button.onclick=()=>revise(key);holder.append(button);
+ }
+ if(!holder.children.length)holder.textContent='Nessuna risposta aggiuntiva da correggere.';
+}
+function remember(question,option){
+ const key=question.key.slice(8),saved=window.JudgeRequiredFacts.preserve(state.answers||{},key,option.id);
+ if(saved.supported){state.answers=saved.answers;state.answerLabels={...(state.answerLabels||{}),[key]:{question:question.question,answer:option.label}};}
+}
+function appendCard(name){
+ if(state.cards.length>=4)return false;
+ state.cards=[...state.cards,name];state.orderChoices=null;
+ // A range such as "less than five" cannot answer a new one-life threshold.
+ state.answers=Object.fromEntries(Object.entries(state.answers||{}).filter(([key])=>!['entryOrder','lifeGainedA','lifeGainedB'].includes(key)));
+ return true;
+}
+function choose(question,option){
+ if(question.key==='board'){
+  state.board=option.id;state.requireBoard=option.id==='additional';state.extraComplete=false;
+ }else if(question.key==='orderChoices')state.orderChoices=[...(state.orderChoices||[]),Number(option.id)];
+ else if(question.key==='controllers')state.controllers=[...(state.controllers||[]),option.id];
+ else if(question.key==='extraCards'){
+  state.extraComplete=true;state.board=null;state.requireBoard=false;
+ }else if(question.key.startsWith('answers.'))remember(question,option);
+ else state[question.key]=option.id;
+ show();
+}
+function questionView(question){
+ $('result').hidden=true;$('step').hidden=false;$('question').textContent=question.question;
+ $('choices').replaceChildren();error('stepError','');
+ const description=question.key==='description',extra=question.key==='extraCards';
+ $('description').hidden=!description;$('sendDescription').hidden=!description;
+ $('extraName').hidden=!extra;$('addExtra').hidden=!extra;$('suggestExtra').hidden=true;
+ for(const option of question.options||[]){
+  const button=document.createElement('button');button.type='button';button.className='option';button.textContent=option.label;
+  button.onclick=()=>choose(question,option);$('choices').append(button);
+ }
+}
+function contextSummary(context){
+ const action=context.event==='enter'?context.entering+' sta entrando nel campo di battaglia':context.event==='present'?'Le carte sono sul campo di battaglia':context.event==='cast'?context.casting+' viene lanciata':events[context.event]||context.description;
+ return context.cards.join(' + ')+' · '+action;
+}
+function outputView(output,context,current){
+ const guarded=window.JudgeGuidedTrustGate?.guard(output)||{status:'unsupported',reason:'Verifica del motore non disponibile',diagnostic:{reasonCodes:['TRUST_GATE_MISSING']}};
+ const model=window.JudgeInteractionStory.build(guarded,context);
+ $('result').dataset.status=model.status;
+ $('analysisBadge').textContent=model.status==='partial'?'Analisi del motore':'Calcolo non disponibile';
+ $('status').textContent=model.lead;
+ window.JudgeInteractionStory.render($('resultDetails'),model);
+ window.JudgeResultView.cards($('cardSources'),context.cards,()=>current===request);
+ const technical=window.JudgeExplanationView?.present(guarded);
+ $('sourceDiagnostic').textContent=(technical?.ruleSource||'')+' · Stato del motore: '+guarded.status+'. Le verifiche di provenienza restano attive; questa analisi non è un verdetto certificato.';
+ $('moreContext').hidden=false;$('copyDiagnostic').hidden=false;
+ $('copyDiagnostic').textContent='Copia rapporto tecnico';$('diagnosticMessage').textContent='';
+ const report=JSON.stringify({context,diagnostic:guarded.diagnostic},null,2);
+ $('copyDiagnostic').onclick=async()=>{try{await navigator.clipboard.writeText(report);$('diagnosticMessage').textContent='Rapporto copiato.';}catch(e){$('diagnosticMessage').textContent='Copia non disponibile: '+e.message;}};
+}
+function show(){
+ const current=++request,result=window.JudgeContextInterview.next(state);
+ $('answerReview').hidden=true;$('contextEditor').hidden=true;
+ $('step').hidden=result.status!=='question';$('result').hidden=!['ready','unsupported'].includes(result.status);
+ $('start').hidden=result.status!=='needCards';$('copyDiagnostic').hidden=true;$('moreContext').hidden=true;
+ $('resultDetails').replaceChildren();$('cardSources').replaceChildren();$('analysisBadge').textContent='';
+ if(result.status==='question'){questionView(result);return;}
+ if(result.status==='unsupported'){
+  $('summary').textContent=state.cards.join(' + ');
+  outputView(result,{cards:state.cards},current);return;
+ }
+ if(result.status!=='ready')return;
+ $('result').dataset.status='loading';$('summary').textContent=contextSummary(result.context);
+ $('status').textContent='Analizzo le carte e la situazione…';
+ window.JudgeGuidedBridge.evaluate(result.context).then(output=>{
+  if(current!==request)return;
+  if(output?.status==='question'){questionView(output);return;}
+  outputView(output,result.context,current);
+ }).catch(e=>{if(current===request)outputView({status:'unsupported',reason:'Non riesco a completare il calcolo: '+e.message},result.context,current);});
+}
+$('reviewAnswers').onclick=()=>{const holder=$('answerReview');holder.hidden=!holder.hidden;if(!holder.hidden)review(holder);};
+$('addExtra').onclick=()=>{
+ const name=$('extraName').value.trim();if(!name)return;
+ if(!appendCard(name)){error('stepError','Puoi confrontare al massimo quattro carte.');return;}
+ $('extraName').value='';show();
+};
+$('sendDescription').onclick=()=>{state.description=$('description').value.trim();show();};
+$('moreContext').onclick=()=>{
+ $('contextEditor').hidden=false;$('contextCard').value='';$('contextNote').value=state.additionalDescription||'';
+ $('contextCard').disabled=state.cards.length>=4;
+ $('contextCard').placeholder=state.cards.length>=4?'Hai già selezionato quattro carte':'Cerca il nome della carta';
+ error('contextError','');review($('contextAnswerReview'));
+ (state.cards.length<4?$('contextCard'):$('contextNote')).focus();
+};
+$('cancelContext').onclick=()=>{$('contextEditor').hidden=true;};
+$('applyContext').onclick=()=>{
+ const name=$('contextCard').value.trim(),note=$('contextNote').value.trim();
+ if(name&&!appendCard(name)){error('contextError','Puoi confrontare al massimo quattro carte.');return;}
+ state.additionalDescription=note;state.board=null;state.requireBoard=false;state.extraComplete=false;
+ $('contextCard').value='';$('contextEditor').hidden=true;show();
+};
+$('begin').onclick=()=>{
+ const cards=Array.from(document.querySelectorAll('[data-card-input]'),field=>field.value.trim());
+ if(cards.length<2||cards.some(name=>!name)){error('inputError','Inserisci il nome di tutte le carte selezionate.');return;}
+ error('inputError','');state={cards};show();
+};
+$('restart').onclick=()=>{request++;state={cards:[]};show();};
+function connection(){
+ $('connectionStatus').textContent=(!window.DecompressionStream||!window.crypto?.subtle)?(navigator.onLine?'Questo browser richiede una connessione per recuperare le carte.':'Sei offline: riconnettiti per recuperare le carte con questo browser.'):navigator.onLine?'Le carte consultate restano disponibili dopo il primo caricamento.':'Sei offline: puoi usare le carte già caricate su questo dispositivo.';
+}
+window.addEventListener('online',connection);window.addEventListener('offline',connection);
+connection();$('begin').disabled=false;$('begin').textContent='Continua';show();
+})();

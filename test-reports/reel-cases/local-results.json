@@ -277,5 +277,6 @@
     "result-view.js": "f32f4c92d3877d483060f4a34f02fc9f8733cb609f73b8fe24d6322254bb1130",
     "sw.js": "5841d162e0d7ee9115b140c80055ffcc905e2e294414b801c1765afbabdec391",
     "case-study-reels.test.cjs": "53c4194e4a8623d57dfb6d026c3b7087bca9e0011a890430537d89c8cd62d9a7"
-  }
+  },
+  "tested_implementation_commit": "8c46c5b"
 }

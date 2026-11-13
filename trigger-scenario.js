@@ -59,10 +59,10 @@ function evaluate(prepared,event,answers,targetIndex){
  const transition=root.JudgeTriggerFlow.transition(state,clone(state),ev);
  if(!transition.supported)return fail(transition.reason);
  const pending=transition.state.pendingTriggers;
- const triggerSummary=objects.flatMap(o=>o.abilities.filter(a=>a.kind==='triggered').map(a=>({card:o.name,abilityId:a.id,eventKind:a.eventKind,text:a.text,count:pending.filter(t=>t.abilityId===a.id).length})));
+ const triggerSummary=objects.flatMap(o=>o.abilities.filter(a=>a.kind==='triggered').map(a=>({card:o.name,abilityId:a.id,eventKind:a.eventKind,maxPerTurn:a.maxPerTurn??null,text:a.text,count:pending.filter(t=>t.abilityId===a.id).length})));
  const labels={gainLife:'legata al guadagno di vite',putCounters:'legata ai segnalini +1/+1',beginEndStep:'di fine turno'};
  const events=triggerSummary.map(t=>({type:'triggerCount',description:t.card+': l’abilità '+labels[t.eventKind]+' si innesca '+t.count+' '+(t.count===1?'volta':'volte')+' all’evento indicato.'}));
- return {supported:true,status:'verified',outcome:{scope:'trigger-occurrence',results:[],triggerSummary,events,rules:['603.1','603.2','603.3',...(event==='beginEndStep'?['603.4']:[])]}};
+ return {supported:true,status:'verified',outcome:{scope:'trigger-occurrence',results:[],triggerSummary,gainLifeModifiers:objects.filter(o=>o.abilities.some(a=>a.triggerBonus)).map(o=>o.name),events,rules:['603.1','603.2','603.3',...(event==='beginEndStep'?['603.4']:[])]}};
 }
 async function guided(context){
  const unsupported=reason=>({status:'unsupported',title:'Conteggio degli inneschi non supportato',reason,diagnostic:{reasonCodes:['TRIGGER_SCENARIO_UNSUPPORTED']}});
@@ -76,7 +76,7 @@ async function guided(context){
   const o=prepared.objects[i];
   facts.push({key:'triggerController'+i,question:'Chi controlla '+o.name+' rispetto al giocatore '+(context.event==='beginEndStep'?'di cui finisce il turno?':'che guadagna vite?'),options:[{id:'A',label:'Lo stesso giocatore'},{id:'B',label:'Un avversario'}]});
   if(context.controllers?.[i]!=null)answers['triggerController'+i]=context.controllers[i];
-  for(const a of o.abilities.filter(a=>a.maxPerTurn!==undefined))facts.push({key:'triggerUsed:'+a.id,question:'L’abilità di '+o.name+' «'+a.text+'» si è già innescata in questo turno, da quando questa carta è sul campo?',options:[{id:'no',label:'No, non ancora'},{id:'yes',label:'Sì, si è già innescata'}]});
+  for(const a of o.abilities.filter(a=>a.maxPerTurn!==undefined))facts.push({key:'triggerUsed:'+a.id,question:'L’abilità di '+o.name+(a.eventKind==='putCounters'?' legata ai segnalini +1/+1':a.eventKind==='gainLife'?' legata al guadagno di vite':' di fine turno')+' si è già innescata in questo turno, da quando questa carta è sul campo?',options:[{id:'no',label:'No, non ancora'},{id:'yes',label:'Sì, si è già innescata'}]});
  }
  const thresholds=[...new Set(prepared.objects.flatMap(o=>o.abilities.map(a=>a.lifeThreshold).filter(Number.isSafeInteger)))].sort((a,b)=>a-b);
  if(context.event==='beginEndStep')for(const player of ['A','B']){const key='lifeGained'+player,n=answers[key];if(Number.isSafeInteger(n)&&n>=0)answers[key]=thresholds.filter(t=>t<=n).pop()??0;}

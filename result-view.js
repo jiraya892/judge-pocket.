@@ -63,5 +63,5 @@ async function cards(container,names,isCurrent){
   details.append(summary,type,oracle,button,list);container.append(details);
  }
 }
-root.JudgeResultView={render,cards};
+root.JudgeResultView={render,cards,describeRule:id=>rules[id]||null};
 })(typeof window!=='undefined'?window:globalThis);

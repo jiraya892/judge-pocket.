@@ -13,6 +13,7 @@ async function evaluate(context){
  const details={version:2,cards:context?.cards||[],event:context?.event||null,reasonCodes:[],unsupportedLines:[],warnings:[]};
  const fail=(code,reason,extra={})=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{...details,reasonCodes:[code],...extra}});
  if(!Array.isArray(context?.cards)||context.cards.length<2||context.cards.some(n=>typeof n!=='string'||!n.trim()))return fail('CARDS_MISSING','Servono almeno due nomi di carte.');
+ if(typeof context.additionalDescription==='string'&&context.additionalDescription.trim())return fail('ADDITIONAL_CONTEXT_UNPARSED','Ho conservato il dettaglio aggiunto, ma non riesco ancora a tradurlo in uno scenario calcolabile. Non lo considero assente: serve specificarlo con informazioni supportate dal motore.');
  if(['gainLife','putCounters','beginEndStep'].includes(context.event)&&root.JudgeTriggerScenario)return root.JudgeTriggerScenario.guided(context);
  if(context.event==='combat'&&root.JudgeCombatScenario)return root.JudgeCombatScenario.guided(context);
  if(context.event==='drawCards'&&root.JudgeDrawScenario)return root.JudgeDrawScenario.guided(context);
