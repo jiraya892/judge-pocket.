@@ -22,13 +22,14 @@ function renderAI(grounded,run){
   const select=document.createElement('select');select.style.width='100%';select.style.padding='12px';
   const empty=document.createElement('option');empty.value='';empty.textContent=card.choices.length?'Scegli la carta':'Carta non identificata: correggi il nome nella descrizione';select.append(empty);
   for(const choice of card.choices){const option=document.createElement('option');option.value=choice.name;option.textContent=choice.name;select.append(option)}
+  for(const prior of grounded.cards.slice(0,grounded.cards.indexOf(card))){if(prior.selected&&card.choices.some(c=>c.name===prior.selected)){const option=document.createElement('option');option.value='same:'+prior.id;option.textContent='È la stessa '+prior.selected+' già citata';select.append(option);}}
   select.value=card.selected||'';selections[card.id]=select.value;select.onchange=()=>{selections[card.id]=select.value;update()};label.append(select);preview.append(label);
  }
  const labels={controller:'Controllore',owner:'Proprietario',phase:'Fase',step:'Sottofase',active_player:'Giocatore di turno',event_player:'Giocatore coinvolto',damage:'Danni già segnati',counter_plus1:'Segnalini +1/+1',counter_minus1:'Segnalini −1/−1',life_gained_this_turn:'Vite guadagnate nel turno',tapped:'Tappata',zone:'Zona'};
  const values={self:'tu',opponent:'avversario',unknown:'da chiarire',battlefield:'campo di battaglia',hand:'mano',beginning:'iniziale',precombatMain:'principale prima del combattimento',postcombatMain:'principale dopo il combattimento',combat:'combattimento',ending:'finale',main:'principale',upkeep:'mantenimento',untap:'STAP',draw:'acquisizione',endStep:'finale',cleanup:'cancellazione'};
- const events={present:'situazione sul campo',enter:'ingresso sul campo',cast:'lancio di una magia',combat:'danno da combattimento',block:'possibilità di bloccare',beginUpkeep:'inizio del mantenimento',beginEndStep:'inizio della sottofase finale',gainLife:'guadagno di vite',putCounters:'aggiunta di segnalini',unknown:'da chiarire'};
+ const events={present:'situazione sul campo',enter:'ingresso sul campo',cast:'lancio di una magia',combat:'danno da combattimento',block:'possibilità di bloccare',beginUpkeep:'inizio del mantenimento',beginEndStep:'inizio della sottofase finale',gainLife:'guadagno di vite',putCounters:'aggiunta di segnalini',attack:'dichiarazione degli attaccanti',resolve:'risoluzione',drawCards:'pesca di carte',unknown:'da chiarire'};
  add('Evento: '+(events[grounded.proposal.event.type]||grounded.proposal.event.type)+(grounded.proposal.event.quote?' — «'+grounded.proposal.event.quote+'»':''));
- for(const fact of grounded.proposal.facts){const card=grounded.cards.find(c=>c.id===fact.card);const time={now:'ora',before:'prima dell’evento',after:'dopo l’evento',history:'già avvenuto',question:'nella domanda'}[fact.time];add((labels[fact.kind]||'Dettaglio')+(card?' ('+card.mention+')':'')+': '+(fact.negated?'NON ':'')+(values[fact.value]??String(fact.value))+' — '+time+' — «'+fact.quote+'»');}
+ for(const fact of grounded.proposal.facts){const card=grounded.cards.find(c=>c.id===fact.card);const time={now:'ora',before:'prima dell’evento',after:'dopo l’evento',history:'già avvenuto',question:'nella domanda'}[fact.time];add((labels[fact.kind]||'Dettaglio')+(card?' ('+card.mention+')':'')+': '+(fact.negated?'NON ':'')+(fact.value===null?'da chiarire':typeof fact.value==='boolean'?(fact.value?'sì':'no'):fact.kind==='step'?(root.JudgeTurnStructure.windows.find(w=>w.step===fact.value)?.label||values[fact.value]||String(fact.value)):(values[fact.value]??String(fact.value)))+' — '+time+' — «'+fact.quote+'»');}
  if(grounded.proposal.question)add('Domanda: '+grounded.proposal.question);
  const issues=document.createElement('p'),confirm=document.createElement('button');confirm.type='button';confirm.textContent='Conferma la situazione ricostruita';preview.append(issues,confirm);
  function update(){const result=root.JudgeSceneAIProtocol.draft(grounded,selections);confirm.disabled=!result.supported;issues.textContent=result.supported?(result.context.intakeLimitations||[]).join(' · '):(result.errors||[]).join(' · ');return result;}
@@ -41,10 +42,10 @@ async function interpret(){
  try{const index=await catalogue();if(run!==sequence)return;const draft=root.JudgeSceneIntake.parse(text,index,resolutions);render(draft);
   if(draft.status!=='ready'){
    if(!(draft.ambiguities||[]).length&&text.trim()&&root.JudgeSceneAI){
-    message.textContent='Interpreto la descrizione…';const result=await root.JudgeSceneAI.interpret(text,{catalogue:index,signal:request.signal});if(run!==sequence)return;
+    message.textContent='Interpreto la descrizione…';const result=await root.JudgeSceneAI.interpret(text,{catalogue:index,signal:request.signal,resolutions:{...resolutions}});if(run!==sequence)return;
     if(result.status==='proposal'){renderAI(result.grounded,run);return;}
     if(result.status==='cancelled')return;
-    message.textContent=result.reason||(result.errors||[]).join(' · ')||'Correggi la descrizione o usa la selezione delle carte.';return;
+    message.textContent=result.status==='invalid'?'Non riesco a ricostruire tutta la descrizione. Chiarisci i passaggi o usa la selezione delle carte.':result.reason||'Correggi la descrizione o usa la selezione delle carte.';return;
    }
    message.textContent='Controlla i nomi e i passaggi indicati. Puoi correggere la descrizione qui sopra.';return;
   }

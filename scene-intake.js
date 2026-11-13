@@ -3,6 +3,7 @@
 (function(root){'use strict';
 const norm=s=>String(s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const words=s=>norm(s).split(/\s+/).filter(Boolean);
+const timingClause=s=>/^(?:siamo |sono |sta iniziando |sta cominciando )?(?:nella |nello |nell |nel |in |il |la |all inizio della |all inizio del |all inizio di |inizia la |inizia il )(.+)$/.exec(s)||/^(?:(?:we are|i am|we re|i m) )?(?:in|at the beginning of) (?:my opponent s |opponent s |my |the )?(.+)$/.exec(s);
 function catalogue(names){
  const first=new Map(),aliases=new Map();
  const nameSet=new Set(names);
@@ -20,7 +21,7 @@ function parse(text,index,resolutions={}){
  const tokenMatches=[...text.matchAll(/[\p{L}\p{N}]+/gu)].map(m=>({word:norm(m[0]),start:m.index,end:m.index+m[0].length}));
  if(tokenMatches.length>350)return fail('Considera una sola interazione alla volta.');
  const protectedRanges=[];
- for(const piece of text.matchAll(/(?:^|[.!?;\n])([^.!?;\n]+)/g)){const phase=/^(?:siamo |sono )?(?:nella |nello |nell |nel |in |all inizio della |all inizio del |all inizio di |inizia la |inizia il )(.+)$/.exec(norm(piece[1]));if(phase&&root.JudgeTurnStructure?.interpret(phase[1].replace(/^(?:mio|mia) /,'').replace(/ del mio avversario$| dell avversario$/,'')).supported)protectedRanges.push([piece.index,piece.index+piece[0].length]);}
+ for(const piece of text.matchAll(/(?:^|[.!?;\n])([^.!?;\n]+)/g)){const phase=timingClause(norm(piece[1]));if(phase&&root.JudgeTurnStructure?.interpret(phase[1].replace(/^(?:mio|mia) /,'').replace(/ del mio avversario$| dell avversario$/,'')).supported)protectedRanges.push([piece.index,piece.index+piece[0].length]);}
  const mentions=[],ambiguities=[];let cursor=0;
  while(cursor<tokenMatches.length){if(protectedRanges.some(([start,end])=>tokenMatches[cursor].start>=start&&tokenMatches[cursor].start<end)){cursor++;continue;}let match=null;
   for(const candidate of index.first.get(tokenMatches[cursor].word)||[]){const prefix=tokenMatches.slice(Math.max(0,cursor-7),cursor).map(t=>t.word).join(' ');if(candidate.alias&&root.JudgeTurnStructure?.interpret(candidate.tokens.join(' ')).supported&&/(?:siamo|sono) (?:nel|nella|nello|in)(?: mio)?$|all inizio (?:del|della)(?: mio)?$/.test(prefix))continue;if(candidate.tokens.every((word,j)=>tokenMatches[cursor+j]?.word===word)){match=candidate;break;}}
@@ -33,7 +34,7 @@ function parse(text,index,resolutions={}){
  const cards=[...new Set(mentions.map(m=>m.name).filter(Boolean))];
  if(cards.length>4)return {...fail('Il percorso attuale considera fino a quattro carte.'),cards,mentions};
  let masked='',offset=0;for(let i=0;i<mentions.length;i++){const m=mentions[i];masked+=text.slice(offset,m.start)+' REF'+i+' ';offset=m.end;}masked+=text.slice(offset);
- const clauses=masked.split(/[.!?;\n]+|\s+mentre\s+|,\s*(?=(?:io|il mio avversario|l.avversario)\b)/i).map(clause=>norm(clause.replace(/[-−]\s*(?=\d)/g,' negative ').replace(/[<>≤≥=]/g,' comparison '))).flatMap(clause=>clause.split(/\s+(?=(?:ho (?:castato|lanciato)|(?:cosa|che cosa) succede|(?:il mio avversario|l avversario) (?:controlla|ha)|(?:all inizio|inizia il|inizia la)|ora ref\d+ (?:entra|sta entrando))\b)/)).filter(Boolean);
+ const clauses=masked.split(/[.!?;\n]+|\s+mentre\s+|,\s*(?=(?:io|il mio avversario|l.avversario)\b)/i).map(clause=>norm(clause.replace(/[-−]\s*(?=\d)/g,' negative ').replace(/[<>≤≥=]/g,' comparison '))).flatMap(clause=>clause.split(/\s+e\s+(?=controllo\b)|\s+(?=(?:ho (?:castato|lanciato)|(?:cosa|che cosa) succede|(?:il mio avversario|l avversario) (?:controlla|ha)|(?:all inizio|inizia il|inizia la)|ora ref\d+ (?:entra|sta entrando))\b)/)).filter(Boolean);
  const draft={version:1,parser:'bounded-grammar-v1',status:'ready',source:text,cards,mentions,ambiguities,unresolved:[],controllers:cards.map(()=>null),answers:{},event:null,phase:null,step:null,activePlayer:null,evidence:[],question:null};
  const indices=clause=>[...clause.matchAll(/\bref(\d+)\b/g)].map(m=>cards.indexOf(mentions[Number(m[1])]?.name));
  const list=clause=>{const ids=indices(clause);return ids.length&&new Set(ids).size===ids.length&&ids.every(i=>i>=0)&&!clause.replace(/\bref\d+\b/g,'').replace(/\b(?:e|ed|un|una|il|la|lo|l|anche)\b/g,'').trim()?ids:null;};
@@ -48,15 +49,15 @@ function parse(text,index,resolutions={}){
     if(control)own(ids,player,clause);if(field)draft.evidence.push({field:'battlefield',text:clause});done=true;}
   }
   if(done)continue;
-  const phaseClause=/^(?:siamo |sono )?(?:nella |nello |nell |nel |in |all inizio della |all inizio del |all inizio di |inizia la |inizia il )(.+)$/.exec(clause);
-  if(phaseClause&&root.JudgeTurnStructure){let phrase=phaseClause[1].replace(/^(?:mio|mia) /,'').replace(/ del mio avversario$| dell avversario$/,'');const timing=root.JudgeTurnStructure.interpret(phrase);if(timing.supported){set('phase',timing.phase,clause);if(timing.step)set('step',timing.step,clause);if(/(?:mio|mia) /.test(clause)&&!/avversario/.test(clause))set('activePlayer','A',clause);if(/avversario/.test(clause))set('activePlayer','B',clause);if(/all inizio|inizia/.test(clause)){if(timing.step==='upkeep')event('beginUpkeep',clause);if(timing.step==='endStep')event('beginEndStep',clause);}continue;}}
+  const phaseClause=timingClause(clause);
+  if(phaseClause&&root.JudgeTurnStructure){let phrase=phaseClause[1].replace(/^(?:mio|mia) /,'').replace(/ del mio avversario$| dell avversario$/,'');const timing=root.JudgeTurnStructure.interpret(phrase);if(timing.supported){set('phase',timing.phase,clause);if(timing.step)set('step',timing.step,clause);if(/(?:mio|mia|my) /.test(clause)&&!/avversario|opponent/.test(clause))set('activePlayer','A',clause);if(/avversario|opponent/.test(clause))set('activePlayer','B',clause);if(/all inizio|inizia|sta cominciando|at the beginning/.test(clause)){if(timing.step==='upkeep')event('beginUpkeep',clause);if(timing.step==='endStep')event('beginEndStep',clause);}continue;}}
   if((m=/^(?:in campo|sul campo di battaglia) (?:ci sono|c e) (.+)$/.exec(clause))){if(list(m[1])){draft.evidence.push({field:'battlefield',text:clause});continue;}}
   if((m=/^(.+) (?:sono|e|si trovano) (?:in campo|sul campo|sul campo di battaglia|sul tavolo)$/.exec(clause))){if(list(m[1])){draft.evidence.push({field:'battlefield',text:clause});continue;}}
   if((m=/^(?:siamo |sono )?(?:all inizio del|inizia il|all inizio del mio|all inizio del mantenimento del mio avversario|all inizio del mantenimento dell avversario) ?(mantenimento|upkeep)?$/.exec(clause))&&/mantenimento|upkeep/.test(clause)){
-   event('beginUpkeep',clause);set('phase','upkeep',clause);if(/(?:mio|mia) /.test(clause)&&!/avversario/.test(clause))set('activePlayer','A',clause);if(/avversario/.test(clause))set('activePlayer','B',clause);continue;
+   event('beginUpkeep',clause);set('phase','upkeep',clause);if(/(?:mio|mia|my) /.test(clause)&&!/avversario|opponent/.test(clause))set('activePlayer','A',clause);if(/avversario|opponent/.test(clause))set('activePlayer','B',clause);continue;
   }
   if(/^(?:siamo|sono) (?:nel|in|nella) (?:mio |suo |mantenimento del mio avversario|mantenimento dell avversario)?(?:mantenimento|upkeep)?$/.test(clause)&&/mantenimento|upkeep/.test(clause)){
-   set('phase','upkeep',clause);if(/nel mio|in mio/.test(clause))set('activePlayer','A',clause);if(/avversario/.test(clause))set('activePlayer','B',clause);continue;
+   set('phase','upkeep',clause);if(/nel mio|in mio/.test(clause))set('activePlayer','A',clause);if(/avversario|opponent/.test(clause))set('activePlayer','B',clause);continue;
   }
   if((m=/^(?:io )?attacco con (ref\d+) e (?:il mio avversario|l avversario) blocca con (ref\d+)$/.exec(clause))||(m=/^(?:il mio avversario|l avversario) attacca con (ref\d+) e (?:io )?blocco con (ref\d+)$/.exec(clause))){
    const [a,b]=indices(m[1]+' '+m[2]);event('combat',clause);set('attackerIndex',a,clause);set('blockerIndex',b,clause);const mine=clause.startsWith('attacco')||clause.startsWith('io ');own([a],mine?'A':'B',clause);own([b],mine?'B':'A',clause);continue;

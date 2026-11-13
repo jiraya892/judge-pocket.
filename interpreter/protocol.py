@@ -60,13 +60,19 @@ def validate(proposal,text):
         if fact['kind'] in {'damage','counter_plus1','counter_minus1','life_gained_this_turn','stack_position','copies'} and (type(fact['value']) is not int or fact['value']<0):errors.append('Invalid quantity')
         if fact['kind']=='tapped' and not isinstance(fact['value'],bool):errors.append('Invalid tapped state')
         if fact['kind'] in {'controller','owner','zone','damage','counter_plus1','counter_minus1','tapped','stack_position','copies','previous_cast'} and fact['card'] is None:errors.append('Missing card for fact')
-        if fact['kind']=='controller' and fact['value'] not in {None,'unknown'} and not fact['negated'] and re.search(r'\b(non controllo|non controlla|do not control|don.t control|does not control)\b',fact['quote'],re.I):errors.append('Negation changed into positive control')
+        if fact['kind']=='controller' and not fact['negated']:
+            card=next((c for c in proposal['cards'] if c['id']==fact['card']),None)
+            pattern=r'\b(?:non controllo|I do not control|I don.t control)\b' if fact['value']=='self' else r'\b(?:il mio avversario non controlla|my opponent does not control|my opponent doesn.t control)\b' if fact['value']=='opponent' else None
+            if card and pattern:
+                for match in re.finditer(pattern,fact['quote'],re.I):
+                    scope=re.split(r'\b(?:e (?:io )?controllo|and I control)\b|[.!?:;\n]',fact['quote'][match.end():],flags=re.I)[0]
+                    if card['mention'].casefold() in scope.casefold():errors.append('Negation changed into positive control')
     event=proposal['event']
     if any(ref is not None and ref not in ids for ref in [event['actor'],event['target']]):errors.append('Unknown event entity')
     if event['type'] in {'enter','cast','combat','block','attack','resolve'} and event['actor'] is None:errors.append('Missing event actor')
     if event['type'] in {'combat','block'} and (event['target'] is None or event['target']==event['actor']):errors.append('Invalid blocker')
     if event['type']!='unknown' and not event['quote']:errors.append('Missing event evidence')
-    for match in re.finditer(r'\b(\d+)\s*(danni|segnalini|punti vita|vite|damage|counters|life)\b',text,re.I):
+    for match in re.finditer(r'\b(\d+)\s*(dann[oi]|segnalin[oi]|punt[oi] vita|vite|damage|counters?|life)\b',text,re.I):
         if match.start() and text[match.start()-1] in '/+−-':continue
         phrase=match.group(0)
         if not any(phrase in c['mention'] for c in proposal['cards']) and not any(type(f['value']) is int and f['value']==int(match[1]) and phrase in f['quote'] for f in proposal['facts']) and not any(phrase in u['quote'] for u in proposal['unresolved']):errors.append('Unrepresented quantity')

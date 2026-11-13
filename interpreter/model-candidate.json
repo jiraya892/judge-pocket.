@@ -1,5 +1,5 @@
 {
-  "status": "candidate-not-downloaded-not-benchmarked",
+  "status": "downloaded-verified-and-tested-locally-not-deployed",
   "model": "Qwen3-4B-Instruct-2507",
   "repository": "unsloth/Qwen3-4B-Instruct-2507-GGUF",
   "revision": "a06e946bb6b655725eafa393f4a9745d460374c9",
@@ -13,5 +13,5 @@
   "purpose": "Italian/English structured scenario extraction, never rulings",
   "runtime": "Local llama.cpp OpenAI-compatible endpoint with JSON Schema constrained output",
   "minimum_ram_not_benchmarked": true,
-  "notes": "Weights size is not runtime RAM usage. No latency, language accuracy or device compatibility claim before real inference."
+  "notes": "Authorized weights downloaded and SHA-256 verified. Local CPU measurements are recorded in test-reports/ai-interpreter; no mobile or public deployment claim."
 }

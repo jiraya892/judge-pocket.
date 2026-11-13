@@ -64,109 +64,631 @@
       "type": "array",
       "maxItems": 40,
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "kind",
-          "card",
-          "value",
-          "time",
-          "negated",
-          "quote",
-          "player"
-        ],
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "controller",
-              "owner",
-              "zone",
-              "phase",
-              "step",
-              "active_player",
-              "event_player",
-              "life_gained_this_turn",
-              "damage",
-              "counter_plus1",
-              "counter_minus1",
-              "tapped",
-              "player_life",
-              "stack_position",
-              "copies",
-              "previous_cast",
-              "question_amount",
-              "other",
-              "no_other_effects",
-              "no_other_permanents",
-              "background"
-            ]
-          },
-          "card": {
-            "anyOf": [
-              {
+        "anyOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
                 "type": "string",
-                "pattern": "^c[0-3]$"
+                "enum": [
+                  "controller",
+                  "owner",
+                  "active_player",
+                  "event_player"
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "value": {
-            "anyOf": [
-              {
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  }
+                ]
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 500
               },
-              {
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "zone"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "type": "string",
+                "enum": [
+                  "battlefield",
+                  "stack",
+                  "hand",
+                  "graveyard",
+                  "exile",
+                  "library",
+                  "command",
+                  "unknown"
+                ]
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "phase"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "type": "string",
+                "enum": [
+                  "beginning",
+                  "precombatMain",
+                  "combat",
+                  "postcombatMain",
+                  "ending",
+                  "main",
+                  "unknown"
+                ]
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "step"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "type": "string",
+                "enum": [
+                  "untap",
+                  "upkeep",
+                  "draw",
+                  "beginCombat",
+                  "declareAttackers",
+                  "declareBlockers",
+                  "firstStrikeDamage",
+                  "combatDamage",
+                  "endCombat",
+                  "endStep",
+                  "cleanup",
+                  "unknown"
+                ]
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "damage",
+                  "counter_plus1",
+                  "counter_minus1",
+                  "life_gained_this_turn",
+                  "stack_position",
+                  "copies"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "player_life"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
                 "type": "integer",
                 "minimum": -1000000,
                 "maximum": 1000000
               },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "time": {
-            "type": "string",
-            "enum": [
-              "now",
-              "before",
-              "after",
-              "history",
-              "question"
-            ]
-          },
-          "negated": {
-            "type": "boolean"
-          },
-          "quote": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 500
-          },
-          "player": {
-            "anyOf": [
-              {
+              "time": {
                 "type": "string",
                 "enum": [
-                  "self",
-                  "opponent",
-                  "unknown"
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
                 ]
               },
-              {
-                "type": "null"
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
-            ]
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "tapped",
+                  "no_other_effects",
+                  "no_other_permanents"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "type": "boolean"
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "card",
+              "value",
+              "time",
+              "negated",
+              "quote",
+              "player"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "previous_cast",
+                  "question_amount",
+                  "other",
+                  "background"
+                ]
+              },
+              "card": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^c[0-3]$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  {
+                    "type": "integer",
+                    "minimum": -1000000,
+                    "maximum": 1000000
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "time": {
+                "type": "string",
+                "enum": [
+                  "now",
+                  "before",
+                  "after",
+                  "history",
+                  "question"
+                ]
+              },
+              "negated": {
+                "type": "boolean"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "player": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "self",
+                      "opponent",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
           }
-        }
+        ]
       }
     },
     "event": {
@@ -283,7 +805,8 @@
         "casting_legality",
         "controller",
         "life_total",
-        "other"
+        "other",
+        "target_legality"
       ]
     }
   }

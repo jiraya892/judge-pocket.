@@ -31,7 +31,7 @@ function validate(proposal,text,schema){
   if(['damage','counter_plus1','counter_minus1','life_gained_this_turn','stack_position','copies'].includes(fact.kind)&&(!Number.isSafeInteger(fact.value)||fact.value<0))errors.push('Quantità di gioco non valida.');
   if(fact.kind==='tapped'&&typeof fact.value!=='boolean')errors.push('Stato tappato non valido.');
   if(['controller','owner','zone','damage','counter_plus1','counter_minus1','tapped','stack_position','copies','previous_cast'].includes(fact.kind)&&fact.card===null)errors.push('Carta mancante per il fatto.');
-  if(fact.kind==='controller'&&fact.value!=='unknown'&&fact.value!==null&&!fact.negated&&/\b(?:non controllo|non controlla|do not control|don.t control|does not control)\b/i.test(fact.quote))errors.push('Una negazione è stata trasformata in un controllo positivo.');
+  if(fact.kind==='controller'&&!fact.negated){const card=proposal.cards.find(c=>c.id===fact.card),pattern=fact.value==='self'?/\b(?:non controllo|I do not control|I don.t control)\b/gi:fact.value==='opponent'?/\b(?:il mio avversario non controlla|my opponent does not control|my opponent doesn.t control)\b/gi:null;if(card&&pattern)for(const m of fact.quote.matchAll(pattern)){const scope=fact.quote.slice(m.index+m[0].length).split(/\b(?:e (?:io )?controllo|and I control)\b|[.!?:;\n]/i)[0];if(scope.toLowerCase().includes(card.mention.toLowerCase()))errors.push('Una negazione è stata trasformata in un controllo positivo.');}}
  }
  for(const id of [proposal.event.actor,proposal.event.target])if(id!==null&&!ids.has(id))errors.push('Evento riferito a una carta inesistente.');
  if(['enter','cast','combat','block','attack','resolve'].includes(proposal.event.type)&&proposal.event.actor===null)errors.push('Carta protagonista dell’evento non identificata.');
@@ -40,28 +40,42 @@ function validate(proposal,text,schema){
  const missing=[];for(const match of text.matchAll(/[\p{L}\p{N}]+/gu))if(Array.from({length:match[0].length},(_,i)=>covered[match.index+i]).some(v=>!v))missing.push(match[0]);
  if(missing.length)errors.push('Parti della descrizione non rappresentate: '+missing.join(' ').slice(0,300));
  // Catch obvious quantity omissions even when another fact quotes a broad clause.
- for(const m of text.matchAll(/\b(\d+)\s*(danni|segnalini|punti vita|vite|damage|counters|life)\b/giu)){
+ for(const m of text.matchAll(/\b(\d+)\s*(dann[oi]|segnalin[oi]|punt[oi] vita|vite|damage|counters?|life)\b/giu)){
   if(/[\/+−-]/.test(text[m.index-1]||''))continue;
   const inCard=proposal.cards.some(c=>c.mention.includes(m[0]));
   if(!inCard&&!proposal.facts.some(f=>f.value===Number(m[1])&&f.quote.includes(m[0]))&&!proposal.unresolved.some(u=>u.quote.includes(m[0])))errors.push('Quantità citata ma non rappresentata: '+m[0]);
  }
  return errors.length?{supported:false,errors}:{supported:true,proposal:clone(proposal),requiresConfirmation:true};
 }
-async function ground(proposal,text,catalogue,resolver){
- const baseline=root.JudgeSceneIntake.parse(text,catalogue),cards=[];
+async function ground(proposal,text,catalogue,resolver,{resolutions={}}={}){
+ const baseline=root.JudgeSceneIntake.parse(text,catalogue,resolutions),cards=[];if((baseline.unresolved||[]).some(s=>/Informazioni incompatibili|La stessa carta compare sotto controllori diversi/.test(s)))return {supported:false,errors:['La descrizione contiene fatti incompatibili. Chiarisci quale situazione vuoi verificare.']};
  for(const card of proposal.cards){
   const mention=root.JudgeSceneIntake.parse(card.mention,catalogue);if((mention.mentions||[]).length>1)return {supported:false,errors:['Un singolo nome contiene più carte: '+card.mention]};const ambiguity=mention.ambiguities?.find(a=>a.text===card.mention),exact=mention.mentions?.find(m=>m.text===card.mention&&m.name);
   let names=ambiguity?.candidates|| (exact?[exact.name]:card.name?[card.name]:[]);
   const choices=[];for(const name of [...new Set(names)].slice(0,8)){try{const data=await resolver(name);if(data&&data.name===name&&data.oracle_id)choices.push({name:data.name,oracleId:data.oracle_id,oracleText:data.oracle_text||'',typeLine:data.type_line||''})}catch(e){}}
-  cards.push({...card,choices,selected:choices.length===1?choices[0].name:null,mappingProposed:!exact&&!ambiguity});
+  const prior=[...new Set((baseline.mentions||[]).filter(m=>m.text===card.mention&&resolutions[m.key]===m.name&&m.name).map(m=>m.name))];const selected=prior.length===1&&choices.some(c=>c.name===prior[0])?prior[0]:choices.length===1?choices[0].name:null;
+  cards.push({...card,choices,selected,mappingProposed:!exact&&!ambiguity});
  }
  // A known card in the original may not vanish inside a model's broad quotation.
- for(const mention of baseline.mentions||[]){const represented=cards.some(c=>c.mention===mention.text||mention.name&&c.choices.some(choice=>choice.name===mention.name)&&(mention.text.includes(c.mention)||c.mention.includes(mention.text)));if(!represented)return {supported:false,errors:['La carta citata «'+mention.text+'» è stata omessa.']};}
- return {supported:true,proposal:clone(proposal),cards,text,requiresConfirmation:true};
+ for(const mention of baseline.mentions||[]){const represented=cards.some(c=>c.mention===mention.text||mention.name&&c.choices.some(choice=>choice.name===mention.name)&&(mention.text.includes(c.mention)||c.mention.includes(mention.text)));if(represented)continue;
+  const candidates=baseline.ambiguities?.find(a=>a.key===mention.key)?.candidates||[],introduced=cards.filter(c=>c.mention.startsWith(mention.text+',')&&c.choices.some(choice=>candidates.includes(choice.name)));const prefix=text.slice(Math.max(0,mention.start-40),mention.start);if(introduced.length===1&&!/\b(?:another|altr[oa]|un altr[oa]|second[oa])\s*$/i.test(prefix))continue;
+  return {supported:false,errors:['La carta citata «'+mention.text+'» è stata omessa o il riferimento è ambiguo.']};}
+ const reconciled=clone(proposal),corrections=[];
+ // Reuse only explicit, recognized timing from the deterministic intake. This
+ // does not infer a phase from selected cards or from the model's ruling guess.
+ let sourcePhase=baseline.phase,sourceStep=baseline.step;
+ if(sourcePhase&&!phases.has(sourcePhase)){const w=root.JudgeTurnStructure?.windows.find(w=>w.id===sourcePhase);if(w){sourcePhase=w.phase;sourceStep=w.step;}}
+ if(sourcePhase&&phases.has(sourcePhase)){
+  const fixed={phase:sourcePhase};if(sourceStep)fixed.step=sourceStep;if(baseline.activePlayer)fixed.active_player=baseline.activePlayer==='A'?'self':'opponent';
+  for(const [kind,value]of Object.entries(fixed)){if(!reconciled.facts.some(f=>f.kind===kind&&f.value===value&&!f.negated))corrections.push({field:kind,value,method:'explicit-source-timing'});reconciled.facts=reconciled.facts.filter(f=>f.kind!==kind);reconciled.facts.push({kind,card:null,value,time:'now',negated:false,quote:text,player:null});}
+  if(['precombatMain','postcombatMain','main'].includes(sourcePhase))reconciled.facts=reconciled.facts.filter(f=>f.kind!=='step');
+  if(['beginUpkeep','beginEndStep'].includes(baseline.event)){if(reconciled.event.type!==baseline.event)corrections.push({field:'event',value:baseline.event,method:'explicit-source-timing'});reconciled.event={type:baseline.event,actor:null,target:null,quote:text};}
+ }
+ return {supported:true,proposal:reconciled,rawProposal:clone(proposal),corrections,cards,text,requiresConfirmation:true};
 }
 function draft(grounded,selections={}){
- const p=grounded.proposal,errors=[],limitations=[],byId=new Map(),cards=[];
- for(const c of grounded.cards){const name=selections[c.id]||c.selected;if(!c.choices.some(choice=>choice.name===name)){errors.push('Scegli la carta per «'+c.mention+'».');continue;}byId.set(c.id,cards.length);cards.push(name);}
+ const p=grounded.proposal,errors=[],limitations=[],byId=new Map(),cards=[];let castPlayer=null;
+ for(const c of grounded.cards){const choice=selections[c.id]||c.selected;if(typeof choice==='string'&&choice.startsWith('same:')){const index=byId.get(choice.slice(5));if(index==null||!c.choices.some(candidate=>candidate.name===cards[index]))errors.push('Il riferimento alla carta già citata non è compatibile.');else byId.set(c.id,index);continue;}const name=choice;if(!c.choices.some(candidate=>candidate.name===name)){errors.push('Scegli la carta per «'+c.mention+'».');continue;}byId.set(c.id,cards.length);cards.push(name);}
  if(cards.length<2||cards.length>4)errors.push('Il motore attuale richiede da due a quattro carte identificate.');
  if(new Set(cards).size!==cards.length)limitations.push('Più copie della stessa carta richiedono una rappresentazione esplicita degli oggetti.');
  if(errors.length)return {supported:false,errors};
@@ -81,15 +95,18 @@ function draft(grounded,selections={}){
   else if(f.kind==='phase')set('phase',f.value);
   else if(f.kind==='step')set('step',f.value);
   else if(f.kind==='active_player')set('activePlayer',player(f.value));
-  else if(f.kind==='event_player')set('eventPlayer',player(f.value));
-  else if(f.kind==='zone'&&(f.value==='battlefield'||d.event==='cast'&&f.card===p.event.actor&&f.value==='hand'))continue;
+  else if(f.kind==='event_player'){set('eventPlayer',player(f.value));if(d.event==='cast'&&f.card===p.event.actor){const value=player(f.value);if(castPlayer&&castPlayer!==value)errors.push('Giocatori del lancio incompatibili.');else castPlayer=value;}}
+  else if(f.kind==='zone'&&(f.value==='battlefield'||d.event==='cast'&&f.card===p.event.actor&&['hand','stack'].includes(f.value)))continue;
   else if(['damage','counter_plus1','counter_minus1'].includes(f.kind)&&f.value===0)continue;
   else if(f.kind==='tapped'&&f.value===false)continue;
   else limitations.push('Fatto riconosciuto ma non applicato dal motore: '+f.quote);
  }
- if(['enter','cast','combat','block'].includes(d.event)){const actor=byId.get(p.event.actor),target=byId.get(p.event.target);if(d.event==='enter')d.enteringIndex=actor;else if(d.event==='cast'){d.castingIndex=actor;d.caster=d.controllers[actor];if(target!=null)d.answers.spellTarget='guided-'+target;}else{d.attackerIndex=actor;d.blockerIndex=target;}}
+ if(['enter','cast','combat','block'].includes(d.event)){const actor=byId.get(p.event.actor),target=byId.get(p.event.target);if(d.event==='enter')d.enteringIndex=actor;else if(d.event==='cast'){d.castingIndex=actor;d.caster=d.controllers[actor]||castPlayer;if(castPlayer&&d.controllers[actor]&&castPlayer!==d.controllers[actor])errors.push('Giocatore che lancia e controllore della magia incompatibili.');if(target!=null)d.answers.spellTarget='guided-'+target;}else{d.attackerIndex=actor;d.blockerIndex=target;if(actor===target)errors.push('Attaccante e bloccante devono essere oggetti distinti.');}}
  if(![null,'present','enter','cast','combat','block','gainLife','putCounters','beginUpkeep','beginEndStep','drawCards'].includes(d.event))limitations.push('Evento non ancora collegato al motore: '+d.event);
+ const timing={beginUpkeep:{phase:'beginning',step:'upkeep'},beginEndStep:{phase:'ending',step:'endStep'}}[d.event];if(timing){if(d.phase&&d.phase!==timing.phase||d.step&&d.step!==timing.step)errors.push('La fase indicata non corrisponde all’evento ricostruito.');else{d.phase=timing.phase;d.step=timing.step;}}
  if(d.step){const w=root.JudgeTurnStructure.windows.find(w=>w.step===d.step);if(w&&d.phase&&d.phase!==w.phase)errors.push('Fase e sottofase incompatibili.');else if(w)d.phase=w.phase;}
+ if(['trigger_occurrence','trigger_resolution'].includes(p.questionIntent)&&[null,'present'].includes(d.event))errors.push('Per verificare gli inneschi, indica quale evento sta accadendo.');
+ const requiredEvent={entry_result:'enter',target_legality:'cast',combat_result:'combat',block_legality:'block'}[p.questionIntent];if(requiredEvent&&d.event!==requiredEvent)errors.push('La domanda e l’evento ricostruito non corrispondono. Specifica quale passaggio vuoi verificare.');
  if(['casting_legality','controller','life_total','other'].includes(p.questionIntent))limitations.push('Domanda riconosciuta ma non ancora risolta integralmente da questo percorso: '+p.questionIntent);
  if(p.questionIntent==='trigger_resolution'&&['gainLife','putCounters','beginEndStep'].includes(d.event))limitations.push('Questo percorso conta gli inneschi ma non ne risolve ancora tutta la catena.');
  if(p.unresolved.length)errors.push(...p.unresolved.map(u=>u.quote+': '+u.reason));

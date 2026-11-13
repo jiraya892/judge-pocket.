@@ -1,5 +1,5 @@
 {
-  "date_utc": "2026-11-13T19:26:48.727541+00:00",
+  "date_utc": "2026-11-13T20:41:35.149956+00:00",
   "results": [
     {
       "command": [
@@ -8,7 +8,7 @@
       ],
       "exit_code": 0,
       "summary": [
-        "PASS lossy outcome rejected Fri Nov 13 2026 19:25:34 GMT+0000 (Coordinated Universal Time)",
+        "PASS lossy outcome rejected Fri Nov 13 2026 20:39:21 GMT+0000 (Coordinated Universal Time)",
         "PASS lossy outcome rejected ",
         "PASS 512 scenarios accepted",
         "PASS scenario budget checked before evaluation",
@@ -158,8 +158,9 @@
         "PASS each-end-step Oracle makes the active player irrelevant and suppresses that question",
         "PASS casting in the past does not imply that a permanent spell has already resolved",
         "PASS apostrophe forms of a named step are understood without confusing a card alias",
-        "29/29 scene intake and real phase/entry checks passed"
-      ]
+        "30/30 scene intake and real phase/entry checks passed"
+      ],
+      "date_utc": "2026-11-13T20:47:50.110902+00:00"
     },
     {
       "command": [
@@ -168,14 +169,15 @@
       ],
       "exit_code": 0,
       "summary": [
-        "PASS negative controls do not turn into positive facts",
+        "PASS a short reference to the only fully introduced legendary card is not a missing extra card",
         "PASS casting legality is not confused with result of resolving a spell",
         "PASS known card omitted behind broad evidence is caught during grounding",
         "PASS unknown Oracle identity stays unresolved",
         "PASS ambiguous short names retain all actual Oracle choices despite model preference",
         "PASS speaker-frame spell distinguishes your hexproof target from opponent caster",
-        "18/18 AI protocol and real-engine checks passed; extraction fixtures, no real model inference"
-      ]
+        "26/26 AI protocol and real-engine checks passed; extraction fixtures, no real model inference"
+      ],
+      "date_utc": "2026-11-13T20:47:49.801092+00:00"
     },
     {
       "command": [
@@ -191,7 +193,8 @@
         "PASS leaving a combat step coordinates expirations, combat removal and phase mana",
         "PASS missing end-of-step effect/mana logic cannot be silently skipped",
         "16/16 turn structure checks passed"
-      ]
+      ],
+      "date_utc": "2026-11-13T20:47:50.148067+00:00"
     },
     {
       "command": [
@@ -316,7 +319,7 @@
       "summary": [
         "...........",
         "----------------------------------------------------------------------",
-        "Ran 11 tests in 0.028s",
+        "Ran 11 tests in 0.128s",
         "",
         "OK"
       ]
@@ -332,10 +335,11 @@
         "test_uncovered_sentence_rejected (__main__.Transport.test_uncovered_sentence_rejected) ... ok",
         "",
         "----------------------------------------------------------------------",
-        "Ran 10 tests in 0.576s",
+        "Ran 16 tests in 1.648s",
         "",
         "OK"
-      ]
+      ],
+      "date_utc": "2026-11-13T20:47:51.896402+00:00"
     },
     {
       "command": [
@@ -346,7 +350,7 @@
       "summary": [
         "..........",
         "----------------------------------------------------------------------",
-        "Ran 10 tests in 0.108s",
+        "Ran 10 tests in 0.167s",
         "",
         "OK"
       ]
@@ -360,7 +364,7 @@
       "summary": [
         "..............",
         "----------------------------------------------------------------------",
-        "Ran 14 tests in 0.004s",
+        "Ran 14 tests in 0.003s",
         "",
         "OK"
       ]
@@ -374,7 +378,7 @@
       "summary": [
         "......",
         "----------------------------------------------------------------------",
-        "Ran 6 tests in 0.004s",
+        "Ran 6 tests in 0.008s",
         "",
         "OK"
       ]
@@ -490,7 +494,8 @@
         "PASS a delayed description cannot overwrite a switch to manual interaction",
         "PASS simulated in-app speech delivery -> editable text -> real engine; late speech result ignored",
         "PASS simulated microphone denial leaves typing and actual analysis available"
-      ]
+      ],
+      "date_utc": "2026-11-13T20:48:03.130962+00:00"
     },
     {
       "command": [
@@ -504,7 +509,8 @@
         "PASS editing the narrative invalidates the AI proposal and its confirmation",
         "PASS model response containing a ruling is rejected before any engine call",
         "PASS editing during inference cancels stale results"
-      ]
+      ],
+      "date_utc": "2026-11-13T20:47:55.047324+00:00"
     },
     {
       "command": [
@@ -521,20 +527,129 @@
     }
   ],
   "test_limits": [
-    "LLM outputs are authored fixtures, not real inference; no model weights downloaded.",
-    "Chromium touch viewport is not a real Android/iOS device.",
-    "Existing source authentication gate remains active; no final verified ruling claimed.",
-    "No public deployment or paid service activation."
+    "These regression commands use authored model fixtures; separate real-model and real-browser reports record actual inference.",
+    "Development language corpus has known failures and is not an independent accuracy estimate.",
+    "Chromium touch viewports are not real Android/iOS hardware; WebKit was unavailable.",
+    "No public AI endpoint, deployment or paid service activated."
+  ],
+  "final_targeted_rechecks": [
+    {
+      "command": [
+        "node",
+        "scene-ai.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS a short reference to the only fully introduced legendary card is not a missing extra card",
+        "PASS casting legality is not confused with result of resolving a spell",
+        "PASS known card omitted behind broad evidence is caught during grounding",
+        "PASS unknown Oracle identity stays unresolved",
+        "PASS ambiguous short names retain all actual Oracle choices despite model preference",
+        "PASS speaker-frame spell distinguishes your hexproof target from opponent caster",
+        "26/26 AI protocol and real-engine checks passed; extraction fixtures, no real model inference"
+      ],
+      "date_utc": "2026-11-13T20:47:49.801092+00:00"
+    },
+    {
+      "command": [
+        "node",
+        "scene-intake.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS end-step timing and explicitly stated turn life total feed the existing real trigger planner",
+        "PASS speaker-frame gain-life recipient is distinct from active-player timing",
+        "PASS an unstated end-step active player is asked only when it changes trigger occurrence",
+        "PASS each-end-step Oracle makes the active player irrelevant and suppresses that question",
+        "PASS casting in the past does not imply that a permanent spell has already resolved",
+        "PASS apostrophe forms of a named step are understood without confusing a card alias",
+        "30/30 scene intake and real phase/entry checks passed"
+      ],
+      "date_utc": "2026-11-13T20:47:50.110902+00:00"
+    },
+    {
+      "command": [
+        "node",
+        "turn-structure.test.cjs"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS cleanup with a newly triggered ability opens the exceptional placement/priority window",
+        "PASS an unresolved stack cannot be skipped by entering a new step",
+        "PASS main phases have no fictional substeps",
+        "PASS unknown extra/skip-turn modifications are rejected",
+        "PASS leaving a combat step coordinates expirations, combat removal and phase mana",
+        "PASS missing end-of-step effect/mana logic cannot be silently skipped",
+        "16/16 turn structure checks passed"
+      ],
+      "date_utc": "2026-11-13T20:47:50.148067+00:00"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_ai_interpreter.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "test_truncated_model_response_rejected (__main__.Transport.test_truncated_model_response_rejected) ... ok",
+        "test_uncovered_sentence_rejected (__main__.Transport.test_uncovered_sentence_rejected) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 16 tests in 1.648s",
+        "",
+        "OK"
+      ],
+      "date_utc": "2026-11-13T20:47:51.896402+00:00"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-ai-interpreter-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS optional AI HTTP proposal is grounded, readable and never starts the engine before confirmation",
+        "PASS confirmed proposal reaches actual layer/dependency/entry/SBA engine, with no phase question and source gate preserved",
+        "PASS editing the narrative invalidates the AI proposal and its confirmation",
+        "PASS model response containing a ruling is rejected before any engine call",
+        "PASS editing during inference cancels stale results"
+      ],
+      "date_utc": "2026-11-13T20:47:55.047324+00:00"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-scene-intake-browser.py"
+      ],
+      "exit_code": 0,
+      "summary": [
+        "PASS description can be revised from the result without losing original words",
+        "PASS a stated but irrelevant draw step is preserved and does not become another question",
+        "PASS natural upkeep timing and controllers -> actual trigger, stack and life gain",
+        "PASS unparsed damage facts prevent any engine call; no discarded clause becomes a ruling",
+        "PASS a delayed description cannot overwrite a switch to manual interaction",
+        "PASS simulated in-app speech delivery -> editable text -> real engine; late speech result ignored",
+        "PASS simulated microphone denial leaves typing and actual analysis available"
+      ],
+      "date_utc": "2026-11-13T20:48:03.130962+00:00"
+    }
   ],
   "source_sha256": {
-    "scene-ai-client.js": "82a9c1047bb9e358424682c5d3dfccbf0409dba78662f4d1378954ec43d80def",
-    "scene-ai-protocol.js": "434325d454da275c6350452a35f713b640af90ba8b92c1741ff011644fbfbf45",
-    "scene-input-ui.js": "eda5ca8f4587353de60c35d912b93f1168711e4df2e73aa464c93880f4aa3d2e",
-    "interpreter/server.py": "0781cada4e984dceb21b931538408741247a7bd8ef78808ea30cfaf5ab97df6b",
-    "interpreter/protocol.py": "306a70c34f58f3aa35e0302074221a5a8e582e2b1a75de756162f42e515950ad",
-    "interpreter/prompt.py": "237e6ce6cf55e524fb1e970452c7a8893f2891f3a0d5fff855d8d6fb026a9b86",
-    "data/ai/scene-schema.json": "5c396621249aea6e6d71098b69b8df55a55cccc34d9a71053bcf011d38297fbc",
-    "spell-scenario.js": "703937a3d579d4fe209431734074bdc4528f850398e048218ae8725d172c2055",
-    "context-interview.js": "5e27ed9860c1cac609126ed7d9138f0bb6fbdafb3b792bfa6450bf68544e7b4c"
-  }
+    "scene-intake.js": "0f8a4c5c35fb5e1b1027fb3bd3cab83d1ad7d59bb304a6b303cc90b5c0bd6b45",
+    "scene-ai-protocol.js": "836ab855241dc8b624db0d17fd0daf93699451c399352b368e9e59228f9b72c4",
+    "scene-ai-client.js": "734b884ea64cbd248d1f131d9cd8b5ef3f6e856532e564aa8004e8a5a768efce",
+    "scene-input-ui.js": "7a4ddef776fa2f456587c97bf111078bfc2fb4b0da7b7275cb6263999d3968e0",
+    "interpreter/server.py": "d9a7c7f51d5f31019ad2fa4134e93b8077616991fa30d8a1bd993543d92c1606",
+    "interpreter/protocol.py": "84246e896f79f5b1935a9cbaa63e5fca1e10b44b88f63c0c3346f1077774fda9",
+    "interpreter/prompt.py": "9f4542b26fdabbe8365827fd7de620f43608065ea9636e47310afd843d181ed2",
+    "interpreter/preview.py": "8e16fbc4cbc77f0b46a75c481a8df757e000a1827ed8ba82a9b9db851d9355af",
+    "data/ai/scene-schema.json": "b0b74da1d335bbd9c8fa2d5301ee5018d4d1d4260ca41903e524b55c5b3e8080",
+    "data/ai/config.json": "89acb9f3d90dbb7ad32cd791e93d0337466843ba8114fe1b6f2741832427fb27"
+  },
+  "real_inference_reports": [
+    "real-model.json",
+    "grounded-model.json",
+    "real-browser.json",
+    "runtime.json"
+  ]
 }

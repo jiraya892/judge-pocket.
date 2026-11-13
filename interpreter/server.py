@@ -20,7 +20,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):raise BackendUnavailable('Model redirect refused')
 
 class LocalModel:
-    def __init__(self,url='http://127.0.0.1:8080/v1',model='judge-interpreter',timeout=40):
+    def __init__(self,url='http://127.0.0.1:8080/v1',model='judge-interpreter',timeout=80):
         parts=urllib.parse.urlsplit(url)
         if parts.scheme!='http' or parts.hostname not in {'127.0.0.1','localhost','::1'} or parts.username or parts.password or parts.query or parts.fragment:
             raise ValueError('The model backend must be a local HTTP service')
@@ -83,15 +83,16 @@ def create_server(host='127.0.0.1',port=8766,model=None,allowed_origins=()):
             if not busy.acquire(blocking=False):return self.response(429,{'error':'busy'})
             try:
                 proposal=validate(backend.generate(data['text'],candidates),data['text'])
-                self.response(200,{'version':1,'proposal':proposal,'requiresConfirmation':True,'model':getattr(backend,'model','unknown')})
-            except BackendUnavailable:self.response(503,{'error':'model_unavailable'})
-            except (InvalidProposal,ValueError,TypeError):self.response(422,{'error':'invalid_model_proposal'})
+                status=200;body={'version':1,'proposal':proposal,'requiresConfirmation':True,'model':getattr(backend,'model','unknown')}
+            except BackendUnavailable:status=503;body={'error':'model_unavailable'}
+            except (InvalidProposal,ValueError,TypeError):status=422;body={'error':'invalid_model_proposal'}
             finally:busy.release()
+            self.response(status,body)
     server=ThreadingHTTPServer((host,port),Handler);server.daemon_threads=True;return server
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port',type=int,default=8766);parser.add_argument('--backend-url',default='http://127.0.0.1:8080/v1');parser.add_argument('--model',default='judge-interpreter');parser.add_argument('--allowed-origin',action='append',default=[])
-    args=parser.parse_args();server=create_server(port=args.port,model=LocalModel(args.backend_url,args.model),allowed_origins=args.allowed_origin)
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port',type=int,default=8766);parser.add_argument('--timeout',type=int,default=80,help='Local model request timeout in seconds (1..180)');parser.add_argument('--backend-url',default='http://127.0.0.1:8080/v1');parser.add_argument('--model',default='judge-interpreter');parser.add_argument('--allowed-origin',action='append',default=[])
+    args=parser.parse_args();server=create_server(port=args.port,model=LocalModel(args.backend_url,args.model,timeout=max(1,min(180,args.timeout))),allowed_origins=args.allowed_origin)
     print('Local interpreter API: http://127.0.0.1:'+str(server.server_port)+'/api/interpreter/scene',flush=True)
     try:server.serve_forever()
     except KeyboardInterrupt:pass

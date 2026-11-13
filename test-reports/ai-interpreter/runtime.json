@@ -1,0 +1,17 @@
+{
+  "verified_utc": "2026-11-13T20:08:15.815123+00:00",
+  "model_bytes": 2497281120,
+  "model_sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+  "runtime_version": "llama.cpp b7620 (a554a1ecc)",
+  "runtime_url": "https://github.com/ggml-org/llama.cpp/releases/download/b7620/llama-b7620-bin-ubuntu-x64.tar.gz",
+  "runtime_archive_sha256": "ba6acc5553eef543419defbd3c8e5146cc6c2eba588e4e97eef8f8d7d7b1910d",
+  "backend": "CPU",
+  "configured_threads": 4,
+  "cgroup_memory_max": "34359738368",
+  "cgroup_cpu_max": "400000 100000",
+  "deployment": "local development only",
+  "process_rss_kib_sample": 5533824,
+  "ram_note": "One observed resident-memory sample, not a measured minimum or peak requirement.",
+  "base_model_license_url": "https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507/raw/main/LICENSE",
+  "base_model_license_checked": "Apache License Version 2.0, January 2004"
+}

@@ -1,0 +1,31 @@
+{
+  "cases": [
+    {
+      "case": "four-card-entry",
+      "cards": 4,
+      "real_model": true,
+      "real_oracle": true,
+      "real_engine": true,
+      "requires_confirmation": true,
+      "source_gate_preserved": true,
+      "elapsed_to_preview_seconds": 81.217,
+      "result": "Ashaya, Soul of the Wild entra sul campo di battaglia e poi va nel cimitero."
+    },
+    {
+      "case": "target",
+      "cards": 2,
+      "real_model": true,
+      "real_oracle": true,
+      "real_engine": true,
+      "requires_confirmation": true,
+      "source_gate_preserved": true,
+      "elapsed_to_preview_seconds": 34.274,
+      "result": "Lightning Bolt non può bersagliare Slippery Bogle: Antimalocchio impedisce il bersaglio avversario. Nessun danno viene inflitto."
+    }
+  ],
+  "limitations": [
+    "Chromium touch viewport, not real Android/iOS hardware.",
+    "Model runs on the cloud CPU, not in the phone.",
+    "No public deployment."
+  ]
+}

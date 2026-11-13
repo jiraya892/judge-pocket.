@@ -1,0 +1,604 @@
+{
+  "date_utc": "2026-11-13T20:14:33.376693+00:00",
+  "real_inference": true,
+  "model_manifest": {
+    "status": "downloaded-and-hash-verified-local-benchmark-in-progress",
+    "model": "Qwen3-4B-Instruct-2507",
+    "repository": "unsloth/Qwen3-4B-Instruct-2507-GGUF",
+    "revision": "a06e946bb6b655725eafa393f4a9745d460374c9",
+    "filename": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+    "bytes": 2497281120,
+    "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+    "license_in_model_metadata": "apache-2.0",
+    "metadata_checked_utc": "2026-11-13",
+    "metadata_source": "https://huggingface.co/api/models/unsloth/Qwen3-4B-Instruct-2507-GGUF?blobs=true",
+    "download_requires_user_authorization": true,
+    "purpose": "Italian/English structured scenario extraction, never rulings",
+    "runtime": "Local llama.cpp OpenAI-compatible endpoint with JSON Schema constrained output",
+    "minimum_ram_not_benchmarked": true,
+    "notes": "Authorized weights downloaded and SHA-256 verified. Local CPU measurements are recorded in test-reports/ai-interpreter; no mobile or public deployment claim."
+  },
+  "prompt_file": "interpreter/prompt.py",
+  "prompt_sha256": "2e2cef292b73ed77b1c4f34238f1b710ff39da03057833e57ad857c214fe961c",
+  "corpus_sha256": "efbb990c526f4e046a3c2620201ad2061e7d00740b36fce36d5f98eec6e52ad2",
+  "cases": [
+    {
+      "id": "it-entry",
+      "text": "Sul tavolo vedo Blood Moon. Adesso arriva Ashaya, Soul of the Wild: che fine fa?",
+      "identity_candidates": [
+        {
+          "mention": "Blood Moon",
+          "names": [
+            "Blood Moon"
+          ]
+        },
+        {
+          "mention": "Ashaya, Soul of the Wild",
+          "names": [
+            "Ashaya, Soul of the Wild"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 143,
+        "prompt_tokens": 1378,
+        "total_tokens": 1521
+      },
+      "timings": {
+        "cache_n": 1377,
+        "prompt_n": 1,
+        "prompt_ms": 149.621,
+        "prompt_per_token_ms": 149.621,
+        "prompt_per_second": 6.683553779215484,
+        "predicted_n": 143,
+        "predicted_ms": 18088.171,
+        "predicted_per_token_ms": 126.49070629370628,
+        "predicted_per_second": 7.905719157564356
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Blood Moon",
+            "name": "Blood Moon",
+            "quote": "Sul tavolo vedo Blood Moon."
+          },
+          {
+            "id": "c1",
+            "mention": "Ashaya, Soul of the Wild",
+            "name": "Ashaya, Soul of the Wild",
+            "quote": "Sul tavolo vedo Blood Moon. Adesso arriva Ashaya, Soul of the Wild: che fine fa?"
+          }
+        ],
+        "facts": [],
+        "event": {
+          "type": "enter",
+          "actor": "c1",
+          "target": null,
+          "quote": "Adesso arriva Ashaya, Soul of the Wild: che fine fa?"
+        },
+        "question": "che fine fa?",
+        "unresolved": [],
+        "questionIntent": "entry_result"
+      },
+      "protocol_valid": true,
+      "semantic_errors": [],
+      "passed": true,
+      "elapsed_seconds": 18.264
+    },
+    {
+      "id": "en-entry",
+      "text": "My opponent controls Blood Moon. My Ashaya, Soul of the Wild is entering the battlefield. What happens to Ashaya?",
+      "identity_candidates": [
+        {
+          "mention": "Blood Moon",
+          "names": [
+            "Blood Moon"
+          ]
+        },
+        {
+          "mention": "Ashaya, Soul of the Wild",
+          "names": [
+            "Ashaya, Soul of the Wild"
+          ]
+        },
+        {
+          "mention": "Ashaya",
+          "names": [
+            "Ashaya, Soul of the Wild",
+            "Ashaya, the Awoken World"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 245,
+        "prompt_tokens": 1407,
+        "total_tokens": 1652
+      },
+      "timings": {
+        "cache_n": 1304,
+        "prompt_n": 103,
+        "prompt_ms": 3081.284,
+        "prompt_per_token_ms": 29.9153786407767,
+        "prompt_per_second": 33.427623029879754,
+        "predicted_n": 245,
+        "predicted_ms": 27856.715,
+        "predicted_per_token_ms": 113.70087755102041,
+        "predicted_per_second": 8.795006877156908
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Blood Moon",
+            "name": "Blood Moon",
+            "quote": "My opponent controls Blood Moon."
+          },
+          {
+            "id": "c1",
+            "mention": "Ashaya, Soul of the Wild",
+            "name": "Ashaya, Soul of the Wild",
+            "quote": "My Ashaya, Soul of the Wild is entering the battlefield."
+          }
+        ],
+        "facts": [
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "opponent",
+            "time": "now",
+            "negated": false,
+            "quote": "My opponent controls Blood Moon.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "My Ashaya, Soul of the Wild is entering the battlefield.",
+            "player": null
+          },
+          {
+            "kind": "zone",
+            "card": "c1",
+            "value": "battlefield",
+            "time": "now",
+            "negated": false,
+            "quote": "My Ashaya, Soul of the Wild is entering the battlefield.",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "enter",
+          "actor": "c1",
+          "target": null,
+          "quote": "My Ashaya, Soul of the Wild is entering the battlefield."
+        },
+        "question": "What happens to Ashaya?",
+        "unresolved": [],
+        "questionIntent": "entry_result"
+      },
+      "protocol_valid": true,
+      "semantic_errors": [],
+      "passed": true,
+      "elapsed_seconds": 30.957
+    },
+    {
+      "id": "it-target",
+      "text": "Il mio avversario lancia Lightning Bolt sul mio Slippery Bogle. Riesce a bersagliarlo?",
+      "identity_candidates": [
+        {
+          "mention": "Lightning Bolt",
+          "names": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "mention": "Slippery Bogle",
+          "names": [
+            "Slippery Bogle"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 234,
+        "prompt_tokens": 1375,
+        "total_tokens": 1609
+      },
+      "timings": {
+        "cache_n": 1304,
+        "prompt_n": 71,
+        "prompt_ms": 2171.022,
+        "prompt_per_token_ms": 30.577774647887324,
+        "prompt_per_second": 32.70349171956802,
+        "predicted_n": 234,
+        "predicted_ms": 26143.873,
+        "predicted_per_token_ms": 111.72595299145298,
+        "predicted_per_second": 8.95047187537975
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Lightning Bolt",
+            "name": "Lightning Bolt",
+            "quote": "Il mio avversario lancia Lightning Bolt sul mio Slippery Bogle."
+          },
+          {
+            "id": "c1",
+            "mention": "Slippery Bogle",
+            "name": "Slippery Bogle",
+            "quote": "Il mio avversario lancia Lightning Bolt sul mio Slippery Bogle."
+          }
+        ],
+        "facts": [
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "opponent",
+            "time": "now",
+            "negated": false,
+            "quote": "Il mio avversario lancia Lightning Bolt sul mio Slippery Bogle.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "Il mio avversario lancia Lightning Bolt sul mio Slippery Bogle.",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "cast",
+          "actor": "c0",
+          "target": "c1",
+          "quote": "Il mio avversario lancia Lightning Bolt sul mio Slippery Bogle."
+        },
+        "question": "Riesce a bersagliarlo?",
+        "unresolved": [],
+        "questionIntent": "target_legality"
+      },
+      "protocol_valid": true,
+      "semantic_errors": [],
+      "passed": true,
+      "elapsed_seconds": 28.333
+    },
+    {
+      "id": "en-target",
+      "text": "I cast Lightning Bolt targeting my own Slippery Bogle. Can I target it?",
+      "identity_candidates": [
+        {
+          "mention": "Lightning Bolt",
+          "names": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "mention": "Slippery Bogle",
+          "names": [
+            "Slippery Bogle"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 210,
+        "prompt_tokens": 1368,
+        "total_tokens": 1578
+      },
+      "timings": {
+        "cache_n": 1304,
+        "prompt_n": 64,
+        "prompt_ms": 1894.751,
+        "prompt_per_token_ms": 29.605484375,
+        "prompt_per_second": 33.77752538460199,
+        "predicted_n": 210,
+        "predicted_ms": 23968.263,
+        "predicted_per_token_ms": 114.1345857142857,
+        "predicted_per_second": 8.761586102422191
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Lightning Bolt",
+            "name": "Lightning Bolt",
+            "quote": "I cast Lightning Bolt targeting my own Slippery Bogle."
+          },
+          {
+            "id": "c1",
+            "mention": "Slippery Bogle",
+            "name": "Slippery Bogle",
+            "quote": "I cast Lightning Bolt targeting my own Slippery Bogle."
+          }
+        ],
+        "facts": [
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "I cast Lightning Bolt targeting my own Slippery Bogle.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "I cast Lightning Bolt targeting my own Slippery Bogle.",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "cast",
+          "actor": "c0",
+          "target": "c1",
+          "quote": "I cast Lightning Bolt targeting my own Slippery Bogle."
+        },
+        "question": "Can I target it?",
+        "unresolved": [],
+        "questionIntent": "target_legality"
+      },
+      "protocol_valid": true,
+      "semantic_errors": [],
+      "passed": true,
+      "elapsed_seconds": 25.891
+    },
+    {
+      "id": "it-damage",
+      "text": "Ho sul campo Grizzly Bears con 1 danno già segnato. Il mio avversario lancia Shock su Grizzly Bears. Che succede?",
+      "identity_candidates": [
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "mention": "Shock",
+          "names": [
+            "Shock"
+          ]
+        },
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 340,
+        "prompt_tokens": 1393,
+        "total_tokens": 1733
+      },
+      "timings": {
+        "cache_n": 1304,
+        "prompt_n": 89,
+        "prompt_ms": 2948.316,
+        "prompt_per_token_ms": 33.12714606741573,
+        "prompt_per_second": 30.186723539810526,
+        "predicted_n": 340,
+        "predicted_ms": 39028.559,
+        "predicted_per_token_ms": 114.78987941176472,
+        "predicted_per_second": 8.711569392044426
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Grizzly Bears",
+            "name": "Grizzly Bears",
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato."
+          },
+          {
+            "id": "c1",
+            "mention": "Shock",
+            "name": "Shock",
+            "quote": "Il mio avversario lancia Shock su Grizzly Bears."
+          }
+        ],
+        "facts": [
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "opponent",
+            "time": "now",
+            "negated": false,
+            "quote": "Il mio avversario lancia Shock su Grizzly Bears.",
+            "player": null
+          },
+          {
+            "kind": "zone",
+            "card": "c0",
+            "value": "field",
+            "time": "now",
+            "negated": false,
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato.",
+            "player": null
+          },
+          {
+            "kind": "damage",
+            "card": "c0",
+            "value": "1",
+            "time": "now",
+            "negated": false,
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato.",
+            "player": null
+          },
+          {
+            "kind": "zone",
+            "card": "c1",
+            "value": "stack",
+            "time": "now",
+            "negated": false,
+            "quote": "Il mio avversario lancia Shock su Grizzly Bears.",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "cast",
+          "actor": "c1",
+          "target": "c0",
+          "quote": "Il mio avversario lancia Shock su Grizzly Bears."
+        },
+        "question": "Che succede?",
+        "unresolved": [],
+        "questionIntent": "interaction"
+      },
+      "passed": false,
+      "error": "InvalidProposal: Invalid zone; Invalid quantity; Unrepresented quantity",
+      "elapsed_seconds": 41.993
+    },
+    {
+      "id": "it-counters",
+      "text": "Grizzly Bears ha 2 segnalini +1/+1. Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+      "identity_candidates": [
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "mention": "Lightning Bolt",
+          "names": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 354,
+        "prompt_tokens": 1392,
+        "total_tokens": 1746
+      },
+      "timings": {
+        "cache_n": 1304,
+        "prompt_n": 88,
+        "prompt_ms": 2745.177,
+        "prompt_per_token_ms": 31.195193181818183,
+        "prompt_per_second": 32.05622078284934,
+        "predicted_n": 354,
+        "predicted_ms": 41695.843,
+        "predicted_per_token_ms": 117.78486723163842,
+        "predicted_per_second": 8.490054991812972
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Grizzly Bears",
+            "name": "Grizzly Bears",
+            "quote": "Grizzly Bears ha 2 segnalini +1/+1."
+          },
+          {
+            "id": "c1",
+            "mention": "Lightning Bolt",
+            "name": "Lightning Bolt",
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?"
+          }
+        ],
+        "facts": [
+          {
+            "kind": "zone",
+            "card": "c0",
+            "value": "battlefield",
+            "time": "now",
+            "negated": false,
+            "quote": "Grizzly Bears ha 2 segnalini +1/+1.",
+            "player": null
+          },
+          {
+            "kind": "zone",
+            "card": "c1",
+            "value": "hand",
+            "time": "now",
+            "negated": false,
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "Grizzly Bears ha 2 segnalini +1/+1.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+            "player": null
+          },
+          {
+            "kind": "life_gained_this_turn",
+            "card": null,
+            "value": 0,
+            "time": "now",
+            "negated": false,
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "cast",
+          "actor": "c1",
+          "target": "c0",
+          "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?"
+        },
+        "question": "sopravvive?",
+        "unresolved": [],
+        "questionIntent": "entry_result"
+      },
+      "passed": false,
+      "error": "InvalidProposal: Unrepresented quantity",
+      "elapsed_seconds": 44.458
+    }
+  ],
+  "passed": 4,
+  "total": 6,
+  "limitations": [
+    "Small extraction corpus, not a general accuracy estimate.",
+    "No LLM ruling accepted; engine tested independently.",
+    "No real Android/iOS measurements."
+  ]
+}

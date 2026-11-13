@@ -1,9 +1,12 @@
-# IA ibrida per Judge Pocket — progetto, non attivazione
+# IA ibrida per Judge Pocket — architettura e prove locali
 
 Data: 2026-11-13. Il rapporto segue la verifica della beta locale ristretta:
 [BETA_SCOPE.md](BETA_SCOPE.md). Il motore non copre tutte le carte; l'IA non deve
-nascondere questo limite. Nessun modello è stato scaricato o eseguito, nessun
-servizio a pagamento o addestramento è stato attivato.
+nascondere questo limite. Dopo autorizzazione è stato scaricato ed eseguito localmente
+Qwen3-4B-Instruct-2507 Q4_K_M, come interprete di input: vedere
+[implementazione e prove](interpreter/README.md). Nessun servizio a pagamento,
+addestramento o hosting pubblico è stato attivato. Le stime economiche sotto
+restano stime, distinte dalle misure locali riportate nei test.
 
 ## Scelta proposta
 

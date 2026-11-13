@@ -33,6 +33,8 @@ class Transport(unittest.TestCase):
  def test_transport_and_prompt(self):
   status,body,_=self.request();self.assertEqual(status,200);self.assertTrue(body['requiresConfirmation']);self.assertEqual(body['proposal'],FIXTURE['proposal'])
   call=self.calls[-1];self.assertEqual(call['temperature'],0);self.assertEqual(call['response_format']['type'],'json_schema');self.assertIn(FIXTURE['text'],call['messages'][1]['content']);self.assertFalse(call['stream'])
+ def test_completed_requests_release_slot_before_reply(self):
+  for i in range(8):self.assertEqual(self.request()[0],200)
  def test_truncated_model_response_rejected(self):
   type(self).finish='length';self.assertEqual(self.request()[0],422)
  def test_ruling_field_rejected(self):
@@ -56,7 +58,31 @@ class Transport(unittest.TestCase):
   with self.assertRaises(InvalidProposal):strict_json('{"x":1,"x":2}')
  def test_no_commercial_backend(self):
   with self.assertRaises(ValueError):LocalModel('https://commercial.invalid/v1')
+ def test_negation_scope(self):
+  text='Non controllo Blood Moon: è del mio avversario. Controllo Ashaya, Soul of the Wild.'
+  p=copy.deepcopy(FIXTURE['proposal']);p['question']=None;p['questionIntent']='interaction';p['event']={'type':'present','actor':None,'target':None,'quote':text}
+  p['facts']=[{'kind':'controller','card':card,'value':value,'time':'now','negated':False,'quote':text,'player':None} for card,value in [('c0','opponent'),('c1','self')]]
+  self.assertEqual(validate(p,text),p)
+ def test_singular_quantity_not_hidden(self):
+  p=copy.deepcopy(FIXTURE['proposal']);p['question']+=' Ha 1 danno.'
+  with self.assertRaises(InvalidProposal):validate(p,FIXTURE['text']+' Ha 1 danno.')
  def test_quantity_not_hidden_in_broad_quote(self):
   p=copy.deepcopy(FIXTURE['proposal']);p['question']+=' 3 danni'
   with self.assertRaises(InvalidProposal):validate(p,FIXTURE['text']+' 3 danni')
+class PreviewConfig(unittest.TestCase):
+ @classmethod
+ def setUpClass(cls):
+  from preview import create_preview
+  cls.files,cls.api=create_preview(port=0)
+  for server in [cls.files,cls.api]:threading.Thread(target=server.serve_forever,daemon=True).start()
+ @classmethod
+ def tearDownClass(cls):
+  for server in [cls.files,cls.api]:server.shutdown();server.server_close()
+ def test_private_enabled_public_disabled(self):
+  with urllib.request.urlopen(f'http://127.0.0.1:{self.files.server_port}/data/ai/config.json') as response:config=json.load(response)
+  self.assertTrue(config['enabled']);self.assertEqual(config['endpoint'],f'http://127.0.0.1:{self.api.server_port}/api/interpreter/scene')
+  self.assertFalse(json.loads((Path(__file__).resolve().parents[1]/'data/ai/config.json').read_text())['enabled'])
+ def test_preview_origin_allowed_without_model_readiness_claim(self):
+  request=urllib.request.Request(f'http://127.0.0.1:{self.api.server_port}/api/interpreter/health',headers={'Origin':f'http://127.0.0.1:{self.files.server_port}'})
+  with urllib.request.urlopen(request) as response:self.assertEqual(json.load(response)['model_readiness'],'not_probed')
 if __name__=='__main__':unittest.main(verbosity=2)

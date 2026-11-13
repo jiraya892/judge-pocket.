@@ -37,7 +37,7 @@ try:
   print('PASS editing the narrative invalidates the AI proposal and its confirmation',flush=True)
   page.locator('#sceneText').fill(fixture['text'])
   page.route('**/api/interpreter/scene',lambda route:route.fulfill(json={'version':1,'requiresConfirmation':True,'proposal':{**fixture['proposal'],'ruling':'invented'}}))
-  page.locator('#sceneAnalyse').click();expect(page.locator('#sceneMessage')).to_contain_text('campi mancanti o non previsti')
+  page.locator('#sceneAnalyse').click();expect(page.locator('#sceneMessage')).to_contain_text('Non riesco a ricostruire tutta la descrizione')
   expect(confirm).to_have_count(0);assert page.evaluate('window.__starts')==1
   print('PASS model response containing a ruling is rejected before any engine call',flush=True)
   page.unroute('**/api/interpreter/scene')

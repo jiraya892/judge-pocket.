@@ -1,0 +1,335 @@
+{
+  "date_utc": "2026-11-13T20:17:02.114408+00:00",
+  "real_inference": true,
+  "schema_canonical_sha256": "588cd9254f4c8b80dddbdfab186a67851c9db1e6ccaeee3f6b8dc9a0c919bb50",
+  "model_manifest": {
+    "status": "downloaded-and-hash-verified-local-benchmark-in-progress",
+    "model": "Qwen3-4B-Instruct-2507",
+    "repository": "unsloth/Qwen3-4B-Instruct-2507-GGUF",
+    "revision": "a06e946bb6b655725eafa393f4a9745d460374c9",
+    "filename": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+    "bytes": 2497281120,
+    "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+    "license_in_model_metadata": "apache-2.0",
+    "metadata_checked_utc": "2026-11-13",
+    "metadata_source": "https://huggingface.co/api/models/unsloth/Qwen3-4B-Instruct-2507-GGUF?blobs=true",
+    "download_requires_user_authorization": true,
+    "purpose": "Italian/English structured scenario extraction, never rulings",
+    "runtime": "Local llama.cpp OpenAI-compatible endpoint with JSON Schema constrained output",
+    "minimum_ram_not_benchmarked": true,
+    "notes": "Authorized weights downloaded and SHA-256 verified. Local CPU measurements are recorded in test-reports/ai-interpreter; no mobile or public deployment claim."
+  },
+  "prompt_file": "interpreter/prompt.py",
+  "prompt_sha256": "9b46430447c4a5b48d343f22c5dd823b137ded050919d6244259659dd324a554",
+  "corpus_sha256": "2f16ce296469aa20881347ca2d1bcfc23858abbcc018692ccabca92d7f79a12d",
+  "cases": [
+    {
+      "id": "it-damage",
+      "text": "Ho sul campo Grizzly Bears con 1 danno già segnato. Il mio avversario lancia Shock su Grizzly Bears. Che succede?",
+      "identity_candidates": [
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "mention": "Shock",
+          "names": [
+            "Shock"
+          ]
+        },
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 342,
+        "prompt_tokens": 1441,
+        "total_tokens": 1783
+      },
+      "timings": {
+        "cache_n": 1287,
+        "prompt_n": 154,
+        "prompt_ms": 5300.045,
+        "prompt_per_token_ms": 34.415876623376626,
+        "prompt_per_second": 29.056357068666397,
+        "predicted_n": 342,
+        "predicted_ms": 39680.512,
+        "predicted_per_token_ms": 116.0248888888889,
+        "predicted_per_second": 8.618840402059329
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Grizzly Bears",
+            "name": "Grizzly Bears",
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato."
+          },
+          {
+            "id": "c1",
+            "mention": "Shock",
+            "name": "Shock",
+            "quote": "Il mio avversario lancia Shock su Grizzly Bears."
+          }
+        ],
+        "facts": [
+          {
+            "kind": "zone",
+            "card": "c0",
+            "value": "battlefield",
+            "time": "now",
+            "negated": false,
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato.",
+            "player": "self"
+          },
+          {
+            "kind": "zone",
+            "card": "c1",
+            "value": "stack",
+            "time": "now",
+            "negated": false,
+            "quote": "Il mio avversario lancia Shock su Grizzly Bears.",
+            "player": "opponent"
+          },
+          {
+            "kind": "damage",
+            "card": "c0",
+            "value": 1,
+            "time": "now",
+            "negated": false,
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato.",
+            "player": "self"
+          },
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "Ho sul campo Grizzly Bears con 1 danno già segnato.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "opponent",
+            "time": "now",
+            "negated": false,
+            "quote": "Il mio avversario lancia Shock su Grizzly Bears.",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "cast",
+          "actor": "c1",
+          "target": "c0",
+          "quote": "Il mio avversario lancia Shock su Grizzly Bears."
+        },
+        "question": "Che succede?",
+        "unresolved": [],
+        "questionIntent": "interaction"
+      },
+      "protocol_valid": true,
+      "semantic_errors": [],
+      "passed": true,
+      "elapsed_seconds": 45.02
+    },
+    {
+      "id": "it-counters",
+      "text": "Grizzly Bears ha 2 segnalini +1/+1. Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+      "identity_candidates": [
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "mention": "Lightning Bolt",
+          "names": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "mention": "Grizzly Bears",
+          "names": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 268,
+        "prompt_tokens": 1440,
+        "total_tokens": 1708
+      },
+      "timings": {
+        "cache_n": 1352,
+        "prompt_n": 88,
+        "prompt_ms": 2831.448,
+        "prompt_per_token_ms": 32.17554545454545,
+        "prompt_per_second": 31.07950419714577,
+        "predicted_n": 268,
+        "predicted_ms": 30462.139,
+        "predicted_per_token_ms": 113.66469776119402,
+        "predicted_per_second": 8.797806352337897
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Grizzly Bears",
+            "name": "Grizzly Bears",
+            "quote": "Grizzly Bears ha 2 segnalini +1/+1."
+          },
+          {
+            "id": "c1",
+            "mention": "Lightning Bolt",
+            "name": "Lightning Bolt",
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?"
+          }
+        ],
+        "facts": [
+          {
+            "kind": "zone",
+            "card": "c0",
+            "value": "battlefield",
+            "time": "now",
+            "negated": false,
+            "quote": "Grizzly Bears ha 2 segnalini +1/+1.",
+            "player": null
+          },
+          {
+            "kind": "zone",
+            "card": "c1",
+            "value": "hand",
+            "time": "now",
+            "negated": false,
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+            "player": null
+          },
+          {
+            "kind": "life_gained_this_turn",
+            "card": null,
+            "value": 0,
+            "time": "now",
+            "negated": false,
+            "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "cast",
+          "actor": "c1",
+          "target": "c0",
+          "quote": "Lancio Lightning Bolt su Grizzly Bears: sopravvive?"
+        },
+        "question": "sopravvive?",
+        "unresolved": [],
+        "questionIntent": "entry_result"
+      },
+      "passed": false,
+      "error": "InvalidProposal: Unrepresented quantity",
+      "elapsed_seconds": 33.313
+    },
+    {
+      "id": "it-negative",
+      "text": "Non controllo Blood Moon: è del mio avversario. Controllo Ashaya, Soul of the Wild. Come interagiscono?",
+      "identity_candidates": [
+        {
+          "mention": "Blood Moon",
+          "names": [
+            "Blood Moon"
+          ]
+        },
+        {
+          "mention": "Ashaya, Soul of the Wild",
+          "names": [
+            "Ashaya, Soul of the Wild"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 260,
+        "prompt_tokens": 1430,
+        "total_tokens": 1690
+      },
+      "timings": {
+        "cache_n": 1352,
+        "prompt_n": 78,
+        "prompt_ms": 2488.328,
+        "prompt_per_token_ms": 31.901641025641027,
+        "prompt_per_second": 31.346349838124233,
+        "predicted_n": 260,
+        "predicted_ms": 29989.079,
+        "predicted_per_token_ms": 115.34261153846154,
+        "predicted_per_second": 8.669822771149457
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Blood Moon",
+            "name": "Blood Moon",
+            "quote": "Non controllo Blood Moon: è del mio avversario."
+          },
+          {
+            "id": "c1",
+            "mention": "Ashaya, Soul of the Wild",
+            "name": "Ashaya, Soul of the Wild",
+            "quote": "Non controllo Blood Moon: è del mio avversario. Controllo Ashaya, Soul of the Wild."
+          }
+        ],
+        "facts": [
+          {
+            "kind": "controller",
+            "card": "c0",
+            "value": "opponent",
+            "time": "now",
+            "negated": false,
+            "quote": "Non controllo Blood Moon: è del mio avversario.",
+            "player": null
+          },
+          {
+            "kind": "controller",
+            "card": "c1",
+            "value": "self",
+            "time": "now",
+            "negated": false,
+            "quote": "Non controllo Blood Moon: è del mio avversario. Controllo Ashaya, Soul of the Wild.",
+            "player": null
+          }
+        ],
+        "event": {
+          "type": "unknown",
+          "actor": "c0",
+          "target": "c1",
+          "quote": "Non controllo Blood Moon: è del mio avversario. Controllo Ashaya, Soul of the Wild."
+        },
+        "question": "Come interagiscono?",
+        "unresolved": [],
+        "questionIntent": "interaction"
+      },
+      "passed": false,
+      "error": "InvalidProposal: Negation changed into positive control; Negation changed into positive control",
+      "elapsed_seconds": 32.499
+    }
+  ],
+  "passed": 1,
+  "total": 3,
+  "limitations": [
+    "Small extraction corpus, not a general accuracy estimate.",
+    "No LLM ruling accepted; engine tested independently.",
+    "No real Android/iOS measurements."
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "date_utc": "2026-11-13T20:11:15.246703+00:00",
+  "real_inference": true,
+  "model_manifest": {
+    "status": "downloaded-and-hash-verified-local-benchmark-in-progress",
+    "model": "Qwen3-4B-Instruct-2507",
+    "repository": "unsloth/Qwen3-4B-Instruct-2507-GGUF",
+    "revision": "a06e946bb6b655725eafa393f4a9745d460374c9",
+    "filename": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+    "bytes": 2497281120,
+    "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+    "license_in_model_metadata": "apache-2.0",
+    "metadata_checked_utc": "2026-11-13",
+    "metadata_source": "https://huggingface.co/api/models/unsloth/Qwen3-4B-Instruct-2507-GGUF?blobs=true",
+    "download_requires_user_authorization": true,
+    "purpose": "Italian/English structured scenario extraction, never rulings",
+    "runtime": "Local llama.cpp OpenAI-compatible endpoint with JSON Schema constrained output",
+    "minimum_ram_not_benchmarked": false,
+    "notes": "Authorized weights downloaded and SHA-256 verified. Local CPU measurements are recorded in test-reports/ai-interpreter; no mobile or public deployment claim."
+  },
+  "prompt_file": "interpreter/prompt.py",
+  "prompt_sha256": "2e2cef292b73ed77b1c4f34238f1b710ff39da03057833e57ad857c214fe961c",
+  "corpus_sha256": "efbb990c526f4e046a3c2620201ad2061e7d00740b36fce36d5f98eec6e52ad2",
+  "cases": [
+    {
+      "id": "it-entry",
+      "text": "Sul tavolo vedo Blood Moon. Adesso arriva Ashaya, Soul of the Wild: che fine fa?",
+      "identity_candidates": [
+        {
+          "mention": "Blood Moon",
+          "names": [
+            "Blood Moon"
+          ]
+        },
+        {
+          "mention": "Ashaya, Soul of the Wild",
+          "names": [
+            "Ashaya, Soul of the Wild"
+          ]
+        }
+      ],
+      "usage": {
+        "completion_tokens": 143,
+        "prompt_tokens": 1378,
+        "total_tokens": 1521
+      },
+      "timings": {
+        "cache_n": 704,
+        "prompt_n": 674,
+        "prompt_ms": 19844.938,
+        "prompt_per_token_ms": 29.443528189910978,
+        "prompt_per_second": 33.96332102423298,
+        "predicted_n": 143,
+        "predicted_ms": 16022.81,
+        "predicted_per_token_ms": 112.04762237762237,
+        "predicted_per_second": 8.924776615337759
+      },
+      "finish_reason": "stop",
+      "proposal": {
+        "version": 1,
+        "cards": [
+          {
+            "id": "c0",
+            "mention": "Blood Moon",
+            "name": "Blood Moon",
+            "quote": "Sul tavolo vedo Blood Moon."
+          },
+          {
+            "id": "c1",
+            "mention": "Ashaya, Soul of the Wild",
+            "name": "Ashaya, Soul of the Wild",
+            "quote": "Sul tavolo vedo Blood Moon. Adesso arriva Ashaya, Soul of the Wild: che fine fa?"
+          }
+        ],
+        "facts": [],
+        "event": {
+          "type": "enter",
+          "actor": "c1",
+          "target": null,
+          "quote": "Adesso arriva Ashaya, Soul of the Wild: che fine fa?"
+        },
+        "question": "che fine fa?",
+        "unresolved": [],
+        "questionIntent": "entry_result"
+      },
+      "protocol_valid": true,
+      "semantic_errors": [],
+      "passed": true,
+      "elapsed_seconds": 35.891
+    }
+  ],
+  "passed": 1,
+  "total": 1,
+  "limitations": [
+    "Small extraction corpus, not a general accuracy estimate.",
+    "No LLM ruling accepted; engine tested independently.",
+    "No real Android/iOS measurements."
+  ]
+}
