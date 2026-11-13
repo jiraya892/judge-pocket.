@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "enabled": false,
+  "endpoint": "/api/interpreter/scene",
+  "timeoutMs": 45000
+}

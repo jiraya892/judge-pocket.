@@ -1,0 +1,43 @@
+{
+  "notice": "Manually authored extraction fixtures; not evidence of real-model accuracy. Oracle and rule calculations use the real engine.",
+  "entry": {
+    "text": "Sul tavolo vedo Blood Moon. Adesso arriva Ashaya, Soul of the Wild: che fine fa?",
+    "proposal": {
+      "version": 1,
+      "cards": [
+        {
+          "id": "c0",
+          "mention": "Blood Moon",
+          "name": "Blood Moon",
+          "quote": "Blood Moon"
+        },
+        {
+          "id": "c1",
+          "mention": "Ashaya, Soul of the Wild",
+          "name": "Ashaya, Soul of the Wild",
+          "quote": "Ashaya, Soul of the Wild"
+        }
+      ],
+      "facts": [
+        {
+          "kind": "zone",
+          "card": "c0",
+          "value": "battlefield",
+          "time": "now",
+          "negated": false,
+          "quote": "Sul tavolo vedo Blood Moon.",
+          "player": null
+        }
+      ],
+      "event": {
+        "type": "enter",
+        "actor": "c1",
+        "target": null,
+        "quote": "Adesso arriva Ashaya, Soul of the Wild:"
+      },
+      "question": "che fine fa?",
+      "questionIntent": "entry_result",
+      "unresolved": []
+    }
+  }
+}

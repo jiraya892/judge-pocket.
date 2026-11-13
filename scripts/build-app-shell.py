@@ -3,7 +3,7 @@ import json
 import re
 from pathlib import Path
 root=Path(__file__).resolve().parent.parent
-assets=['./','./index.html','./context.html','./manifest.webmanifest','./version.json','./icons/icon-192.png','./icons/icon-512.png','./data/oracle/index.json']
+assets=['./','./index.html','./context.html','./manifest.webmanifest','./version.json','./icons/icon-192.png','./icons/icon-512.png','./data/oracle/index.json','./data/ai/config.json','./data/ai/scene-schema.json']
 for page in ['index.html','context.html']:
     for path in re.findall(r'<script src="(\./[^"]+)"',(root/page).read_text()):
         if path not in assets:

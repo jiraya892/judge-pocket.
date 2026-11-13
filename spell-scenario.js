@@ -47,8 +47,15 @@ async function guided(context){
  }
  const facts=[{key:'spellTarget',question:'Quale creatura vuoi bersagliare con la magia?',options:permanents.map(o=>({id:o.id,label:o.name}))}];
  for(const o of permanents)if(o.hexproof)facts.push({key:'spellController:'+o.id,question:'Chi controlla '+o.name+' rispetto al giocatore che lancia la magia?',options:[{id:'own',label:'Lo stesso giocatore'},{id:'opponent',label:'Un avversario'}]});
+ const answers={...(context.answers||{})};
+ if(context.playerFrame==='speaker'){
+  if(context.casterPlayer!=null&&!['A','B'].includes(context.casterPlayer)||context.controllers?.some(c=>c!=null&&!['A','B'].includes(c)))return fail('CONTROLLER_INVALID','Giocatore non riconosciuto.');
+  let caster=context.casterPlayer||null;
+  for(let i=0;i<cards.length;i++){const owner=context.controllers?.[i],relation=answers['spellController:guided-'+i];if(owner&&['own','opponent'].includes(relation)){const inferred=relation==='own'?owner:(owner==='A'?'B':'A');if(caster&&caster!==inferred)return fail('CONTROLLER_CONFLICT','Le risposte sui controllori non sono compatibili.');caster=inferred;}}
+  if(caster)for(let i=0;i<cards.length;i++){const owner=context.controllers?.[i];if(owner)answers['spellController:guided-'+i]=owner===caster?'own':'opponent';}
+ }
  let scenarioFailure;
- const plan=root.JudgeQuestionPlanner.plan({facts,answers:context.answers||{}},scenario=>{const candidate=permanents.map(o=>({...o,controller:o.hexproof&&scenario.answers['spellController:'+o.id]==='own'?'A':'B'}));const out=evaluate(spell,candidate,scenario.answers.spellTarget);if(!out.supported){scenarioFailure=out.reason;return out}return {supported:true,status:out.status,outcome:{results:out.results,events:out.events,rules:out.rules}}});
+ const plan=root.JudgeQuestionPlanner.plan({facts,answers},scenario=>{const candidate=permanents.map(o=>({...o,controller:o.hexproof&&scenario.answers['spellController:'+o.id]==='own'?'A':'B'}));const out=evaluate(spell,candidate,scenario.answers.spellTarget);if(!out.supported){scenarioFailure=out.reason;return out}return {supported:true,status:out.status,outcome:{results:out.results,events:out.events,rules:out.rules}}});
  if(plan.status==='unsupported')return fail('SPELL_SCENARIO_UNSUPPORTED','Il testo della magia o un esito necessario non è ancora completamente supportato. '+(scenarioFailure||''));
  if(!context.board)return {status:'question',key:'board',question:'Considero pagabili i costi e soddisfatte le altre condizioni di lancio; verifico se la magia può bersagliare una delle creature indicate. Non ci sono risposte, segnalini, pedine, comandanti, danni già segnati o altri effetti. È la situazione che vuoi verificare?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}]};
  if(context.board!=='complete')return fail('OPEN_SPELL_SCENARIO','Le risposte, i costi e gli effetti aggiuntivi devono essere specificati: non vengono ignorati.');

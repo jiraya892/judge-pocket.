@@ -1,0 +1,290 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "cards",
+    "facts",
+    "event",
+    "question",
+    "unresolved",
+    "questionIntent"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "cards": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "mention",
+          "name",
+          "quote"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^c[0-3]$"
+          },
+          "mention": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "card",
+          "value",
+          "time",
+          "negated",
+          "quote",
+          "player"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "controller",
+              "owner",
+              "zone",
+              "phase",
+              "step",
+              "active_player",
+              "event_player",
+              "life_gained_this_turn",
+              "damage",
+              "counter_plus1",
+              "counter_minus1",
+              "tapped",
+              "player_life",
+              "stack_position",
+              "copies",
+              "previous_cast",
+              "question_amount",
+              "other",
+              "no_other_effects",
+              "no_other_permanents",
+              "background"
+            ]
+          },
+          "card": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^c[0-3]$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "integer",
+                "minimum": -1000000,
+                "maximum": 1000000
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "time": {
+            "type": "string",
+            "enum": [
+              "now",
+              "before",
+              "after",
+              "history",
+              "question"
+            ]
+          },
+          "negated": {
+            "type": "boolean"
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "player": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "self",
+                  "opponent",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "actor",
+        "target",
+        "quote"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "present",
+            "enter",
+            "cast",
+            "combat",
+            "block",
+            "gainLife",
+            "putCounters",
+            "beginUpkeep",
+            "beginEndStep",
+            "drawCards",
+            "attack",
+            "resolve",
+            "other",
+            "unknown"
+          ]
+        },
+        "actor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^c[0-3]$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^c[0-3]$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "question": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "unresolved": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "quote",
+          "reason"
+        ],
+        "properties": {
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    "questionIntent": {
+      "type": "string",
+      "enum": [
+        "interaction",
+        "entry_result",
+        "combat_result",
+        "block_legality",
+        "characteristics",
+        "trigger_occurrence",
+        "trigger_resolution",
+        "casting_legality",
+        "controller",
+        "life_total",
+        "other"
+      ]
+    }
+  }
+}

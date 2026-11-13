@@ -1,0 +1,17 @@
+{
+  "status": "candidate-not-downloaded-not-benchmarked",
+  "model": "Qwen3-4B-Instruct-2507",
+  "repository": "unsloth/Qwen3-4B-Instruct-2507-GGUF",
+  "revision": "a06e946bb6b655725eafa393f4a9745d460374c9",
+  "filename": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+  "bytes": 2497281120,
+  "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+  "license_in_model_metadata": "apache-2.0",
+  "metadata_checked_utc": "2026-11-13",
+  "metadata_source": "https://huggingface.co/api/models/unsloth/Qwen3-4B-Instruct-2507-GGUF?blobs=true",
+  "download_requires_user_authorization": true,
+  "purpose": "Italian/English structured scenario extraction, never rulings",
+  "runtime": "Local llama.cpp OpenAI-compatible endpoint with JSON Schema constrained output",
+  "minimum_ram_not_benchmarked": true,
+  "notes": "Weights size is not runtime RAM usage. No latency, language accuracy or device compatibility claim before real inference."
+}
