@@ -1,0 +1,42 @@
+name: Publish beta preview after explicit approval
+on:
+  push:
+    branches: [dev/beta-preview-approved]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/dev/beta-preview-approved'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}beta/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: checkouts/main
+      - uses: actions/checkout@v4
+        with:
+          ref: dev/groups-5f-5h
+          path: checkouts/legacy
+      - uses: actions/checkout@v4
+        with:
+          path: checkouts/beta
+      - name: Assemble isolated preview, preserving public and legacy pages
+        run: |
+          python3 checkouts/beta/scripts/build-preview.py \
+            --main checkouts/main --legacy checkouts/legacy --beta checkouts/beta \
+            --output _site --commit "$GITHUB_SHA"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

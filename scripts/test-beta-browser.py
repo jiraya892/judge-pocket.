@@ -37,6 +37,8 @@ with sync_playwright() as p, LocalApp() as app:
  context=p.chromium.launch_persistent_context(profile.name,executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
  page=context.pages[0];errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
+ page.goto(app.origin+'/manifest.webmanifest')
+ page.evaluate("caches.open('judge-pocket-beta-v83')")
  page.goto(app.origin+'/index.html')
  page.evaluate('navigator.serviceWorker.ready')
  page.reload()
@@ -47,6 +49,7 @@ with sync_playwright() as p, LocalApp() as app:
  data=json.loads(manifest['data']);assert data['display']=='standalone';assert len(data['icons'])==2
  install=cdp.send('Page.getInstallabilityErrors')
  assert not install['installabilityErrors'],install
+ assert page.evaluate("async()=> (await caches.keys()).includes('judge-pocket-beta-v83')")
  print('PASS Chromium installability: manifest, icons, service worker and app shell')
  page.locator('#openGuided').click();page.wait_for_url('**/context.html')
  page.locator('#begin').click();assert page.locator('#inputError').is_visible()

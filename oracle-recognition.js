@@ -27,9 +27,14 @@ function recognize(card,object){
 async function fetchCard(name){
  if(typeof name!=='string'||!name.trim())throw Error('Nome carta mancante');
  if(root.JudgeCardData){try{const local=await root.JudgeCardData.get(name);if(local)return local;}catch(e){/* Online transport remains an explicit fallback; no missing data is invented. */}}
- const response=await fetch('https://api.scryfall.com/cards/named?exact='+encodeURIComponent(name.trim()),{headers:{Accept:'application/json'}});
- if(!response.ok)throw Error(response.status===404?'Carta non trovata su Scryfall':'Scryfall non disponibile ('+response.status+')');
- const card=await response.json();if(!card.name||(typeof card.oracle_text!=='string'&&!card.card_faces))throw Error('Testo Oracle non disponibile');return card;
+ const controller=typeof AbortController==='function'?new AbortController():null;
+ const timer=controller?setTimeout(()=>controller.abort(),12000):null;
+ try{
+  const response=await fetch('https://api.scryfall.com/cards/named?exact='+encodeURIComponent(name.trim()),{headers:{Accept:'application/json'},...(controller?{signal:controller.signal}:{})});
+  if(!response.ok)throw Error(response.status===404?'Carta non trovata su Scryfall':'Scryfall non disponibile ('+response.status+')');
+  const card=await response.json();if(!card.name||(typeof card.oracle_text!=='string'&&!card.card_faces))throw Error('Testo Oracle non disponibile');return card;
+ }catch(error){if(error.name==='AbortError')throw Error('La ricerca online sta impiegando troppo tempo. Riprova o usa una carta già caricata.');throw error;}
+ finally{if(timer)clearTimeout(timer);}
 }
 root.JudgeOracleRecognition={recognize,fetchCard};
 })(typeof window!=='undefined'?window:globalThis);

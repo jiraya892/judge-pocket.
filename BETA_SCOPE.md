@@ -88,7 +88,7 @@ Comandi dalla root del checkout (Node 24.22.1, Python 3.12.14):
 | `node question-planner.test.cjs` | 27/27 PASS |
 | `node chapter-16-guided.test.cjs` | 20/20 PASS, protocollo con valutatore simulato |
 | `node chapter-16-real-engine.test.cjs` | 39/39 PASS, Oracle e motore reali |
-| `node beta-engine.test.cjs` | 17/17 PASS, danni, prevenzione, inneschi e zone reali |
+| `node beta-engine.test.cjs` | 18/18 PASS, danni, prevenzione, inneschi e zone reali |
 | `node card-data.test.cjs` | 10/10 PASS, tutti i 128 shard, integrità, lookup e ruling |
 | `node verify-tests.cjs` | 71/71 PASS |
 | `node verify-groups-5h.cjs` | 2370/2370 PASS, nessun errore di esecuzione |
@@ -96,7 +96,7 @@ Comandi dalla root del checkout (Node 24.22.1, Python 3.12.14):
 | `python3 scripts/test-beta-browser.py` | 7 percorsi PASS in Chromium |
 | `python3 scripts/test-chapter-16-browser.py` | 3 percorsi PASS in Chromium |
 
-Totale suite Node: 2560 test. Le prove browser sono separate, non aggiunte al
+Totale suite Node: 2561 test. Le prove browser sono separate, non aggiunte al
 conteggio dei test del motore. La prova beta avvia e interrompe un server isolato per verificare realmente
 l’assenza della rete anche nei service worker. Per la prova del Capitolo 16
 avviare prima `python3 -m http.server 8000 --bind 127.0.0.1`. Il primo tentativo di installabilità usava una
@@ -154,3 +154,24 @@ stata avviata da questo lavoro.
 I log completi GitHub richiedono login; sono state lette le pagine pubbliche delle
 run/job e le annotazioni delle prove create dal workflow, senza estrarre token.
 Nessuna esecuzione fallita è stata mascherata o sostituita da un test senza assert.
+
+## Anteprima pronta per una decisione di pubblicazione
+
+`scripts/build-preview.py` assembla un artefatto isolato: main alla radice,
+precedente sviluppo in `/preview/`, nuova beta in `/beta/`. La costruzione è stata
+eseguita localmente: gli index di main e del precedente preview sono rimasti
+identici byte per byte, senza metadati Git nell'artefatto. Non è un deployment.
+
+Il nuovo service worker usa una cache specifica del proprio scope e non cancella
+quella dell'app principale. Il pulsante Continua attende l'inizializzazione della
+UI; un input non può partire prima che il gestore sia pronto. L'accesso online a
+Scryfall ha un timeout recuperabile, senza spinner indefiniti.
+
+Il workflow `beta-preview.yml` può pubblicare soltanto dal ramo
+`dev/beta-preview-approved`, che **non è stato creato da questo lavoro**. Il ramo
+corrente non lo attiva. Una futura creazione di quel ramo e la pubblicazione
+richiedono l'autorizzazione esplicita dell'utente. Le protezioni dell'ambiente
+GitHub Pages rimangono applicate; non vengono aggirate in caso di rifiuto.
+
+La proposta di anteprima è separata da una release e da un merge in main. Non
+viene fornito un link di beta pubblica fino al deployment e alla verifica reale.

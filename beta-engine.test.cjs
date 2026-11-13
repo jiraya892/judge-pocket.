@@ -31,5 +31,11 @@ await check('missing physical spell card fails closed without mutating input',()
 await check('copy with all illegal targets ceases without moving physical card',()=>{const s=base();s.stack[0].isCopy=true;const r=pass(s);assert.equal(r.supported,true);assert.equal(r.state.objects[0].zone,'stack');assert.equal(r.state.stack.length,0)});
 await check('invalid missing-target kind is unsupported, not an illegal known target',()=>assert.equal(ctx.JudgeTargets.check(base(),{id:'missing',kind:'invented'}).supported,false));
 await check('unparsed target abilities rejected by narrow evaluator',()=>{const p=ctx.JudgeGuidedBridge.cardObject(cards.get('Grizzly Bears'),0);p.oracle_text='Whenever this creature dies, draw a card.';assert.equal(ctx.JudgeSpellScenario.evaluate(cards.get('Lightning Bolt'),[p],p.id).status,'unsupported')});
+await check('stalled online lookup aborts and reports a recoverable error',async()=>{
+ let cleared=false;
+ const sandbox={AbortController,setTimeout:(fn,delay)=>{assert.ok(delay>0&&delay<=15000);queueMicrotask(fn);return 42},clearTimeout:id=>{assert.equal(id,42);cleared=true},fetch:(url,options)=>new Promise((resolve,reject)=>{options.signal.addEventListener('abort',()=>reject(Object.assign(new Error('aborted'),{name:'AbortError'})))})};
+ vm.createContext(sandbox);vm.runInContext(fs.readFileSync('oracle-recognition.js','utf8'),sandbox);
+ await assert.rejects(sandbox.JudgeOracleRecognition.fetchCard('Unknown lookup'),/impiegando troppo tempo/);assert.equal(cleared,true);
+});
 console.log(n+'/'+n+' beta engine integration checks passed');
 })().catch(error=>{console.error(error);process.exitCode=1});
