@@ -40,16 +40,18 @@ with sync_playwright() as p:
 
     begin()
     page.get_by_role('button', name='Le carte sono già sul campo di battaglia', exact=True).click()
-    page.wait_for_function("document.getElementById('status').textContent.includes('Fare altre domande')")
+    page.get_by_role('button', name='Sì, considera soltanto queste carte', exact=True).click()
+    page.wait_for_function("document.getElementById('status').textContent.includes('va nel cimitero')")
     assert page.locator('#step').is_hidden()
-    assert 'non verifica ancora completamente' in page.locator('#status').inner_text()
+    assert 'Ashaya, Soul of the Wild va nel cimitero' in page.locator('#status').inner_text()
+    assert 'Risultato parziale' in page.locator('#status').inner_text()
     assert not errors, errors
-    print('PASS real browser: Oracle -> planner -> real engine -> explicit unsupported; no irrelevant questions')
+    print('PASS real browser: Oracle -> planner -> real engine -> SBA and source recalculation -> source gate; no controller/order questions')
 
     begin()
     # This checks UI integration, not Magic-rule correctness.
     page.evaluate("""() => {
-        JudgeCoordinator.evaluate = state => ({supported:true,status:'verified',warnings:[],results:state.objects.map(o => ({
+        JudgeCoordinator.evaluateScenario = state => ({supported:true,status:'verified',warnings:[],results:state.objects.map(o => ({
             id:o.id,name:o.name,status:'verified',controller:o.controller
         }))});
     }""")
@@ -66,7 +68,7 @@ with sync_playwright() as p:
     page.get_by_role('button', name='Giocatore A', exact=True).click()
     page.wait_for_function("!document.getElementById('copyDiagnostic').hidden")
     assert page.locator('#step').is_hidden()
-    assert 'Interazione non ancora supportata' in page.locator('#status').inner_text()
+    assert 'Risultato parziale' in page.locator('#status').inner_text()
     assert not errors, errors
     print('PASS simulated verified engine: targeted questions, answer revision, no repeat, source gate retained')
 

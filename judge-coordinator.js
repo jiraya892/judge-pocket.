@@ -35,5 +35,5 @@ function evaluate(input){
  warnings.push('Risultati parziali: SBA non eseguite, copertura Oracle e dipendenze CR 613 non complete.');
  return {supported:true,game,results,warnings,modules:{gameState:true,unifiedContinuous:true,genericLayers:true,landLayers:true,oracleRecognition:!!root.JudgeOracleRecognition,stateBasedActions:'advisory-only'}};
 }
-root.JudgeCoordinator={evaluate};
+root.JudgeCoordinator={evaluate,evaluateScenario:input=>root.JudgeScenarioStabilizer?root.JudgeScenarioStabilizer.evaluate(input):{supported:false,status:'unsupported',reason:'Stabilizzatore dello scenario mancante'}};
 })(typeof window!=='undefined'?window:globalThis);

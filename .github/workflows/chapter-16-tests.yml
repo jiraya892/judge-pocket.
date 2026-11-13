@@ -21,6 +21,7 @@ jobs:
           node --check context-ui.js
           node --check context-interview.js
           node --check game-facts.js
+          node --check scenario-stabilizer.js
           node question-planner.test.cjs
           node chapter-16-guided.test.cjs
           node chapter-16-real-engine.test.cjs

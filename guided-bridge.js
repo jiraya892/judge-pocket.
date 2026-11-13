@@ -45,23 +45,24 @@ async function evaluate(context){
    for(const effect of recognized.effects)effects.push({...effect,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,oracleGenerated:true,timestamp:built.timestamps[objects[i].id],duration:'ongoing'});
   }
   if(unsupportedLines.length){details.unsupportedLines=unsupportedLines;return {supported:false};}
-  const out=root.JudgeCoordinator.evaluate({schemaVersion:1,players:built.players,turn:built.turn,objects,effects});
+  const evaluateScenario=root.JudgeCoordinator.evaluateScenario||root.JudgeCoordinator.evaluate;
+  const out=evaluateScenario({schemaVersion:1,scope:'clean-static-snapshot',players:built.players,turn:built.turn,objects,effects});
   // Preserve the reason for an unsupported diagnostic, not a hypothetical result
   // based on an unprovided controller or timestamp.
   preview=out;
   if(!out?.supported||out.status!=='verified'||['warnings','missingFacts','unsupportedLines','reasonCodes'].some(k=>out[k]!=null&&(!Array.isArray(out[k])||out[k].length))||!Array.isArray(out.results)||out.results.length!==cards.length||out.results.some(r=>r.status!=='verified')||(out.warnings||[]).length)return {supported:false,status:out?.status||'partial'};
   // Include every rule-significant result field. Internal timestamp/order traces
   // are explanations, not outcomes; controller is retained (control can matter).
-  return {supported:true,status:'verified',outcome:out.results.map(({order,coverage,...result})=>result)};
+  return {supported:true,status:'verified',outcome:{results:out.results.map(({order,coverage,...result})=>result),events:out.events||[]}};
  });
  details.questionPlanning=planning;
  if(planning.status==='unsupported')return fail(details.unsupportedLines.length?'ORACLE_TEXT_UNSUPPORTED':'SCENARIO_NOT_VERIFIED',details.unsupportedLines.length?'Parte del testo Oracle non è ancora riconosciuta. Non posso scegliere domande affidabili per questa interazione.':'Il motore non verifica ancora completamente questa interazione. Fare altre domande non renderebbe affidabile un calcolo parziale.',{engineWarnings:preview?.warnings||[],engineReasons:(preview?.results||[]).filter(r=>r.reason).map(r=>r.reason)});
  // Board completeness is a declared scenario boundary, never an assumed fact.
- if(!context.board)return {status:'question',key:'board',question:'Le carte indicate descrivono tutta la situazione rilevante, senza altri effetti, segnalini o danni?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}],diagnostic:details};
+ if(!context.board)return {status:'question',key:'board',question:'Considero soltanto queste carte, scoperte e non pedina, senza segnalini, danni o altri effetti. Confermi anche che nessuna è il comandante?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}],diagnostic:details};
  if(planning.status==='question')return {...planning,key:'answers.'+planning.key,diagnostic:details};
  // Computational readiness is still subject to the source/evidence presentation
  // boundary. A planner cannot supply a signed source or invent a ruling string.
- return {status:'ready',title:'Scenari verificati dal motore',reason:'Le alternative verificate producono lo stesso risultato.',outcome:planning.outcome,diagnostic:details};
+ return {status:'partial',title:'Calcolo dello scenario — fonte non autenticata',reason:'Nel contesto dichiarato: '+(planning.outcome.events.length?planning.outcome.events.map(e=>e.name+' va nel cimitero perché la sua costituzione è '+e.toughness+'. Dopo la sua uscita gli effetti vengono ricalcolati.').join(' '):'i permanenti restano sul campo con le caratteristiche calcolate.')+' La fonte delle regole non è ancora autenticata: questo calcolo non viene presentato come verdetto definitivo.',outcome:planning.outcome,diagnostic:{...details,calculationVerified:true,sourceAuthenticationVerified:false}};
 }
 root.JudgeGuidedBridge={evaluate,cardObject};
 })(typeof window!=='undefined'?window:globalThis);

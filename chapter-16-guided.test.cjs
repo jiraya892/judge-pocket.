@@ -10,17 +10,17 @@ const verified=state=>({supported:true,status:'verified',warnings:[],results:sta
 (async()=>{
  globalThis.JudgeCoordinator={evaluate:verified};
  await check('unknown board is explicitly asked',async()=>assert.equal((await bridge.evaluate(base)).key,'board'));
- await check('identical verified scenarios need no controller or order questions',async()=>{const out=await bridge.evaluate({...base,board:'complete'});assert.equal(out.status,'ready');assert.equal(out.diagnostic.questionPlanning.scenarios,8)});
+ await check('identical verified scenarios need no controller or order questions',async()=>{const out=await bridge.evaluate({...base,board:'complete'});assert.equal(out.status,'partial');assert.equal(out.diagnostic.questionPlanning.scenarios,8)});
  globalThis.JudgeCoordinator.evaluate=s=>({...verified(s),results:[{status:'verified',value:s.objects[0].controller}]});
  await check('incomplete result set is unsupported',async()=>assert.equal((await bridge.evaluate({...base,board:'complete'})).status,'unsupported'));
  globalThis.JudgeCoordinator.evaluate=s=>({...verified(s),results:s.objects.map(o=>({id:o.id,status:'verified',value:o.id==='guided-0'?o.controller:'irrelevant'}))});
  await check('only relevant controller is asked',async()=>{const out=await bridge.evaluate({...base,board:'complete'});assert.equal(out.key,'answers.controller0');assert.deepEqual(out.diagnostic.questionPlanning.relevantKeys,['controller0'])});
- await check('partial controller answer is preserved',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',controllers:['B']})).status,'ready'));
- await check('planner answer is reused without repeating',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',answers:{controller0:'A'}})).status,'ready'));
+ await check('partial controller answer is preserved',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',controllers:['B']})).status,'partial'));
+ await check('planner answer is reused without repeating',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',answers:{controller0:'A'}})).status,'partial'));
  globalThis.JudgeCoordinator.evaluate=s=>({supported:true,status:'verified',warnings:[],results:s.objects.map(o=>({id:o.id,status:'verified',value:s.effects.map(e=>e.timestamp)}))});
  globalThis.JudgeOracleRecognition.recognize=(c,o)=>({effects:[{kind:'test',targetId:o.id}],unknown:[]});
  await check('order asked only when result changes',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',controllers:['A','A']})).key,'answers.entryOrder'));
- await check('known order is preserved',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',order:[1,0]})).status,'ready'));
+ await check('known order is preserved',async()=>assert.equal((await bridge.evaluate({...base,board:'complete',order:[1,0]})).status,'partial'));
  globalThis.JudgeCoordinator.evaluate=s=>({...verified(s),results:verified(s).results.map(r=>({...r,status:'partial'}))});
  await check('partial real contract never asks board or suppresses facts',async()=>{const out=await bridge.evaluate(base);assert.equal(out.status,'unsupported');assert.ok(out.diagnostic.reasonCodes.includes('SCENARIO_NOT_VERIFIED'))});
  await check('top-level partial cannot be promoted by verified object flags',async()=>{globalThis.JudgeCoordinator.evaluate=s=>({...verified(s),status:'partial'});assert.equal((await bridge.evaluate({...base,board:'complete'})).status,'unsupported')});

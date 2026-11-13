@@ -8,7 +8,7 @@ function stable(value){
  function canonical(x){
   if(x===null||typeof x==='string'||typeof x==='boolean')return x;
   if(typeof x==='number'&&Number.isFinite(x))return x;
-  if(!x||typeof x!=='object'||seen.has(x))throw Error('Outcome is not JSON data');
+  if(!x||typeof x!=='object'||seen.has(x)||Object.getOwnPropertySymbols(x).length)throw Error('Outcome is not JSON data');
   if(!Array.isArray(x)&&Object.getPrototypeOf(x)!==Object.prototype&&Object.getPrototypeOf(x)!==null)throw Error('Outcome must be plain data');
   seen.add(x);let result;
   if(Array.isArray(x)){
