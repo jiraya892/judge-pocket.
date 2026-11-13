@@ -42,7 +42,14 @@ async function get(name){
 async function suggest(query,limit=10){
  const q=normalize(query.trim());if(q.length<2)return [];
  const index=await manifest();
- return index.cards.filter(([name])=>normalize(name).includes(q)).slice(0,Math.min(20,Math.max(1,limit))).map(([name])=>name);
+ const words=q.replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+ const ranked=index.cards.map(([name])=>{const key=normalize(name);return {name,key,score:key===q?0:key.startsWith(q)?1:key.includes(q)?2:words.every(w=>key.includes(w))?3:99};}).filter(x=>x.score<99);
+ if(!ranked.length&&q.length>=4&&words.length===1){
+  // One substituted/inserted/deleted letter in the first name word.
+  const near=(a,b)=>{if(Math.abs(a.length-b.length)>1)return false;let i=0,j=0,errors=0;while(i<a.length&&j<b.length){if(a[i]===b[j]){i++;j++;continue;}if(++errors>1)return false;if(a.length>=b.length)i++;if(b.length>=a.length)j++;}return errors+(a.length-i)+(b.length-j)<=1;};
+  for(const [name]of index.cards){const key=normalize(name).split(/[, ]/)[0];if(near(q,key))ranked.push({name,key,score:4});}
+ }
+ return ranked.sort((a,b)=>a.score-b.score||a.name.length-b.name.length||a.name.localeCompare(b.name)).slice(0,Math.min(20,Math.max(1,limit))).map(x=>x.name);
 }
 async function rulings(oracleId){
  if(typeof oracleId!=='string'||!(/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(oracleId)))throw Error('Identificativo Oracle non valido');

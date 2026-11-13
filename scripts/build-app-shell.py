@@ -8,6 +8,8 @@ for page in ['index.html','context.html']:
     for path in re.findall(r'<script src="(\./[^"]+)"',(root/page).read_text()):
         if path not in assets:
             assets.append(path)
+for name in ['worker.min.js','tesseract-core-lstm.wasm.js','tesseract-core-lstm.wasm','eng.traineddata.gz']:
+    assets.append('./vendor/ocr/'+name)
 for asset in assets:
     assert asset=='./' or (root/asset).is_file(),asset
 p=root/'sw.js'

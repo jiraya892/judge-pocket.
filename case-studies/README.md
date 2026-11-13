@@ -3,6 +3,10 @@
 Questi file distinguono candidati, casi provati e meccanismi implementati. Non
 sono una raccolta di risposte da cercare tramite i nomi delle carte.
 
+Nuova ricerca e controlli di inserimento carte/fotografia:
+[SEARCH_AND_PHOTO.md](SEARCH_AND_PHOTO.md), con cinque limiti del motore
+individuati e test OCR reali su immagini sintetiche.
+
 Ultimo blocco: [discussioni pubbliche e interfaccia leggibile](PUBLIC_DISCUSSIONS.md),
 con nuovi casi su danno letale, tocco letale e legame vitale, e risultati di verifica.
 

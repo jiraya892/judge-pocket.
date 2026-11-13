@@ -1,0 +1,101 @@
+[
+  {
+    "source": "https://github.com/magefree/mage/issues/14357",
+    "cards": [
+      "Alpine Moon",
+      "Ancient Tomb"
+    ],
+    "constructed_context": {
+      "cards": [
+        "Alpine Moon",
+        "Ancient Tomb"
+      ],
+      "event": "present",
+      "board": "complete"
+    },
+    "status": "unsupported",
+    "reason": "Parte del testo Oracle non è ancora riconosciuta. Non posso scegliere domande affidabili per questa interazione.",
+    "source_text_is_not_test_oracle": true,
+    "note": "Bounded probe inspired by the discussion; not a complete reproduction of its full game state."
+  },
+  {
+    "source": "https://github.com/magefree/mage/issues/12475",
+    "cards": [
+      "Urza's Saga",
+      "Echoing Deeps"
+    ],
+    "constructed_context": {
+      "cards": [
+        "Urza's Saga",
+        "Echoing Deeps"
+      ],
+      "event": "present",
+      "board": "complete"
+    },
+    "status": "unsupported",
+    "reason": "Parte del testo Oracle non è ancora riconosciuta. Non posso scegliere domande affidabili per questa interazione.",
+    "source_text_is_not_test_oracle": true,
+    "note": "Bounded probe inspired by the discussion; not a complete reproduction of its full game state."
+  },
+  {
+    "source": "https://github.com/magefree/mage/issues/9125",
+    "cards": [
+      "Gond Gate",
+      "Azorius Guildgate"
+    ],
+    "constructed_context": {
+      "cards": [
+        "Gond Gate",
+        "Azorius Guildgate"
+      ],
+      "event": "enter",
+      "board": "complete",
+      "entering": "Azorius Guildgate",
+      "enteringIndex": 1
+    },
+    "status": "unsupported",
+    "reason": "L’ingresso guidato riconosce soltanto creature con le abilità esplicitamente implementate e inneschi obbligatori di guadagno vita.",
+    "source_text_is_not_test_oracle": true,
+    "note": "Bounded probe inspired by the discussion; not a complete reproduction of its full game state."
+  },
+  {
+    "source": "https://github.com/magefree/mage/issues/7832",
+    "cards": [
+      "Burrenton Forge-Tender",
+      "Soul-Scar Mage"
+    ],
+    "constructed_context": {
+      "cards": [
+        "Burrenton Forge-Tender",
+        "Soul-Scar Mage"
+      ],
+      "event": "present",
+      "board": "complete"
+    },
+    "status": "unsupported",
+    "reason": "Parte del testo Oracle non è ancora riconosciuta. Non posso scegliere domande affidabili per questa interazione.",
+    "source_text_is_not_test_oracle": true,
+    "note": "Bounded probe inspired by the discussion; not a complete reproduction of its full game state."
+  },
+  {
+    "source": "https://github.com/magefree/mage/issues/3515",
+    "cards": [
+      "Blind Obedience",
+      "Xenagos, God of Revels"
+    ],
+    "constructed_context": {
+      "cards": [
+        "Blind Obedience",
+        "Xenagos, God of Revels"
+      ],
+      "event": "enter",
+      "board": "complete",
+      "entering": "Xenagos, God of Revels",
+      "enteringIndex": 1
+    },
+    "status": "unsupported",
+    "reason": "L’ingresso guidato riconosce soltanto creature con le abilità esplicitamente implementate e inneschi obbligatori di guadagno vita.",
+    "source_text_is_not_test_oracle": true,
+    "note": "Bounded probe inspired by the discussion; not a complete reproduction of its full game state."
+  }
+]

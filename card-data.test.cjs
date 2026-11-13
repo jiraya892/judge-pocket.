@@ -18,6 +18,9 @@ function provider(corrupt=false){
  });
  const {data,hits}=provider();
  await check('local name search finds canonical card without network APIs',async()=>assert.ok((await data.suggest('Blood Moo')).includes('Blood Moon')));
+ await check('short prefix suggests Blood Moon among the first choices',async()=>assert.ok((await data.suggest('Blood')).indexOf('Blood Moon')>=0));
+ await check('one-letter typo suggests the canonical Ashaya name',async()=>assert.ok((await data.suggest('Ashaia')).includes('Ashaya, Soul of the Wild')));
+ await check('partial words of a long name work together',async()=>assert.ok((await data.suggest('Soul Wild')).includes('Ashaya, Soul of the Wild')));
  await check('exact local retrieval preserves Oracle bytes',async()=>assert.equal((await data.get('blood moon')).oracle_text,'Nonbasic lands are Mountains.'));
  await check('local card results are immutable copies',async()=>{const card=await data.get('Blood Moon');card.name='changed';assert.equal((await data.get('Blood Moon')).name,'Blood Moon')});
  await check('vanilla creature has numeric P/T and valid empty Oracle',async()=>{const card=await data.get('Grizzly Bears');assert.equal(card.oracle_text,'');assert.equal(card.toughness,'2')});
