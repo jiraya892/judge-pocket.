@@ -60,7 +60,7 @@ async function evaluate(context){
  details.questionPlanning=planning;
  if(planning.status==='unsupported')return fail(details.unsupportedLines.length?'ORACLE_TEXT_UNSUPPORTED':'SCENARIO_NOT_VERIFIED',details.unsupportedLines.length?'Parte del testo Oracle non è ancora riconosciuta. Non posso scegliere domande affidabili per questa interazione.':'Il motore non verifica ancora completamente questa interazione. Fare altre domande non renderebbe affidabile un calcolo parziale.',{engineWarnings:preview?.warnings||[],engineReasons:(preview?.results||[]).filter(r=>r.reason).map(r=>r.reason)});
  // Board completeness is a declared scenario boundary, never an assumed fact.
- if(!context.board)return {status:'question',key:'board',question:'Considero soltanto queste carte, scoperte e non pedina, senza segnalini, danni o altri effetti. Confermi anche che nessuna è il comandante?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}],diagnostic:details};
+ if(!context.board)return {status:'question',key:'board',question:'Considero soltanto queste carte, con al massimo due controllori distinti, scoperte e non pedina, senza segnalini, danni o altri effetti. Confermi anche che nessuna è il comandante?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}],diagnostic:details};
  if(planning.status==='question')return {...planning,key:'answers.'+planning.key,diagnostic:details};
  // Computational readiness is still subject to the source/evidence presentation
  // boundary. A planner cannot supply a signed source or invent a ruling string.
