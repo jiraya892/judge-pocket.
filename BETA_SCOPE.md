@@ -97,8 +97,9 @@ Comandi dalla root del checkout (Node 24.22.1, Python 3.12.14):
 | `python3 scripts/test-chapter-16-browser.py` | 3 percorsi PASS in Chromium |
 
 Totale suite Node: 2560 test. Le prove browser sono separate, non aggiunte al
-conteggio dei test del motore. Avviare prima `python3 -m http.server 8000 --bind
-127.0.0.1` per le prove browser. Il primo tentativo di installabilità usava una
+conteggio dei test del motore. La prova beta avvia e interrompe un server isolato per verificare realmente
+l’assenza della rete anche nei service worker. Per la prova del Capitolo 16
+avviare prima `python3 -m http.server 8000 --bind 127.0.0.1`. Il primo tentativo di installabilità usava una
 sessione privata (che Chromium non rende installabile): ripetuto con un profilo
 persistente isolato, il CDP non riporta errori di installabilità.
 
@@ -134,3 +135,22 @@ Il workflow del ramo beta comprende regressioni, database, riproducibilità e
 browser. I risultati CI remoti vanno attestati sul commit esatto, non dedotti dai
 risultati locali o da run precedenti. Nessuna release o pubblicazione Pages è
 stata avviata da questo lavoro.
+
+## Traccia della validazione CI
+
+- `4f206ff`: prima integrazione inviata solo al ramo di sviluppo. La run
+  [43348443702](https://github.com/jiraya892/judge-pocket./actions/runs/43348443702)
+  è fallita nella fase browser; non viene descritta come superata.
+- `88b04c2`: il browser CI usa l'artefatto Playwright installato e le eccezioni
+  vengono esposte come annotazioni pubbliche. La run
+  [43348928363](https://github.com/jiraya892/judge-pocket./actions/runs/43348928363)
+  ha reso leggibile il fallimento: il controllo offline riceveva una risposta
+  dal server ancora acceso. Non era prova di funzionamento offline.
+- `8290325`: il test usa ora un server isolato e lo arresta realmente durante
+  la prova offline. Tutti i sette percorsi browser sono stati rieseguiti
+  localmente con esito positivo. L'esito remoto viene attestato separatamente,
+  dopo aver letto la run corrispondente.
+
+I log completi GitHub richiedono login; sono state lette le pagine pubbliche delle
+run/job e le annotazioni delle prove create dal workflow, senza estrarre token.
+Nessuna esecuzione fallita è stata mascherata o sostituita da un test senza assert.

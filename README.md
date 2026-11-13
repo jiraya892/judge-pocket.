@@ -19,6 +19,7 @@ certificati. Non è un interprete generale delle Comprehensive Rules.
 [Perimetro, comandi, test e limiti verificati](BETA_SCOPE.md).
 [Architettura dello scenario minimo](SCENARIO_MINIMO.md).
 [Stato del lavoro 16A/B precedente alla beta](CHAPTER_16_PLAN.md).
+[Progetto IA ibrida, modelli e stima dei costi](AI_HYBRID_ARCHITECTURE.md).
 
 ## Sviluppo e prove
 
@@ -42,8 +43,8 @@ node scripts/verify-official-provenance.test.cjs
 ```
 
 Con Chromium e Playwright Python installati, eseguire anche
-`scripts/test-beta-browser.py` e `scripts/test-chapter-16-browser.py` mentre il
-server è in esecuzione. Non equivalgono a prove su dispositivi fisici.
+`scripts/test-beta-browser.py` (avvia un server isolato) e
+`scripts/test-chapter-16-browser.py` (richiede il server già in esecuzione). Non equivalgono a prove su dispositivi fisici.
 
 I dati browser si rigenerano con `scripts/build-card-database.py`; l'inventario
 cache della PWA con `scripts/build-app-shell.py`. Gli archivi originali rimangono
