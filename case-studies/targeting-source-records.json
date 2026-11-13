@@ -1,0 +1,84 @@
+{
+  "source": "provided Oracle snapshot; no publisher signature claimed",
+  "cards": [
+    {
+      "name": "Lightning Bolt",
+      "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+      "oracle_text": "Lightning Bolt deals 3 damage to any target.",
+      "type_line": "Instant",
+      "colors": [
+        "R"
+      ],
+      "power": null,
+      "toughness": null,
+      "scryfall_uri": "https://scryfall.com/card/msc/806/lightning-bolt?utm_source=api"
+    },
+    {
+      "name": "Deadly Insect",
+      "oracle_id": "98273b0d-2b41-486b-9498-30a692c03982",
+      "oracle_text": "Shroud (This creature can't be the target of spells or abilities.)",
+      "type_line": "Creature — Insect",
+      "colors": [
+        "G"
+      ],
+      "power": "6",
+      "toughness": "1",
+      "scryfall_uri": "https://scryfall.com/card/mmq/238/deadly-insect?utm_source=api"
+    },
+    {
+      "name": "Shock",
+      "oracle_id": "a9d288b8-cdc1-4e55-a0c9-d6edfc95e65d",
+      "oracle_text": "Shock deals 2 damage to any target.",
+      "type_line": "Instant",
+      "colors": [
+        "R"
+      ],
+      "power": null,
+      "toughness": null,
+      "scryfall_uri": "https://scryfall.com/card/msc/809/shock?utm_source=api"
+    },
+    {
+      "name": "Silver Knight",
+      "oracle_id": "aa7cd6e6-35a6-4c18-9d66-dc2a95206401",
+      "oracle_text": "First strike, protection from red",
+      "type_line": "Creature — Human Knight",
+      "colors": [
+        "W"
+      ],
+      "power": "2",
+      "toughness": "2",
+      "scryfall_uri": "https://scryfall.com/card/ddg/8/silver-knight?utm_source=api"
+    },
+    {
+      "name": "White Knight",
+      "oracle_id": "ddb021df-ae4a-4ac1-8353-d0b375761714",
+      "oracle_text": "First strike (This creature deals combat damage before creatures without first strike.)\nProtection from black (This creature can't be blocked, targeted, dealt damage, or enchanted by anything black.)",
+      "type_line": "Creature — Human Knight",
+      "colors": [
+        "W"
+      ],
+      "power": "2",
+      "toughness": "2",
+      "scryfall_uri": "https://scryfall.com/card/ddg/9/white-knight?utm_source=api"
+    },
+    {
+      "name": "Slippery Bogle",
+      "oracle_id": "f64878c1-1fba-44f7-a24f-d24bef2e03ae",
+      "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)",
+      "type_line": "Creature — Beast",
+      "colors": [
+        "G",
+        "U"
+      ],
+      "power": "1",
+      "toughness": "1",
+      "scryfall_uri": "https://scryfall.com/card/uma/223/slippery-bogle?utm_source=api"
+    }
+  ],
+  "rules": {
+    "702.16b": "protection and targeting",
+    "702.11b": "hexproof on permanents",
+    "702.18a": "shroud",
+    "608.2b": "target legality"
+  }
+}

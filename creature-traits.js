@@ -10,8 +10,13 @@ function prepare(card,index){
   const names=[card.name,card.name?.split(',')[0]].filter(Boolean);
   if(names.some(name=>line==='Prevent all damage that would be dealt to '+name+'.')){object.preventsDamage=true;traits.push('preventDamage');continue;}
   const keywords=line.split(/,\s*/).map(s=>s.toLowerCase());
-  if(keywords.some(k=>!['indestructible','flying','reach','vigilance','trample','haste','defender','menace','deathtouch','lifelink'].includes(k)))return fail('Abilità non riconosciuta completamente: '+line);
-  if(keywords.includes('indestructible'))object.indestructible=true;
+  const colors={white:'W',blue:'U',black:'B',red:'R',green:'G'};
+  for(const keyword of keywords){
+   const protection=/^protection from (white|blue|black|red|green)$/.exec(keyword);
+   if(protection){object.protectionColors=[...(object.protectionColors||[]),colors[protection[1]]];continue;}
+   if(!['indestructible','flying','reach','vigilance','trample','haste','defender','menace','deathtouch','lifelink','first strike','double strike','hexproof','shroud'].includes(keyword))return fail('Abilità non riconosciuta completamente: '+line);
+   if(['indestructible','hexproof','shroud'].includes(keyword))object[keyword]=true;
+  }
   traits.push(...keywords);
  }
  // These abilities have been interpreted for this noncombat damage path. No

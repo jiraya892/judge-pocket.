@@ -1,0 +1,1678 @@
+{
+  "source": "supplied Oracle and rulings snapshot",
+  "method": "Mechanism-based candidates, ranked by relevant ruling count and Oracle complexity; not a popularity/confusion measurement.",
+  "source_files": [
+    {
+      "file": "oracle-cards-part-01.jsonl.gz",
+      "sha256": "0d2eef7a716f283ca29b4266ddf8df15817e83ef365746263ce7324a1a091c3e"
+    },
+    {
+      "file": "oracle-cards-part-02.jsonl.gz",
+      "sha256": "65bff6700c11658633d6470028cf7bcc0638a78d430360c0745a55d0c9af4aa0"
+    },
+    {
+      "file": "oracle-cards-part-03.jsonl.gz",
+      "sha256": "faf1de43eed78869a1bd39c5e1cb61623b1ab0d9a4a7bda15e55193b54ad8a27"
+    },
+    {
+      "file": "oracle-cards-part-04.jsonl.gz",
+      "sha256": "6fdd39d476d98814a072fae1e72352b385c9dc36d4326d6b364aabb15f504a4e"
+    }
+  ],
+  "families": {
+    "targeting": {
+      "candidate_count": 879,
+      "examples": [
+        {
+          "name": "Perch Protection",
+          "oracle_id": "295fe873-ecb5-4d5e-a73c-3af6c478afc5",
+          "oracle_text": "Gift an extra turn (You may promise an opponent a gift as you cast this spell. If you do, they take an extra turn after this one.)\nCreate four 2/2 blue Bird creature tokens with flying. If the gift was promised, all permanents you control phase out, and until your next turn, your life total can't change and you gain protection from everything.\nExile Perch Protection.",
+          "url": "https://scryfall.com/card/plst/BLC-11/perch-protection?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 30,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-07-26",
+              "source": "wotc",
+              "comment": "Some instant or sorcery spells require alternative or additional targets if the gift was promised. You ignore these targeting requirements if the gifts aren't promised for those spells. On the other hand, you can promise a gift for a permanent spell even if you won't be able to choose targets for an enters ability of that permanent once the spell resolves."
+            },
+            {
+              "published_at": "2024-07-26",
+              "source": "wotc",
+              "comment": "For permanent spells with gift, an ability triggers when that permanent enters if the gift was promised. When that ability resolves, the gift is given to the appropriate opponent."
+            },
+            {
+              "published_at": "2024-07-26",
+              "source": "wotc",
+              "comment": "If a spell for which the gift was promised is countered, doesn't resolve (perhaps because all of its targets are illegal), or is otherwise removed from the stack, the gift won't be given. None of its other effects will happen either."
+            }
+          ]
+        },
+        {
+          "name": "Cloudform",
+          "oracle_id": "2b9384a0-db2d-49e2-b121-6b81a0d77722",
+          "oracle_text": "When this enchantment enters, it becomes an Aura with enchant creature. Manifest the top card of your library and attach this enchantment to it. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nEnchanted creature has flying and hexproof.",
+          "url": "https://scryfall.com/card/c18/83/cloudform?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 29,
+          "relevant_rulings": [
+            {
+              "published_at": "2014-11-24",
+              "source": "wotc",
+              "comment": "A permanent that turns face up or face down changes characteristics but is otherwise the same permanent. Spells and abilities that were targeting that permanent, as well as Auras and Equipment that were attached to the permanent, aren't affected."
+            },
+            {
+              "published_at": "2014-11-24",
+              "source": "wotc",
+              "comment": "You must ensure that your face-down spells and permanents can easily be differentiated from each other. You're not allowed to mix up the cards that represent them on the battlefield in order to confuse other players. The order they entered the battlefield should remain clear. Common methods for indicating this include using markers or dice, or simply placing them in order on the battlefield. You must also track how each became face down (manifested, cast face down using the morph ability, and so on)."
+            },
+            {
+              "published_at": "2014-11-24",
+              "source": "wotc",
+              "comment": "Because the permanent is on the battlefield both before and after it's turned face up, turning a permanent face up doesn't cause any enters-the-battlefield abilities to trigger."
+            }
+          ]
+        },
+        {
+          "name": "Teferi's Protection",
+          "oracle_id": "0d4ecdb1-ec90-497f-a7a4-1c68092b8757",
+          "oracle_text": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection.",
+          "url": "https://scryfall.com/card/2x2/32/teferis-protection?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 27,
+          "relevant_rulings": [
+            {
+              "published_at": "2017-08-25",
+              "source": "wotc",
+              "comment": "While a permanent is phased out, it's treated as though it doesn't exist. It can't be the target of spells or abilities, its static abilities have no effect on the game, its triggered abilities can't trigger, it can't attack or block, and so on."
+            },
+            {
+              "published_at": "2017-08-25",
+              "source": "wotc",
+              "comment": "Gaining protection from everything causes a spell or ability on the stack to have an illegal target if it targets you. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+            },
+            {
+              "published_at": "2017-08-25",
+              "source": "wotc",
+              "comment": "Nothing other than the specified events are prevented or illegal. An effect that doesn't target you could still cause you to discard cards, for example. Creatures can still attack you while you have protection from everything, although combat damage that they would deal to you will be prevented."
+            }
+          ]
+        },
+        {
+          "name": "Teferi's Reproach",
+          "oracle_id": "9381b4a5-a8e0-412d-bc7f-ae15afa0f135",
+          "oracle_text": "Choose target opponent. Until that player's next turn, they gain protection from everything and their life total can't change. All nonland permanents they control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before that player untaps during their next untap step.)\nExile Teferi's Reproach.",
+          "url": "https://scryfall.com/card/frc/6/teferis-reproach?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 27,
+          "relevant_rulings": [
+            {
+              "published_at": "2026-08-21",
+              "source": "wotc",
+              "comment": "Gaining protection from everything causes a spell or ability on the stack to have an illegal target if it targets that player. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+            },
+            {
+              "published_at": "2026-08-21",
+              "source": "wotc",
+              "comment": "A permanent phasing out causes a spell or ability on the stack to have an illegal target if it targets that permanent. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+            },
+            {
+              "published_at": "2026-08-21",
+              "source": "wotc",
+              "comment": "Protection from everything will usually prevent damage if it would be dealt to that player, but some damage can't be prevented. In this case, because their life total also can't change, that damage has any other effects that it may have aside from causing them to lose that much life (such as effects from lifelink or infect) and triggers and effects can see that damage was dealt even though their life total didn't change."
+            }
+          ]
+        },
+        {
+          "name": "Invasion of Gobakhan // Lightshield Array",
+          "oracle_id": "86c32a56-3272-4738-b0b3-a8aa49a17ce4",
+          "oracle_text": "\n(As a Siege enters, choose an opponent to protect it. You and others can attack it. When it's defeated, exile it, then cast it transformed.)\nWhen this Siege enters, look at target opponent's hand. You may exile a nonland card from it. For as long as that card remains exiled, its owner may play it. A spell cast this way costs {2} more to cast.\nAt the beginning of your end step, put a +1/+1 counter on each creature that attacked this turn.\nSacrifice this enchantment: Creatures you control gain hexproof and indestructible until end of turn.",
+          "url": "https://scryfall.com/card/mom/22/invasion-of-gobakhan-lightshield-array?utm_source=api",
+          "families": [
+            "targeting",
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 19,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "A battle can be dealt damage and be target of spells and/or abilities that target “any target.”"
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a token or a card that isn’t represented by a transforming double-faced card becomes a copy of a Siege, it can’t be cast as its triggered ability resolves. It will remain in exile. If it’s a token, it will cease to exist the next time state-based actions are performed."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "The set of creatures affected by Lightshield Array’s last ability is determined as the ability resolves. Creatures you begin to control later in the turn and noncreature permanents that become creatures later in the turn won’t gain hexproof and indestructible."
+            }
+          ]
+        },
+        {
+          "name": "Emrakul, the Promised End",
+          "oracle_id": "4e7a8817-1a66-45c3-ade9-eac79b40b89f",
+          "oracle_text": "This spell costs {1} less to cast for each card type among cards in your graveyard.\nWhen you cast this spell, you gain control of target opponent during that player's next turn. After that turn, that player takes an extra turn.\nFlying, trample, protection from instants",
+          "url": "https://scryfall.com/card/inr/5/emrakul-the-promised-end?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2025-01-24",
+              "source": "wotc",
+              "comment": "Protection from instants means that Emrakul can’t be the target of instant spells or activated or triggered abilities from instant cards, and damage that would be dealt to it by instant spells or cards is prevented. Instant spells may still affect it in other ways; for example, it would still receive the bonus from Rally the Peasants."
+            },
+            {
+              "published_at": "2025-01-24",
+              "source": "wotc",
+              "comment": "If the targeted player skips their next turn, you’ll control the next turn the affected player actually takes, and the extra turn the player takes will be after that turn."
+            },
+            {
+              "published_at": "2025-01-24",
+              "source": "wotc",
+              "comment": "An ability that triggers when a player casts a spell resolves before the spell that caused it to trigger. It resolves even if that spell is countered or otherwise leaves the stack without resolving."
+            }
+          ]
+        },
+        {
+          "name": "Oko, the Ringleader",
+          "oracle_id": "4372b729-dc3d-4469-8fc5-811cc787d653",
+          "oracle_text": "At the beginning of combat on your turn, Oko becomes a copy of up to one target creature you control until end of turn, except he has hexproof.\n+1: Draw two cards. If you've committed a crime this turn, discard a card. Otherwise, discard two cards.\n−1: Create a 3/3 green Elk creature token.\n−5: For each other nonland permanent you control, create a token that's a copy of that permanent.",
+          "url": "https://scryfall.com/card/otj/223/oko-the-ringleader?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "For example, an ability that triggers when you cast a spell that targets an opponent will trigger at the same time as an ability that triggers whenever you commit a crime. Those abilities can be put on the stack in either order (if you control them both), and they'll both resolve before the spell that caused them to trigger."
+            },
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "The spell or ability that constituted a crime doesn't have to have resolved yet or at all. As soon as you're finished casting the spell, activating the ability, or putting the triggered ability on the stack, you've committed a crime."
+            },
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "Changing the target or targets of a spell or ability won't affect whether or not the controller of that spell or ability has committed a crime. Only the initial targets chosen for that spell or ability are used to determine whether or not its controller committed a crime."
+            }
+          ]
+        },
+        {
+          "name": "Restricted Office // Lecture Hall",
+          "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+          "oracle_text": "\nWhen you unlock this door, destroy all creatures with power 3 or greater.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)\nOther permanents you control have hexproof.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+          "url": "https://scryfall.com/card/dsk/227/restricted-office-lecture-hall?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "An ability that triggers \"whenever you fully unlock a Room\" triggers when a door becomes unlocked and the other door of that Room is already unlocked, or when both doors of that Room become unlocked simultaneously."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some abilities allow you to unlock a door of a Room you control. You can't choose to unlock a door that's already unlocked with such an ability. If such an ability requires a target, you can target a Room even if both of its doors are unlocked, but the ability won't do anything when it resolves."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some doors have abilities that trigger whenever you unlock that door and require one or more targets. You can unlock that door even if there would be insufficient legal targets for that triggered ability. The triggered ability won't go on the stack."
+            }
+          ]
+        },
+        {
+          "name": "Soundwave, Sonic Spy // Soundwave, Superior Captain",
+          "oracle_id": "cc18e782-a965-404f-96f1-348f3ed799fd",
+          "oracle_text": "\nMore Than Meets the Eye {2}{W}{U}{B} (You may cast this card converted for {2}{W}{U}{B}.)\nWhenever one or more creature tokens you control deal combat damage to a player, exile target instant or sorcery card with mana value equal to the damage dealt from their graveyard. Copy it. You may cast the copy without paying its mana cost. If you do, convert Soundwave.\nWhenever you cast a spell with an odd mana value, convert Soundwave. If you do, create Ravage, a legendary 3/3 black Robot artifact creature token with menace and deathtouch.\nWhenever you cast a spell with an even mana value, convert Soundwave. If you do, create Laserbeak, a legendary 2/2 blue Robot artifact creature token with flying and hexproof.",
+          "url": "https://scryfall.com/card/bot/14/soundwave-sonic-spy-soundwave-superior-captain?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2022-10-14",
+              "source": "wotc",
+              "comment": "Soundwave, Sonic Spy's triggered ability can target only an instant or sorcery card with mana value exactly equal to the amount of damage dealt to the player by creature tokens you control."
+            },
+            {
+              "published_at": "2022-10-14",
+              "source": "wotc",
+              "comment": "Any triggered ability of another card that triggers whenever a permanent transforms will also trigger whenever a permanent converts."
+            },
+            {
+              "published_at": "2022-10-14",
+              "source": "wotc",
+              "comment": "Converting a permanent doesn't affect any Auras or Equipment that are attached to it. Similarly, any counters on the permanent will remain on that permanent after it converts. Any continuous effects from a resolved spell or ability will continue to affect it. Any spells or abilities on the stack that target a permanent continue to do so after that permanent converts."
+            }
+          ]
+        },
+        {
+          "name": "Riftmarked Knight",
+          "oracle_id": "a20093c6-b8b4-4051-808f-febd030f7fe4",
+          "oracle_text": "Protection from black; flanking (Whenever a creature without flanking blocks this creature, the blocking creature gets -1/-1 until end of turn.)\nSuspend 3—{1}{W}{W}\nWhen the last time counter is removed from this card while it's exiled, create a 2/2 black Knight creature token with flanking, protection from white, and haste.",
+          "url": "https://scryfall.com/card/tsr/38/riftmarked-knight?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 15,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended."
+            }
+          ]
+        },
+        {
+          "name": "Duskrider Peregrine",
+          "oracle_id": "2fdde5f7-a235-43a4-88a5-2faaf5900bd6",
+          "oracle_text": "Flying, protection from black\nSuspend 3—{1}{W} (Rather than cast this card from your hand, you may pay {1}{W} and exile it with three time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost. It has haste.)",
+          "url": "https://scryfall.com/card/tsr/16/duskrider-peregrine?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+            }
+          ]
+        },
+        {
+          "name": "Courageous Resolve",
+          "oracle_id": "3f7452aa-b075-47d9-b61f-061d61c7d1b4",
+          "oracle_text": "Up to one target creature you control gains protection from each of your opponents until end of turn. Draw a card. (It can't be blocked, targeted, dealt damage, enchanted, or equipped by anything controlled by those players.)\nFateful hour — If you have 5 or less life, you can't lose life this turn, you can't lose the game this turn, and your opponents can't win the game this turn.",
+          "url": "https://scryfall.com/card/ltc/506/courageous-resolve?utm_source=api",
+          "families": [
+            "targeting"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-11-03",
+              "source": "wotc",
+              "comment": "Protection from your opponents means that the target creature has protection from each object controlled by those opponents. If an object has no controller (such as a card in a graveyard), its owner is considered its controller for this purpose."
+            },
+            {
+              "published_at": "2023-11-03",
+              "source": "wotc",
+              "comment": "You can choose not to target a creature just to draw a card and, if you have 5 or less life, to get the additional effects listed. However, if you do choose a target, and that target is illegal at the time Courageous Resolve tries to resolve, it won't resolve and none of its effects will happen. You won't draw a card, and the additional effects won't occur even if you have 5 or less life."
+            },
+            {
+              "published_at": "2023-11-03",
+              "source": "wotc",
+              "comment": "Abilities that trigger whenever damage is dealt to you will still trigger because that damage is still dealt, even though your life total won't change as a result."
+            }
+          ]
+        }
+      ]
+    },
+    "damage-vs-toughness": {
+      "candidate_count": 782,
+      "examples": [
+        {
+          "name": "Karametra, God of Harvests",
+          "oracle_id": "984e763c-5a83-4231-8ec4-1be76846479a",
+          "oracle_text": "Indestructible\nAs long as your devotion to green and white is less than seven, Karametra isn't a creature.\nWhenever you cast a creature spell, you may search your library for a Forest or Plains card, put it onto the battlefield tapped, then shuffle.",
+          "url": "https://scryfall.com/card/c20/218/karametra-god-of-harvests?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 25,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-09-15",
+              "source": "wotc",
+              "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+            },
+            {
+              "published_at": "2014-02-01",
+              "source": "wotc",
+              "comment": "If you cast a creature card with bestow for its bestow cost, it becomes an Aura spell and not a creature spell. Karametra's last ability won't trigger."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "When a God enters the battlefield, your devotion to its color (including the mana symbols in the mana cost of the God itself) will determine if a creature entered the battlefield or not for abilities that trigger whenever a creature enters the battlefield."
+            }
+          ]
+        },
+        {
+          "name": "Athreos, Shroud-Veiled",
+          "oracle_id": "9aacc1ce-8d0d-4a24-9a15-74635f2f127d",
+          "oracle_text": "Indestructible\nAs long as your devotion to white and black is less than seven, Athreos isn't a creature.\nAt the beginning of your end step, put a coin counter on another target creature.\nWhenever a creature with a coin counter on it dies or is put into exile, return that card to the battlefield under your control.",
+          "url": "https://scryfall.com/card/dsc/212/athreos-shroud-veiled?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 24,
+          "relevant_rulings": [
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "If an effect exiles a creature with a coin counter on it and immediately returns it to the battlefield, Athreos's last ability triggers but will have no effect. If an effect exiles a creature with a coin counter on it and would return it to the battlefield at a later time, Athreos's last ability will return that card to the battlefield and it won't be returned later."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "When a God enters the battlefield, your devotion to its color (including the mana symbols in the mana cost of the God itself) will determine if a creature entered the battlefield or not for abilities that trigger whenever a creature enters the battlefield."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "If a token with a coin counter on it dies or is exiled, Athreos's last ability triggers, but won't return it to the battlefield."
+            }
+          ]
+        },
+        {
+          "name": "Heliod, Sun-Crowned",
+          "oracle_id": "63e596a2-9126-4af6-8782-c38687d664ad",
+          "oracle_text": "Indestructible\nAs long as your devotion to white is less than five, Heliod isn't a creature.\nWhenever you gain life, put a +1/+1 counter on target creature or enchantment you control.\n{1}{W}: Another target creature gains lifelink until end of turn.",
+          "url": "https://scryfall.com/card/cmm/29/heliod-sun-crowned?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 20,
+          "relevant_rulings": [
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "Heliod can be the target of its own triggered ability."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "When a God enters the battlefield, your devotion to its color (including the mana symbols in the mana cost of the God itself) will determine if a creature entered the battlefield or not for abilities that trigger whenever a creature enters the battlefield."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+            }
+          ]
+        },
+        {
+          "name": "Keeper of the Crown // Coronation of the Wilds",
+          "oracle_id": "8ba8b599-f724-4845-9169-81adf2aa6142",
+          "oracle_text": "\n({L} can be paid with one mana from a legendary source.)\nOther legendary creatures you control get +1/+1 and have indestructible.\nTarget creature you control becomes a legendary Noble in addition to its other types and gains \"{T}: Add one mana of any color.\"\nDraw a card.",
+          "url": "https://scryfall.com/card/mb2/577/keeper-of-the-crown-coronation-of-the-wilds?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 20,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-11-08",
+              "source": "wotc",
+              "comment": "If the target is illegal as Coronation of the Wilds tries to resolve, it won’t resolve and none of its effects will happen. You won’t draw a card, and since it failed to resolve, it will go to your graveyard rather than being exiled. You won’t be able to cast Keeper of the Crown later."
+            },
+            {
+              "published_at": "2024-11-08",
+              "source": "wotc",
+              "comment": "If a spell is cast as an Adventure, its controller exiles it instead of putting it into its owner’s graveyard as it resolves. For as long as it remains exiled, that player may cast it as a permanent spell. If an Adventure spell leaves the stack in any way other than resolving (most likely by being countered or by failing to resolve because its targets have all become illegal), that card won’t be exiled and the spell’s controller won’t be able to cast it as a permanent later."
+            },
+            {
+              "published_at": "2024-11-08",
+              "source": "wotc",
+              "comment": "The effect of Coronation of the Wilds lasts indefinitely. It’ll only expire if the targeted creature leaves the battlefield."
+            }
+          ]
+        },
+        {
+          "name": "Invasion of Gobakhan // Lightshield Array",
+          "oracle_id": "86c32a56-3272-4738-b0b3-a8aa49a17ce4",
+          "oracle_text": "\n(As a Siege enters, choose an opponent to protect it. You and others can attack it. When it's defeated, exile it, then cast it transformed.)\nWhen this Siege enters, look at target opponent's hand. You may exile a nonland card from it. For as long as that card remains exiled, its owner may play it. A spell cast this way costs {2} more to cast.\nAt the beginning of your end step, put a +1/+1 counter on each creature that attacked this turn.\nSacrifice this enchantment: Creatures you control gain hexproof and indestructible until end of turn.",
+          "url": "https://scryfall.com/card/mom/22/invasion-of-gobakhan-lightshield-array?utm_source=api",
+          "families": [
+            "targeting",
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 19,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "A battle can be dealt damage and be target of spells and/or abilities that target “any target.”"
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a token or a card that isn’t represented by a transforming double-faced card becomes a copy of a Siege, it can’t be cast as its triggered ability resolves. It will remain in exile. If it’s a token, it will cease to exist the next time state-based actions are performed."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "The set of creatures affected by Lightshield Array’s last ability is determined as the ability resolves. Creatures you begin to control later in the turn and noncreature permanents that become creatures later in the turn won’t gain hexproof and indestructible."
+            }
+          ]
+        },
+        {
+          "name": "Klothys, God of Destiny",
+          "oracle_id": "e8473969-195f-41ee-a84d-463cc8c0ef02",
+          "oracle_text": "Indestructible\nAs long as your devotion to red and green is less than seven, Klothys isn't a creature.\nAt the beginning of your first main phase, exile target card from a graveyard. If it was a land card, add {R} or {G}. Otherwise, you gain 2 life and Klothys deals 2 damage to each opponent.",
+          "url": "https://scryfall.com/card/thb/220/klothys-god-of-destiny?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "If the target card in a graveyard is an illegal target by the time Klothys’s last ability tries to resolve, the ability won’t resolve. You won’t add mana, gain life, or deal damage."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it’s still on the battlefield at that time."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "When a God enters the battlefield, your devotion to its color (including the mana symbols in the mana cost of the God itself) will determine if a creature entered the battlefield or not for abilities that trigger whenever a creature enters the battlefield."
+            }
+          ]
+        },
+        {
+          "name": "Invasion of Theros // Ephara, Ever-Sheltering",
+          "oracle_id": "ba5f7f37-352a-4b9c-b648-0ba5c8d842fc",
+          "oracle_text": "\n(As a Siege enters, choose an opponent to protect it. You and others can attack it. When it's defeated, exile it, then cast it transformed.)\nWhen this Siege enters, search your library for an Aura, God, or Demigod card, reveal it, put it into your hand, then shuffle.\nEphara has lifelink and indestructible as long as you control at least three other enchantments.\nWhenever another enchantment you control enters, draw a card.",
+          "url": "https://scryfall.com/card/mom/23/invasion-of-theros-ephara-ever-sheltering?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a token or a card that isn’t represented by a transforming double-faced card becomes a copy of a Siege, it can’t be cast as its triggered ability resolves. It will remain in exile. If it’s a token, it will cease to exist the next time state-based actions are performed."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a permanent that is represented by a transforming double-faced card becomes a copy of a Siege, it will be exiled as that Siege’s triggered ability resolves, then it will be cast transformed. Note that this applies only to transforming double-faced cards, not to modal double-faced cards that can normally be played using either face."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "A battle can be dealt damage and be target of spells and/or abilities that target “any target.”"
+            }
+          ]
+        },
+        {
+          "name": "Kytheon, Hero of Akros // Gideon, Battle-Forged",
+          "oracle_id": "e49d745c-5130-4b54-bcbb-643b08528456",
+          "oracle_text": "\nAt end of combat, if Kytheon and at least two other creatures attacked this combat, exile Kytheon, then return him to the battlefield transformed under his owner's control.\n{2}{W}: Kytheon gains indestructible until end of turn.\n+2: Up to one target creature an opponent controls attacks Gideon during its controller's next turn if able.\n+1: Until your next turn, target creature gains indestructible. Untap that creature.\n0: Until end of turn, Gideon becomes a 4/4 Human Soldier creature with indestructible that's still a planeswalker. Prevent all damage that would be dealt to him this turn.",
+          "url": "https://scryfall.com/card/ori/23/kytheon-hero-of-akros-gideon-battle-forged?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2015-06-22",
+              "source": "wotc",
+              "comment": "If Gideon can't be attacked, perhaps because he has left the battlefield before the creature's controller's next combat, the creature targeted by Gideon's first ability can attack you or another planeswalker you control, or its controller can choose to have it not attack at all."
+            },
+            {
+              "published_at": "2015-06-22",
+              "source": "wotc",
+              "comment": "If the creature targeted by Gideon's first ability changes controllers before it has the chance to attack Gideon, the ability will apply to it during its new controller's next turn."
+            },
+            {
+              "published_at": "2015-06-22",
+              "source": "wotc",
+              "comment": "Each face of a double-faced card has its own set of characteristics: name, types, subtypes, power and toughness, loyalty, abilities, and so on. While a double-faced card is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored. While a double-faced card isn't on the battlefield, consider only the characteristics of its front face."
+            }
+          ]
+        },
+        {
+          "name": "Thassa, God of the Sea",
+          "oracle_id": "69e5df2f-be1f-4608-a90f-3e2f51e2fea4",
+          "oracle_text": "Indestructible\nAs long as your devotion to blue is less than five, Thassa isn't a creature. (Each {U} in the mana costs of permanents you control counts toward your devotion to blue.)\nAt the beginning of your upkeep, scry 1.\n{1}{U}: Target creature you control can't be blocked this turn.",
+          "url": "https://scryfall.com/card/lcc/176/thassa-god-of-the-sea?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 17,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-09-15",
+              "source": "wotc",
+              "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+            },
+            {
+              "published_at": "2013-09-15",
+              "source": "wotc",
+              "comment": "You choose how to order cards returned to your library after scrying no matter where you put them."
+            },
+            {
+              "published_at": "2013-09-15",
+              "source": "wotc",
+              "comment": "Activating Thassa's last ability after the target creature has been blocked won't change or undo the block."
+            }
+          ]
+        },
+        {
+          "name": "Phenax, God of Deception",
+          "oracle_id": "046ccc8a-ec0d-4dc5-b41d-5e8a6d86812a",
+          "oracle_text": "Indestructible\nAs long as your devotion to blue and black is less than seven, Phenax isn't a creature.\nCreatures you control have \"{T}: Target player mills X cards, where X is this creature's toughness.\"",
+          "url": "https://scryfall.com/card/bng/152/phenax-god-of-deception?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-09-15",
+              "source": "wotc",
+              "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+            },
+            {
+              "published_at": "2014-02-01",
+              "source": "wotc",
+              "comment": "If you tap Phenax to activate the ability it grants itself, and Phenax is no longer a creature but still on the battlefield as that ability resolves, no cards will be put into the target player's graveyard. Similarly, if Phenax isn't on the battlefield as the ability resolves and wasn't a creature when it left the battlefield, no cards will be put into the graveyard."
+            },
+            {
+              "published_at": "2014-02-01",
+              "source": "wotc",
+              "comment": "If you activate the ability Phenax grants to creatures you control, the toughness of the creature is calculated as the ability resolves. If the creature is no longer on the battlefield at that time, use its toughness when it was last on the battlefield."
+            }
+          ]
+        },
+        {
+          "name": "Ephara, God of the Polis",
+          "oracle_id": "5968ecb5-5728-429f-9324-0c108820ebe8",
+          "oracle_text": "Indestructible\nAs long as your devotion to white and blue is less than seven, Ephara isn't a creature.\nAt the beginning of each upkeep, if you had another creature enter the battlefield under your control last turn, draw a card.",
+          "url": "https://scryfall.com/card/bng/145/ephara-god-of-the-polis?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-09-15",
+              "source": "wotc",
+              "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+            },
+            {
+              "published_at": "2014-02-01",
+              "source": "wotc",
+              "comment": "Ephara's last ability checks at the beginning of each upkeep whether another creature entered the battlefield under your control last turn. If one did, it will trigger; otherwise, it won't. The ability will trigger only once no matter how many creatures entered the battlefield under your control that turn, as long as at least one did."
+            },
+            {
+              "published_at": "2014-02-01",
+              "source": "wotc",
+              "comment": "If a noncreature permanent you control (such as an Aura with bestow) becomes a creature, it will not cause Ephara's last ability to trigger the following turn. This is true even if that noncreature permanent became a creature the same turn it entered the battlefield."
+            }
+          ]
+        },
+        {
+          "name": "Erebos, Bleak-Hearted",
+          "oracle_id": "a5690dc9-f12e-4ecc-b528-f2f83c79c3c8",
+          "oracle_text": "Indestructible\nAs long as your devotion to black is less than five, Erebos isn't a creature.\nWhenever another creature you control dies, you may pay 2 life. If you do, draw a card.\n{1}{B}, Sacrifice another creature: Target creature gets -2/-1 until end of turn.",
+          "url": "https://scryfall.com/card/cmm/868/erebos-bleak-hearted?utm_source=api",
+          "families": [
+            "damage-vs-toughness"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "Erebos’s last ability can target the creature you’ll sacrifice to pay its cost. In this case, the ability won’t resolve, but Erebos’s triggered ability will trigger."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "If one or more creatures you control die at the same time as Erebos, its triggered ability triggers for each of those creatures."
+            },
+            {
+              "published_at": "2020-01-24",
+              "source": "wotc",
+              "comment": "When a God enters the battlefield, your devotion to its color (including the mana symbols in the mana cost of the God itself) will determine if a creature entered the battlefield or not for abilities that trigger whenever a creature enters the battlefield."
+            }
+          ]
+        }
+      ]
+    },
+    "zone-replacement": {
+      "candidate_count": 277,
+      "examples": [
+        {
+          "name": "Walk-In Closet // Forgotten Cellar",
+          "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+          "oracle_text": "\nYou may play lands from your graveyard.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)\nWhen you unlock this door, you may cast spells from your graveyard this turn, and if a card would be put into your graveyard from anywhere this turn, exile it instead.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+          "url": "https://scryfall.com/card/dsk/205/walk-in-closet-forgotten-cellar?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 21,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some doors have abilities that trigger whenever you unlock that door and require one or more targets. You can unlock that door even if there would be insufficient legal targets for that triggered ability. The triggered ability won't go on the stack."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some abilities allow you to lock a door of a Room you control. You can't choose to lock a door that's already locked with such an ability. If such an ability requires a target, you can target a Room even if both of its doors are locked, but the ability won't do anything when it resolves."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "An ability that triggers \"whenever you fully unlock a Room\" triggers when a door becomes unlocked and the other door of that Room is already unlocked, or when both doors of that Room become unlocked simultaneously."
+            }
+          ]
+        },
+        {
+          "name": "Esper Origins // Summon: Esper Maduin",
+          "oracle_id": "947b40a2-e272-4ef6-85fb-3d767a21bc7a",
+          "oracle_text": "\nSurveil 2. You gain 2 life. If this spell was cast from a graveyard, exile it, then put it onto the battlefield transformed under its owner's control with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)\nFlashback {3}{G} (You may cast this card from your graveyard for its flashback cost. Then exile it.)\n(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Reveal the top card of your library. If it's a permanent card, put it into your hand.\nII — Add {G}{G}.\nIII — Other creatures you control get +2/+2 and gain trample until end of turn.",
+          "url": "https://scryfall.com/card/fin/185/esper-origins-summon:-esper-maduin?utm_source=api",
+          "families": [
+            "zone-replacement",
+            "counter-replacement"
+          ],
+          "ruling_count": 20,
+          "relevant_rulings": [
+            {
+              "published_at": "2025-06-06",
+              "source": "wotc",
+              "comment": "Finality counters work on any permanent, not only creatures. If a permanent with a finality counter on it would be put into a graveyard from the battlefield, exile it instead."
+            },
+            {
+              "published_at": "2025-06-06",
+              "source": "wotc",
+              "comment": "\"Flashback [cost]\" means \"You may cast this card from your graveyard if the resulting spell is an instant or sorcery spell by paying [cost] rather than paying its mana cost\" and \"If the flashback cost was paid, exile this card instead of putting it anywhere else any time it would leave the stack.\""
+            },
+            {
+              "published_at": "2025-06-06",
+              "source": "wotc",
+              "comment": "Finality counters aren't keyword counters, and a finality counter doesn't give any abilities to the permanent it's on. If that permanent loses its abilities and then would go to a graveyard, it will still be exiled instead."
+            }
+          ]
+        },
+        {
+          "name": "Gaea's Will",
+          "oracle_id": "87efff06-b6cb-4a8f-937b-e50e367fd896",
+          "oracle_text": "Suspend 4—{G}\nUntil end of turn, you may play lands and cast spells from your graveyard.\nIf a card would be put into your graveyard from anywhere this turn, exile that card instead.",
+          "url": "https://scryfall.com/card/mh2/162/gaeas-will?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2021-06-18",
+              "source": "wotc",
+              "comment": "After Gaea's Will resolves, nontoken creature you own that would die will be exiled instead. Abilities that would trigger when those creatures die won't trigger. Token creatures you own will still die as normal after Gaea's Will resolves."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+            }
+          ]
+        },
+        {
+          "name": "Penumbra Umbra",
+          "oracle_id": "5cce6146-94a6-442e-9890-6f2914cbcebb",
+          "oracle_text": "Enchant creature you control\nWhen Penumbra Umbra is put into a graveyard from the battlefield, create a token that's a copy of enchanted creature, except the token is black.\nUmbra armor (If enchanted creature would be destroyed, instead remove all damage from it and destroy this Aura.)",
+          "url": "https://scryfall.com/card/mb2/580/penumbra-umbra?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-11-08",
+              "source": "wotc",
+              "comment": "Any enters abilities of the copied creature will trigger when the token enters the battlefield. Any “as [this creature] enters” or “[this creature] enters with” abilities of the copied creature will also work."
+            },
+            {
+              "published_at": "2024-11-08",
+              "source": "wotc",
+              "comment": "Umbra armor’s effect is mandatory. If the enchanted creature would be destroyed, you must remove all damage from it (if it has any) and destroy the Aura that has umbra armor instead."
+            },
+            {
+              "published_at": "2024-11-08",
+              "source": "wotc",
+              "comment": "If a spell or ability says that it would “destroy” a creature enchanted with an Aura that has umbra armor, that spell or ability is what causes the Aura to be destroyed instead. Umbra armor doesn’t destroy the Aura; rather, it changes the effects of the spell or ability. On the other hand, if a spell or ability deals lethal damage to a creature enchanted with an Aura that has umbra armor, the game rules regarding lethal damage cause the Aura to be destroyed, not that spell or ability."
+            }
+          ]
+        },
+        {
+          "name": "Arcane Heist",
+          "oracle_id": "839748e7-ccb4-421e-9626-b6d8be9390ab",
+          "oracle_text": "You may cast target instant or sorcery card from an opponent's graveyard without paying its mana cost. If that spell would be put into their graveyard, exile it instead.\nCipher (Then you may exile this spell card encoded on a creature you control. Whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost.)",
+          "url": "https://scryfall.com/card/otc/13/arcane-heist?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "The exiled card with cipher grants a triggered ability to the creature it’s encoded on. If that creature loses that ability and subsequently deals combat damage to a player, the triggered ability won’t trigger. However, the exiled card will continue to be encoded on that creature."
+            },
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "You cast the copy of the card with cipher during the resolution of the triggered ability. Ignore timing restrictions based on the card’s type."
+            },
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "If another player gains control of the creature, that player will control the triggered ability. That player will create a copy of the encoded card and may cast it."
+            }
+          ]
+        },
+        {
+          "name": "Kheru Spellsnatcher",
+          "oracle_id": "c01411e0-77b2-4e65-a369-5dbe13745769",
+          "oracle_text": "Morph {4}{U}{U} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhen this creature is turned face up, counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard. You may cast that card without paying its mana cost for as long as it remains exiled.",
+          "url": "https://scryfall.com/card/dsc/119/kheru-spellsnatcher?utm_source=api",
+          "families": [
+            "zone-replacement",
+            "counter-replacement"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2014-09-20",
+              "source": "wotc",
+              "comment": "Because the permanent is on the battlefield both before and after it's turned face up, turning a permanent face up doesn't cause any enters-the-battlefield abilities to trigger."
+            },
+            {
+              "published_at": "2014-09-20",
+              "source": "wotc",
+              "comment": "You can target a spell you control with Kheru Spellsnatcher's triggered ability. This will give you the ability to cast the card later without paying its mana cost."
+            },
+            {
+              "published_at": "2014-09-20",
+              "source": "wotc",
+              "comment": "A permanent that turns face up or face down changes characteristics but is otherwise the same permanent. Spells and abilities that were targeting that permanent, as well as Auras and Equipment that were attached to the permanent, aren't affected."
+            }
+          ]
+        },
+        {
+          "name": "Faunsbane Troll",
+          "oracle_id": "b707c131-de13-4d4d-839d-b9f47d62f090",
+          "oracle_text": "When this creature enters, create a Monster Role token attached to it. (Enchanted creature gets +1/+1 and has trample.)\n{1}, Sacrifice an Aura attached to this creature: This creature fights target creature you don't control. If that creature would die this turn, exile it instead. Activate only as a sorcery.",
+          "url": "https://scryfall.com/card/woe/203/faunsbane-troll?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 10,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-09-01",
+              "source": "wotc",
+              "comment": "Hexproof and shroud won't prevent a Role from becoming attached to a permanent if the ability creating that Role attached to that permanent doesn't target it."
+            },
+            {
+              "published_at": "2023-09-01",
+              "source": "wotc",
+              "comment": "If Faunsbane Troll is no longer on the battlefield or no longer a creature when its activated ability resolves, it doesn't fight the target creature, but the effect that causes the target creature to be exiled any time it would die that turn still applies."
+            },
+            {
+              "published_at": "2023-09-01",
+              "source": "wotc",
+              "comment": "Some spells and abilities that create Role tokens require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. The Role token won't be created."
+            }
+          ]
+        },
+        {
+          "name": "Primeval Spawn",
+          "oracle_id": "a11c6601-7e91-4def-bfea-bb34023ef3c6",
+          "oracle_text": "If this creature would enter and it wasn't cast or no mana was spent to cast it, exile it instead.\nVigilance, trample, lifelink\nWhen this creature leaves the battlefield, exile the top ten cards of your library. You may cast any number of spells with total mana value 10 or less from among them without paying their mana costs.",
+          "url": "https://scryfall.com/card/dmc/13/primeval-spawn?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 10,
+          "relevant_rulings": [
+            {
+              "published_at": "2022-09-09",
+              "source": "wotc",
+              "comment": "If an effect causes a card to enter the battlefield as a copy of Primeval Spawn and that permanent wasn’t cast or no mana was spent to cast it, that card will be exiled instead of entering the battlefield."
+            },
+            {
+              "published_at": "2022-09-09",
+              "source": "wotc",
+              "comment": "If a creature token that is a copy of Primeval Spawn would be put onto the battlefield, it’s put into exile instead and then ceases to exist. Creature tokens are never cast, even if the spell that created them was."
+            },
+            {
+              "published_at": "2022-09-09",
+              "source": "wotc",
+              "comment": "If Primeval Spawn is exiled by its first ability as it tries to enter the battlefield, it goes directly to the exile zone without entering the battlefield first. Since it never enters or leaves the battlefield, its last ability won’t trigger."
+            }
+          ]
+        },
+        {
+          "name": "Diluvian Primordial",
+          "oracle_id": "f21ce158-2925-4658-ab7b-b73718d31965",
+          "oracle_text": "Flying\nWhen this creature enters, for each opponent, you may cast up to one target instant or sorcery card from that player's graveyard without paying its mana cost. If a spell cast this way would be put into a graveyard, exile it instead.",
+          "url": "https://scryfall.com/card/otc/96/diluvian-primordial?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 9,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-01-24",
+              "source": "wotc",
+              "comment": "You can choose a number of targets up to the number of opponents you have, one target per opponent."
+            },
+            {
+              "published_at": "2013-01-24",
+              "source": "wotc",
+              "comment": "You cast the cards one at a time, choosing modes, targets and so on. The last card you cast will be the first one to resolve."
+            },
+            {
+              "published_at": "2013-01-24",
+              "source": "wotc",
+              "comment": "If you can't cast one of the target instant or sorcery cards, perhaps because there are no legal targets available, or if you choose not to cast one, it will remain in its owner's graveyard."
+            }
+          ]
+        },
+        {
+          "name": "Serpentine Spike",
+          "oracle_id": "c983644d-6741-4aa1-aa68-a6e680c26bb6",
+          "oracle_text": "Devoid (This card has no color.)\nSerpentine Spike deals 2 damage to target creature, 3 damage to another target creature, and 4 damage to a third target creature. If a creature dealt damage this way would die this turn, exile it instead.",
+          "url": "https://scryfall.com/card/bfz/133/serpentine-spike?utm_source=api",
+          "families": [
+            "zone-replacement"
+          ],
+          "ruling_count": 8,
+          "relevant_rulings": [
+            {
+              "published_at": "2015-08-25",
+              "source": "wotc",
+              "comment": "If one or two of those targets become illegal by the time Serpentine Spike resolves, you can’t change how much damage will be dealt to the remaining legal targets."
+            },
+            {
+              "published_at": "2015-08-25",
+              "source": "wotc",
+              "comment": "A creature doesn’t necessarily have to be dealt lethal damage by Serpentine Spike to be exiled. After being dealt damage, if it would die for any reason that turn, it’ll be exiled instead."
+            },
+            {
+              "published_at": "2015-08-25",
+              "source": "wotc",
+              "comment": "Each target must be a different creature. You can’t cast Serpentine Spike without three different creatures available."
+            }
+          ]
+        },
+        {
+          "name": "Leonardo, Sewer Samurai",
+          "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
+          "oracle_text": "Sneak {2}{W}{W}\nDouble strike\nDuring your turn, you may cast creature spells with power or toughness 1 or less from your graveyard. If you cast a spell this way, that creature enters with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)",
+          "url": "https://scryfall.com/card/tmt/17/leonardo-sewer-samurai?utm_source=api",
+          "families": [
+            "zone-replacement",
+            "counter-replacement"
+          ],
+          "ruling_count": 8,
+          "relevant_rulings": [
+            {
+              "published_at": "2026-01-27",
+              "source": "wotc",
+              "comment": "Finality counters work on any permanent, not only creatures. If a permanent with a finality counter on it would be put into a graveyard from the battlefield, exile it instead."
+            },
+            {
+              "published_at": "2026-01-27",
+              "source": "wotc",
+              "comment": "Although a creature put onto the battlefield this way is attacking, it was never declared as an attacking creature. Abilities that trigger whenever a creature attacks won't trigger when that creature enters attacking."
+            },
+            {
+              "published_at": "2026-01-27",
+              "source": "wotc",
+              "comment": "Finality counters aren't keyword counters, and a finality counter doesn't give any abilities to the permanent it's on. If that permanent loses its abilities and then would go to a graveyard, it will still be exiled instead."
+            }
+          ]
+        },
+        {
+          "name": "Chandra, Awakened Inferno",
+          "oracle_id": "7b2a600b-d6c8-45ff-a7fc-06105d27111f",
+          "oracle_text": "This spell can't be countered.\n+2: Each opponent gets an emblem with \"At the beginning of your upkeep, this emblem deals 1 damage to you.\"\n−3: Chandra deals 3 damage to each non-Elemental creature.\n−X: Chandra deals X damage to target creature or planeswalker. If a permanent dealt damage this way would die this turn, exile it instead.",
+          "url": "https://scryfall.com/card/cmm/875/chandra-awakened-inferno?utm_source=api",
+          "families": [
+            "zone-replacement",
+            "counter-replacement"
+          ],
+          "ruling_count": 8,
+          "relevant_rulings": [
+            {
+              "published_at": "2019-07-12",
+              "source": "wotc",
+              "comment": "A spell or ability that counters spells can still target Chandra. When that spell or ability resolves, Chandra won't be countered, but any additional effects of that spell or ability will still happen."
+            },
+            {
+              "published_at": "2019-07-12",
+              "source": "wotc",
+              "comment": "If Chandra's last ability doesn't deal damage (most likely because the damage has been prevented in some way), the target won't be exiled if it would die."
+            },
+            {
+              "published_at": "2019-07-12",
+              "source": "wotc",
+              "comment": "A player may have more than one of Chandra's emblems. Each one's ability triggers separately."
+            }
+          ]
+        }
+      ]
+    },
+    "counter-replacement": {
+      "candidate_count": 320,
+      "examples": [
+        {
+          "name": "Esper Origins // Summon: Esper Maduin",
+          "oracle_id": "947b40a2-e272-4ef6-85fb-3d767a21bc7a",
+          "oracle_text": "\nSurveil 2. You gain 2 life. If this spell was cast from a graveyard, exile it, then put it onto the battlefield transformed under its owner's control with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)\nFlashback {3}{G} (You may cast this card from your graveyard for its flashback cost. Then exile it.)\n(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Reveal the top card of your library. If it's a permanent card, put it into your hand.\nII — Add {G}{G}.\nIII — Other creatures you control get +2/+2 and gain trample until end of turn.",
+          "url": "https://scryfall.com/card/fin/185/esper-origins-summon:-esper-maduin?utm_source=api",
+          "families": [
+            "zone-replacement",
+            "counter-replacement"
+          ],
+          "ruling_count": 20,
+          "relevant_rulings": [
+            {
+              "published_at": "2025-06-06",
+              "source": "wotc",
+              "comment": "Finality counters work on any permanent, not only creatures. If a permanent with a finality counter on it would be put into a graveyard from the battlefield, exile it instead."
+            },
+            {
+              "published_at": "2025-06-06",
+              "source": "wotc",
+              "comment": "\"Flashback [cost]\" means \"You may cast this card from your graveyard if the resulting spell is an instant or sorcery spell by paying [cost] rather than paying its mana cost\" and \"If the flashback cost was paid, exile this card instead of putting it anywhere else any time it would leave the stack.\""
+            },
+            {
+              "published_at": "2025-06-06",
+              "source": "wotc",
+              "comment": "Finality counters aren't keyword counters, and a finality counter doesn't give any abilities to the permanent it's on. If that permanent loses its abilities and then would go to a graveyard, it will still be exiled instead."
+            }
+          ]
+        },
+        {
+          "name": "Invasion of Kamigawa // Rooftop Saboteurs",
+          "oracle_id": "462fa2a4-651b-4fc1-b73b-1bd4508c8f75",
+          "oracle_text": "\n(As a Siege enters, choose an opponent to protect it. You and others can attack it. When it's defeated, exile it, then cast it transformed.)\nWhen this Siege enters, tap target artifact or creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nFlying\nWhenever this creature deals combat damage to a player or battle, draw a card.",
+          "url": "https://scryfall.com/card/mom/62/invasion-of-kamigawa-rooftop-saboteurs?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 17,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a permanent that is represented by a transforming double-faced card becomes a copy of a Siege, it will be exiled as that Siege's triggered ability resolves, then it will be cast transformed. Note that this applies only to transforming double-faced cards, not to modal double-faced cards that can normally be played using either face."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "Invasion of Kamigawa's enters-the-battlefield ability can target an artifact or creature that's already tapped."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "Sieges each have an intrinsic triggered ability. That ability is \"When the last defense counter is removed from this permanent, exile it, then you may cast it transformed without paying its mana cost.\""
+            }
+          ]
+        },
+        {
+          "name": "Suppression Ray // Orderly Plaza",
+          "oracle_id": "b592568b-11b0-4081-90a7-30cfb9c1ba80",
+          "oracle_text": "\nTap all creatures target player controls. You may pay any amount of {E}. If you do, choose up to that many creatures tapped this way. Put a stun counter on each of them. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nThis land enters tapped.\n{T}: Add {W} or {U}.",
+          "url": "https://scryfall.com/card/mh3/260/suppression-ray-orderly-plaza?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Some triggered abilities that state that you \"may pay\" a certain amount of {E} describe an effect that happens \"If you do.\" In that case, no player may take actions to try to stop the ability's effect after you make your choice. If the payment is followed by the phrase \"When you do,\" then you'll choose any targets for that reflexive triggered ability and put it on the stack before players can take actions."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "If a spell or ability with one or more targets states that you \"may pay\" some amount of {E}, and each permanent that it targets has become an illegal target, the spell or ability won't resolve. You can't pay any {E} even if you want to."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "\"Creatures tapped this way\" means creatures that became tapped as a result of Suppression Ray's effect, not creatures that were already tapped before Suppression Ray began to resolve. For example, if a player controls two tapped creatures and one untapped creature and you cast Suppression Ray targeting that player, you'll only be able to choose the creature that was untapped to get a stun counter (as long as you paid at least one {E})."
+            }
+          ]
+        },
+        {
+          "name": "Delay",
+          "oracle_id": "983caa3f-7089-4e66-825d-4086a5adb9bb",
+          "oracle_text": "Counter target spell. If the spell is countered this way, exile it with three time counters on it instead of putting it into its owner's graveyard. If it doesn't have suspend, it gains suspend. (At the beginning of its owner's upkeep, they remove a time counter. When the last is removed, they may play it without paying its mana cost. If it's a creature, it has haste.)",
+          "url": "https://scryfall.com/card/tsr/61/delay?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2021-03-19",
+              "source": "wotc",
+              "comment": "If the target spell is face down, it'll be exiled face up. It can't be cast face down when casting it without paying its mana cost."
+            },
+            {
+              "published_at": "2021-03-19",
+              "source": "wotc",
+              "comment": "If the target spell was cast with flashback, Delay's effect will exile it, not the flashback effect. The card will get time counters and gain suspend (if it didn't already have suspend)."
+            },
+            {
+              "published_at": "2021-03-19",
+              "source": "wotc",
+              "comment": "When the last time counter is removed from the exiled card, it's cast as a completely new spell. Modes and targets are chosen again. If the spell has any mandatory additional costs, they must be paid again. If they can't be, the spell can't be cast and stays exiled."
+            }
+          ]
+        },
+        {
+          "name": "Meat Locker // Drowned Diner",
+          "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+          "oracle_text": "\nWhen you unlock this door, tap up to one target creature and put two stun counters on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)\nWhen you unlock this door, draw three cards, then discard a card.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+          "url": "https://scryfall.com/card/dsk/65/meat-locker-drowned-diner?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 16,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "An ability that triggers \"whenever you fully unlock a Room\" triggers when a door becomes unlocked and the other door of that Room is already unlocked, or when both doors of that Room become unlocked simultaneously."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some abilities allow you to lock a door of a Room you control. You can't choose to lock a door that's already locked with such an ability. If such an ability requires a target, you can target a Room even if both of its doors are locked, but the ability won't do anything when it resolves."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some doors have abilities that trigger whenever you unlock that door and require one or more targets. You can unlock that door even if there would be insufficient legal targets for that triggered ability. The triggered ability won't go on the stack."
+            }
+          ]
+        },
+        {
+          "name": "Lion Umbra",
+          "oracle_id": "95e8e6bb-d83b-46fd-bfdf-fc042d8edd4a",
+          "oracle_text": "Enchant modified creature (Equipment, Auras its controller controls, and counters are modifications.)\nEnchanted creature gets +3/+3 and has reach and vigilance.\nUmbra armor (If enchanted creature would be destroyed, instead remove all damage from it and destroy this Aura.)",
+          "url": "https://scryfall.com/card/mh3/160/lion-umbra?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Umbra armor has no effect if the enchanted creature is put into a graveyard for any other reason, such as if it's sacrificed, if the \"legend rule\" applies to it, or if its toughness is 0 or less."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "If a spell or ability says that it would \"destroy\" a creature enchanted with an Aura that has umbra armor, that spell or ability is what causes the Aura to be destroyed instead. Umbra armor doesn't destroy the Aura; rather, it changes the effects of the spell or ability. On the other hand, if a spell or ability deals lethal damage to a creature enchanted with an Aura that has umbra armor, the game rules regarding lethal damage cause the Aura to be destroyed, not that spell or ability."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Umbra armor's effect is applied no matter why the enchanted creature would be destroyed: because it's been dealt lethal damage, or because it's being affected by an effect that says to \"destroy\" it (such as Breathe Your Last). In either case, all damage is removed from the creature and the Aura is destroyed instead."
+            }
+          ]
+        },
+        {
+          "name": "Case of the Pilfered Proof",
+          "oracle_id": "68d3084b-0f4b-44a6-8954-6ebaf1db9269",
+          "oracle_text": "Whenever a Detective you control enters or is turned face up, put a +1/+1 counter on it.\nTo solve — You control three or more Detectives. (If unsolved, solve at the beginning of your end step.)\nSolved — If one or more tokens would be created under your control, those tokens plus a Clue token are created instead. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+          "url": "https://scryfall.com/card/mkm/9/case-of-the-pilfered-proof?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "Some spells and abilities that investigate may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. You won't create any Clue tokens."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "Some abilities trigger \"whenever you sacrifice a Clue\". Those abilities trigger whenever you sacrifice a Clue for any reason, not just to activate a Clue's activated ability."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "\"Solved — [Triggered ability]\" means \"[Triggered ability]. This ability triggers only if this Case is solved.\" Triggered abilities use the word \"when,\" \"whenever,\" or \"at.\" They're often written as \"[Trigger condition], [effect].\""
+            }
+          ]
+        },
+        {
+          "name": "Gandalf of the Secret Fire",
+          "oracle_id": "cbad35cd-9026-43ea-8333-94f3b34459e3",
+          "oracle_text": "Whenever you cast an instant or sorcery spell from your hand during an opponent's turn, exile that card with three time counters on it instead of putting it into your graveyard as it resolves. Then if the exiled card doesn't have suspend, it gains suspend. (At the beginning of your upkeep, remove a time counter. When the last is removed, you may play it without paying its mana cost.)",
+          "url": "https://scryfall.com/card/ltc/507/gandalf-of-the-secret-fire?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-11-03",
+              "source": "wotc",
+              "comment": "When the last time counter is removed from the exiled card, it's cast as a completely new spell. Modes and targets are chosen again. If the spell has any mandatory additional costs, they must be paid again. If they can't be, the spell can't be cast and stays exiled."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+            },
+            {
+              "published_at": "2024-02-02",
+              "source": "wotc",
+              "comment": "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+            }
+          ]
+        },
+        {
+          "name": "Twisted Riddlekeeper",
+          "oracle_id": "c7ad20a3-51bf-4a22-a09c-fff8cae22765",
+          "oracle_text": "Emerge {5}{C}{U} (You may cast this spell by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.)\nWhen you cast this spell, tap up to two target permanents. Put a stun counter on each of them. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nFlying",
+          "url": "https://scryfall.com/card/mh3/14/twisted-riddlekeeper?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 13,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "The triggered ability will resolve before Twisted Riddlekeeper does. If Twisted Riddlekeeper is countered or otherwise leaves the stack in response to its triggered ability, the triggered ability will still resolve as normal."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "The triggered ability may target permanents that are already tapped. It will still put a stun counter on them."
+            },
+            {
+              "published_at": "2025-01-24",
+              "source": "wotc",
+              "comment": "The creature chosen to be sacrificed is still on the battlefield as the cost of the emerge spell is determined and as you activate mana abilities to cast the emerge spell. Its abilities may affect the spell’s cost, be activated to generate mana, and so on. However, if it has an ability that triggers when a spell is cast, it will have been sacrificed before that ability can trigger."
+            }
+          ]
+        },
+        {
+          "name": "Pir, Imaginative Rascal",
+          "oracle_id": "7683c2b2-a06f-4691-9cc5-1968dc032885",
+          "oracle_text": "Partner with Toothy, Imaginary Friend (When this creature enters, target player may put Toothy into their hand from their library, then shuffle.)\nIf one or more counters would be put on a permanent your team controls, that many plus one of each of those kinds of counters are put on that permanent instead.",
+          "url": "https://scryfall.com/card/bbd/11/pir-imaginative-rascal?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2018-06-08",
+              "source": "wotc",
+              "comment": "If a permanent your team controls would enter the battlefield with one or more counters of any kind on it, it enters with that many plus one instead."
+            },
+            {
+              "published_at": "2018-06-08",
+              "source": "wotc",
+              "comment": "Note that the target player searches their library (which may be affected by effects such as that of Stranglehold) and that the card they find is revealed, even though these words aren't included in the ability's reminder text."
+            },
+            {
+              "published_at": "2018-06-08",
+              "source": "wotc",
+              "comment": "The triggered ability of the \"partner with\" keyword still triggers in a Commander game. If your other commander has somehow ended up in your library, you can find it. You can also target another player who might have that card in their library."
+            }
+          ]
+        },
+        {
+          "name": "Kheru Spellsnatcher",
+          "oracle_id": "c01411e0-77b2-4e65-a369-5dbe13745769",
+          "oracle_text": "Morph {4}{U}{U} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhen this creature is turned face up, counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard. You may cast that card without paying its mana cost for as long as it remains exiled.",
+          "url": "https://scryfall.com/card/dsc/119/kheru-spellsnatcher?utm_source=api",
+          "families": [
+            "zone-replacement",
+            "counter-replacement"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2014-09-20",
+              "source": "wotc",
+              "comment": "Because the permanent is on the battlefield both before and after it's turned face up, turning a permanent face up doesn't cause any enters-the-battlefield abilities to trigger."
+            },
+            {
+              "published_at": "2014-09-20",
+              "source": "wotc",
+              "comment": "You can target a spell you control with Kheru Spellsnatcher's triggered ability. This will give you the ability to cast the card later without paying its mana cost."
+            },
+            {
+              "published_at": "2014-09-20",
+              "source": "wotc",
+              "comment": "A permanent that turns face up or face down changes characteristics but is otherwise the same permanent. Spells and abilities that were targeting that permanent, as well as Auras and Equipment that were attached to the permanent, aren't affected."
+            }
+          ]
+        },
+        {
+          "name": "Ascent of the Worthy",
+          "oracle_id": "d748bad4-dd4c-4553-9fcc-e462260f6ff3",
+          "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — Choose a creature you control. Until your next turn, all damage that would be dealt to creatures you control is dealt to that creature instead.\nIII — Return target creature card from your graveyard to the battlefield with a flying counter on it. That creature is an Angel Warrior in addition to its other types.",
+          "url": "https://scryfall.com/card/khm/202/ascent-of-the-worthy?utm_source=api",
+          "families": [
+            "counter-replacement"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2021-02-05",
+              "source": "wotc",
+              "comment": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+            },
+            {
+              "published_at": "2021-02-05",
+              "source": "wotc",
+              "comment": "Each symbol on the left of a Saga’s text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability’s chapter number. Chapter abilities are put onto the stack and may be responded to."
+            },
+            {
+              "published_at": "2021-02-05",
+              "source": "wotc",
+              "comment": "Removing lore counters won’t cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+            }
+          ]
+        }
+      ]
+    },
+    "continuous-ability-loss": {
+      "candidate_count": 155,
+      "examples": [
+        {
+          "name": "Will Kenrith",
+          "oracle_id": "20dbfc9a-172e-4065-bfde-d40de3131787",
+          "oracle_text": "+2: Until your next turn, up to two target creatures each have base power and toughness 0/3 and lose all abilities.\n−2: Target player draws two cards. Until your next turn, instant, sorcery, and planeswalker spells that player casts cost {2} less to cast.\n−8: Target player gets an emblem with \"Whenever you cast an instant or sorcery spell, copy it. You may choose new targets for the copy.\"\nPartner with Rowan Kenrith\nWill Kenrith can be your commander.",
+          "url": "https://scryfall.com/card/clb/738/will-kenrith?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 23,
+          "relevant_rulings": [
+            {
+              "published_at": "2018-06-08",
+              "source": "wotc",
+              "comment": "If the spell or ability has damage divided as it was cast or activated (like Chandra's Pyrohelix), the division can't be changed (although the targets receiving that damage still can)."
+            },
+            {
+              "published_at": "2018-06-08",
+              "source": "wotc",
+              "comment": "Effects that raise or lower a creature's power and/or toughness, such as the effect of Titanic Growth, will apply to the creature no matter when they started to take effect. The same is true for any counters that change its power and/or toughness and effects that switch its power and toughness."
+            },
+            {
+              "published_at": "2018-06-08",
+              "source": "wotc",
+              "comment": "The copy is created on the stack, so it's not \"cast\" or \"activated.\" Abilities that trigger when a player casts a spell or activates an ability (such as either emblem's own ability) won't trigger."
+            }
+          ]
+        },
+        {
+          "name": "Invasion of Muraganda // Primordial Plasm",
+          "oracle_id": "2e0d12dc-55fa-4363-b28f-612e7cfa12c6",
+          "oracle_text": "\n(As a Siege enters, choose an opponent to protect it. You and others can attack it. When it's defeated, exile it, then cast it transformed.)\nWhen this Siege enters, put a +1/+1 counter on target creature you control. Then that creature fights up to one target creature you don't control.\nAt the beginning of combat on your turn, another target creature gets +2/+2 and loses all abilities until end of turn.",
+          "url": "https://scryfall.com/card/mom/192/invasion-of-muraganda-primordial-plasm?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 20,
+          "relevant_rulings": [
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "A battle can be dealt damage and be target of spells and/or abilities that target “any target.”"
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a permanent that is represented by a transforming double-faced card becomes a copy of a Siege, it will be exiled as that Siege’s triggered ability resolves, then it will be cast transformed. Note that this applies only to transforming double-faced cards, not to modal double-faced cards that can normally be played using either face."
+            },
+            {
+              "published_at": "2023-04-14",
+              "source": "wotc",
+              "comment": "If a battle has no defense counters, and it isn’t the source of a triggered ability that has triggered but not yet left the stack, that battle is put into its owner’s graveyard. This is a state-based action. This doesn’t cause a Siege’s intrinsic triggered ability to trigger."
+            }
+          ]
+        },
+        {
+          "name": "Secret Arcade // Dusty Parlor",
+          "oracle_id": "c8abde48-a07a-42a0-a43b-c357e6d9cad4",
+          "oracle_text": "\nNonland permanents you control and permanent spells you control are enchantments in addition to their other types.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)\nWhenever you cast an enchantment spell, put a number of +1/+1 counters equal to that spell's mana value on up to one target creature.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+          "url": "https://scryfall.com/card/dsc/10/secret-arcade-dusty-parlor?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 18,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "An ability that triggers \"whenever you fully unlock a Room\" triggers when a door becomes unlocked and the other door of that Room is already unlocked, or when both doors of that Room become unlocked simultaneously."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "Some doors have abilities that trigger whenever you unlock that door and require one or more targets. You can unlock that door even if there would be insufficient legal targets for that triggered ability. The triggered ability won't go on the stack."
+            },
+            {
+              "published_at": "2024-09-20",
+              "source": "wotc",
+              "comment": "If no creatures have died in a turn by the time that turn's end step begins, Séance Board's first ability won't trigger at all. Causing a creature to die during the end step won't cause the ability to trigger."
+            }
+          ]
+        },
+        {
+          "name": "Turn // Burn",
+          "oracle_id": "41841bbf-1c51-494b-b299-c997cce88e44",
+          "oracle_text": "\nUntil end of turn, target creature loses all abilities and becomes a red Weird with base power and toughness 0/1.\nFuse (You may cast one or both halves of this card from your hand.)\nBurn deals 2 damage to any target.\nFuse (You may cast one or both halves of this card from your hand.)",
+          "url": "https://scryfall.com/card/dgm/134/turn-burn?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 15,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-04-15",
+              "source": "wotc",
+              "comment": "Turn doesn't counter abilities that have already triggered or been activated. In particular, there is no way to cast this to stop a creature's \"At the beginning of your upkeep\" or \"When this creature enters the battlefield\" abilities from triggering."
+            },
+            {
+              "published_at": "2013-04-15",
+              "source": "wotc",
+              "comment": "Effects that modify the targeted creature's power or toughness, such as the effects of Phytoburst or Legion's Initiative, will apply to it no matter when they started to take effect. The same is true for counters that change the creature's power or toughness (such as +1/+1 counters) and effects that switch its power and toughness."
+            },
+            {
+              "published_at": "2013-04-15",
+              "source": "wotc",
+              "comment": "Turn overwrites all previous effects that set the targeted creature's power or toughness to specific values. Effects that set its power or toughness to specific values that start to apply after Turn resolves will overwrite this effect."
+            }
+          ]
+        },
+        {
+          "name": "Final Showdown",
+          "oracle_id": "7e7ec3d6-a84f-4cc3-93f4-4d181d41e126",
+          "oracle_text": "Spree (Choose one or more additional costs.)\n+ {1} — All creatures lose all abilities until end of turn.\n+ {1} — Choose a creature you control. It gains indestructible until end of turn.\n+ {3}{W}{W} — Destroy all creatures.",
+          "url": "https://scryfall.com/card/otj/11/final-showdown?utm_source=api",
+          "families": [
+            "damage-vs-toughness",
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 14,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "If a mode requires a target, you can select that mode only if there’s a legal target available. Ignore the targeting requirements for modes you don’t choose."
+            },
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "If all targets for the chosen modes become illegal before a spell with spree resolves, the spell won’t resolve and none of its effects will happen. If at least one target is still legal, the spell will resolve but will have no effect on any illegal targets."
+            },
+            {
+              "published_at": "2024-04-12",
+              "source": "wotc",
+              "comment": "No matter which modes you choose, you always follow the instructions in the order they are written."
+            }
+          ]
+        },
+        {
+          "name": "Immovable Rod",
+          "oracle_id": "ec664e13-b7c4-4ca3-80d6-55a564d97937",
+          "oracle_text": "You may choose not to untap this artifact during your untap step.\nWhenever this artifact becomes untapped, venture into the dungeon.\n{3}{W}, {T}: For as long as this artifact remains tapped, another target permanent loses all abilities and can't attack or block.",
+          "url": "https://scryfall.com/card/afc/7/immovable-rod?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 13,
+          "relevant_rulings": [
+            {
+              "published_at": "2021-07-23",
+              "source": "wotc",
+              "comment": "Moving into a dungeon room will cause its room ability to trigger."
+            },
+            {
+              "published_at": "2021-07-23",
+              "source": "wotc",
+              "comment": "If you target an Aura with Immovable Rod's last ability, it will lose its enchant ability and be put into its owner's graveyard because it can't legally enchant anything. An Equipment that loses its abilities loses its equip ability, so you won't be able to move it that way, but it will stay attached to the creature it's equipping, if any."
+            },
+            {
+              "published_at": "2021-07-23",
+              "source": "wotc",
+              "comment": "Choosing the dungeon or room to venture into is part of resolving the venture into the dungeon keyword action. Once that choice is made, players may not respond until after the appropriate room ability has triggered."
+            }
+          ]
+        },
+        {
+          "name": "Oko, Thief of Crowns",
+          "oracle_id": "60c60923-ff1b-43f7-8768-731499fcffc9",
+          "oracle_text": "+2: Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n+1: Target artifact or creature loses all abilities and becomes a green Elk creature with base power and toughness 3/3.\n−5: Exchange control of target artifact or creature you control and target creature an opponent controls with power 3 or less.",
+          "url": "https://scryfall.com/card/eld/197/oko-thief-of-crowns?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 13,
+          "relevant_rulings": [
+            {
+              "published_at": "2019-10-04",
+              "source": "wotc",
+              "comment": "Because damage remains marked on a creature until the damage is removed as the turn ends, nonlethal damage dealt to a creature may become lethal if Oko's second ability changes its toughness during that turn."
+            },
+            {
+              "published_at": "2019-10-04",
+              "source": "wotc",
+              "comment": "If either of the target permanents is an illegal target when Oko's last ability resolves, the exchange won't happen."
+            },
+            {
+              "published_at": "2019-10-04",
+              "source": "wotc",
+              "comment": "Oko's second ability may target a permanent that is only temporarily an artifact or a creature, such as Oko, the Trickster. If this happens, the effect causes that permanent to remain a green Elk creature even after the temporary effect expires."
+            }
+          ]
+        },
+        {
+          "name": "Lignify",
+          "oracle_id": "63625b26-3a19-4c3c-b18a-91247bb2a40c",
+          "oracle_text": "Enchant creature\nEnchanted creature is a Treefolk with base power and toughness 0/4 and loses all abilities.",
+          "url": "https://scryfall.com/card/gvl/16/lignify?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2007-10-01",
+              "source": "wotc",
+              "comment": "If a previous effect switched the creature's power and toughness, that effect still applies (though it will apply to the creature's new power and toughness)."
+            },
+            {
+              "published_at": "2007-10-01",
+              "source": "wotc",
+              "comment": "Lignify overwrites characteristic-defining abilities that specify the enchanted creature's power or toughness (such as the one Dauntless Dourbark has) or that specify its creature types (such as changeling does)."
+            },
+            {
+              "published_at": "2009-10-01",
+              "source": "wotc",
+              "comment": "Lignify will overwrite any previous effects that set the enchanted creature's power or toughness (such as Serendib Sorcerer does). Any such effects that apply after Lignify entered will work normally."
+            }
+          ]
+        },
+        {
+          "name": "Trickster's Elk",
+          "oracle_id": "5bca05c1-1c0a-45f4-aa20-69f68b99cd7e",
+          "oracle_text": "Bestow {1}{G} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nEnchanted creature loses all abilities and is a green Elk creature with base power and toughness 3/3.",
+          "url": "https://scryfall.com/card/mh3/175/tricksters-elk?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Trickster's Elk overwrites all previous effects that set the creature's base power and toughness to specific values. Any power- or toughness-setting effects that start to apply afterward will overwrite this effect."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Unlike other Aura spells, an Aura spell with bestow isn't countered if its target is illegal as it begins to resolve. Rather, the effect making it an Aura spell ends, it loses enchant creature, it returns to being an enchantment creature spell, and it resolves and enters the battlefield as an enchantment creature."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Effects that modify the creature's power and/or toughness, such as the effect of Wing It, will apply to the creature no matter when they started to take effect. The same is true for counters that change its power and/or toughness and effects that switch its power and toughness."
+            }
+          ]
+        },
+        {
+          "name": "Amphibian Downpour",
+          "oracle_id": "a4280cea-386b-450d-a7e9-29c7aa58ce5a",
+          "oracle_text": "Flash\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies. Copies become tokens.)\nEnchant creature\nEnchanted creature loses all abilities and is a blue Frog creature with base power and toughness 1/1.",
+          "url": "https://scryfall.com/card/mh3/51/amphibian-downpour?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 12,
+          "relevant_rulings": [
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "The triggered ability that creates the copies can itself be countered by anything that can counter a triggered ability. If it is countered, no copies will be put onto the stack."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "You may choose new targets for any of the copies. You can make different choices for each copy."
+            },
+            {
+              "published_at": "2024-06-07",
+              "source": "wotc",
+              "comment": "Amphibian Downpour overwrites all previous effects that set the creature's base power and toughness to specific values. Any power- or toughness-setting effects that start to apply afterward will overwrite this effect."
+            }
+          ]
+        },
+        {
+          "name": "Dragonshift",
+          "oracle_id": "b02d24fd-62b4-4f78-96af-57f88c98c5c8",
+          "oracle_text": "Until end of turn, target creature you control becomes a blue and red Dragon with base power and toughness 4/4, loses all abilities, and gains flying.\nOverload {3}{U}{U}{R}{R} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+          "url": "https://scryfall.com/card/dgm/66/dragonshift?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 10,
+          "relevant_rulings": [
+            {
+              "published_at": "2013-04-15",
+              "source": "wotc",
+              "comment": "Effects that modify the power or toughness of an affected creature, such as the effects of Phytoburst or Legion's Initiative, will apply to it no matter when they started to take effect. The same is true for counters that change the creature's power or toughness (such as +1/+1 counters) and effects that switch its power and toughness."
+            },
+            {
+              "published_at": "2013-04-15",
+              "source": "wotc",
+              "comment": "Dragonshift overwrites all previous effects that set a creature's power or toughness to specific values. However, effects that set a creature's power or toughness to specific values that start to apply after Dragonshift resolves will overwrite this effect."
+            },
+            {
+              "published_at": "2024-01-12",
+              "source": "wotc",
+              "comment": "If you are instructed to cast a spell with overload \"without paying its mana cost,\" you can't choose to pay its overload cost instead."
+            }
+          ]
+        },
+        {
+          "name": "Overwhelming Splendor",
+          "oracle_id": "1099588c-cc26-4523-8bd2-90e1e1433f53",
+          "oracle_text": "Enchant player\nCreatures enchanted player controls lose all abilities and have base power and toughness 1/1.\nEnchanted player can't activate abilities that aren't mana abilities or loyalty abilities.",
+          "url": "https://scryfall.com/card/hou/19/overwhelming-splendor?utm_source=api",
+          "families": [
+            "continuous-ability-loss"
+          ],
+          "ruling_count": 9,
+          "relevant_rulings": [
+            {
+              "published_at": "2017-07-14",
+              "source": "wotc",
+              "comment": "If Overwhelming Splendor leaves the battlefield at the same time as a creature enchanted player controls, any \"when [this creature] [dies or leaves the battlefield]\" abilities of that creature won't trigger."
+            },
+            {
+              "published_at": "2017-07-14",
+              "source": "wotc",
+              "comment": "Activated abilities contain a colon. They're generally written \"[Cost]: [Effect].\" Some keyword abilities (such as equip and eternalize) are activated abilities and will have colons in their reminder text. Triggered abilities (starting with \"when,\" \"whenever,\" or \"at\") of noncreature permanents are unaffected by the last ability of Overwhelming Splendor."
+            },
+            {
+              "published_at": "2017-07-14",
+              "source": "wotc",
+              "comment": "Effects that modify a creature's power and/or toughness, such as the effect of Titanic Growth, will apply to the creatures no matter when they started to take effect. The same is true for any counters that change their power and/or toughness."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

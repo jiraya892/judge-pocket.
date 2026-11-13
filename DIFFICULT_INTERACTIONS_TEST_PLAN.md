@@ -1,3 +1,8 @@
+> Aggiornamento: il piano storico sotto non descrive lo stato attuale di tutti i
+> moduli. Per candidati estratti dai dati, casi riprodotti, implementazione e prove
+> aggiornate consultare [case-studies/README.md](case-studies/README.md). La sola
+> presenza di un modulo non attesta copertura generale.
+
 # Casi difficili — piano di verifica Pocket Judge
 
 Questi casi sono **specifiche di regressione**, non test superati. Ogni caso richiede stato iniziale, ordine degli eventi e risultato atteso verificato contro le Comprehensive Rules correnti e i ruling ufficiali. Non usare una risposta generata dall'IA come unico oracolo.
