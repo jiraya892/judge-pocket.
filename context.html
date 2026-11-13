@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#151b2a"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Judge Pocket · Interazione guidata</title>
+<html lang="it"><head><meta charset="utf-8"><meta name="app-version" content="0.9.56"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#151b2a"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Judge Pocket · Interazione guidata</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#101624;color:#f1f5fb;font:16px system-ui}main{max-width:620px;margin:auto;padding:20px 16px 40px}section{background:#1c2638;padding:18px;border-radius:16px;margin:18px 0}input,textarea,button{width:100%;font:inherit;padding:13px;margin:6px 0 12px;border-radius:9px}input,textarea{background:#101624;border:1px solid #8290a4;color:white}button{border:0;background:#72d5b0;color:#10221d;font-weight:bold;min-height:48px}button.option{background:#30405a;color:white;text-align:left}a{color:#8ce7c7}p{color:#c3cfdf;line-height:1.5}.suggestions{max-height:240px;overflow:auto}.suggestions button{background:#30405a;color:#fff;text-align:left;margin:2px 0}.note{font-size:.9rem;color:#bdc8d8}#scenePreview,#sceneSourceText{overflow-wrap:anywhere}#status{white-space:pre-wrap;overflow-wrap:anywhere}#resultDetails article{border-top:1px solid #526078;padding:10px 0}#resultDetails h3{font-size:1rem}details{margin:16px 0}summary{cursor:pointer;line-height:1.5;color:#8ce7c7}#status{font-size:1.1rem;font-weight:600}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffe08b;outline-offset:3px}[hidden]{display:none!important}
 </style></head><body><main>
@@ -8,6 +8,7 @@
 <p class="note">Puoi confrontare da due a quattro carte, con al massimo due controllori.</p>
 <section id="start">
 <h2>Descrivi la situazione</h2>
+<p id="sceneModeInfo" class="note">Descrizione guidata sperimentale: puoi correggere il testo o scegliere le carte.</p>
 <label>Carte, azioni e domanda<textarea id="sceneText" rows="5" maxlength="4000" placeholder="Es. Blood Moon è sul campo. Ho castato Ashaya. Cosa succede quando entra in campo?"></textarea></label>
 <button id="sceneSpeech" class="option" type="button" hidden>Detta la situazione</button><p id="sceneSpeechInfo" class="note"></p>
 <button id="sceneAnalyse" type="button">Analizza la descrizione</button>

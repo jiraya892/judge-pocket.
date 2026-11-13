@@ -35,6 +35,15 @@ with sync_playwright() as p:
   assert 'Ashaya, Soul of the Wild: nel cimitero' in text
   assert not errors,errors
   print('PASS '+('local predeploy check' if args.app_at_root else 'published HTTPS beta')+': four cards, local database, actual engine and rule references')
+  page.goto(url+'context.html',wait_until='load',timeout=60000)
+  assert page.locator('#sceneModeInfo').is_visible()
+  page.locator('#sceneText').fill('Blood Moon è sul campo. Ho castato Ashaya, Soul of the Wild. Cosa succede quando entra in campo?')
+  page.locator('#sceneAnalyse').click()
+  page.get_by_role('button',name='Sì, considera soltanto queste carte',exact=True).click()
+  page.wait_for_function("document.getElementById('status').textContent.includes('entra sul campo di battaglia e poi va nel cimitero')",timeout=60000)
+  assert page.locator('#result').get_attribute('data-status')=='partial'
+  assert not errors,errors
+  print('PASS natural description -> entry -> actual engine, without phase questions')
  except Exception as error:
   diagnostic={'url':url,'errors':errors,'reason':str(error)[:1500]}
   try:diagnostic['status']=page.locator('#status').inner_text(timeout=1000)

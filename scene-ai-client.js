@@ -27,5 +27,5 @@ async function interpret(text,{catalogue,signal,resolutions={}}={}){
  }catch(error){if(signal?.aborted)return {status:'cancelled'};return {status:'unavailable',reason:error.name==='AbortError'?'L’interprete sta impiegando troppo tempo. Puoi riprovare o scegliere le carte.':'L’interprete IA non è raggiungibile. Puoi correggere il testo o scegliere le carte.'};}
  finally{clearTimeout(timer);unlink();}
 }
-root.JudgeSceneAI={interpret};
+root.JudgeSceneAI={interpret,availability:async()=>{try{return {enabled:(await settings()).enabled}}catch(e){return {enabled:false}}}};
 })(typeof window!=='undefined'?window:globalThis);

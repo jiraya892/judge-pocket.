@@ -55,6 +55,7 @@ async function interpret(){
  finally{if(run===sequence){analyse.disabled=false;pendingAI=null;}}
 }
 analyse.onclick=interpret;
+const modeInfo=$('sceneModeInfo');if(modeInfo&&root.JudgeSceneAI?.availability)root.JudgeSceneAI.availability().then(({enabled})=>{modeInfo.textContent=enabled?'Interprete IA sperimentale: controlla e conferma la situazione ricostruita.':'La descrizione guidata è disponibile. L’interprete IA generale non è ancora collegato alla beta.';});
 root.addEventListener('pagehide',stopCapture);document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCapture()});document.addEventListener('click',event=>{if(['begin','restart','editScene'].includes(event.target.id))stopCapture()});
 const Speech=root.SpeechRecognition||root.webkitSpeechRecognition;
 if(!Speech){info.textContent='Puoi scrivere oppure usare il microfono della tastiera del telefono.';return;}
