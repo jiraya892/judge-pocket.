@@ -32,7 +32,11 @@ for(const copied of copiedResult.objects){
 }
 const middle=layer4.length?root.JudgeUnifiedLayer4.evaluate(before,root.JudgeEffectModel.subset(activeModel,layer4.map(e=>e.id)),{preGenerated:true}):{supported:true,objects:before,order:[]};if(!middle.supported)return middle;
 const result=[];
-for(const o of middle.objects){const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');
+for(const original of middle.objects){let o=original;
+// CR 208.5: printed stars are zero when their defining ability is gone.
+// Do not infer a zero base for other formulas or unspecified characteristics.
+if(o.ptDefinition&&!o.abilities.some(a=>a.id===o.ptDefinition.abilityId)&&o.printedPower==='*'&&o.printedToughness==='*')o={...o,ptDefinition:null,power:0,toughness:0};
+const relevant=late.filter(e=>e.targetId===o.id||e.targetId==='all');
 
 if(o.ptDefinition&& !o.abilities.some(a=>a.id===o.ptDefinition.abilityId))return {supported:false,reason:'Abilità definitoria rimossa: valutazione completa non disponibile'};
 if(o.ptDefinition&&o.ptDefinition.kind!=='landCount')return {supported:false,reason:'Definizione dinamica sconosciuta'};

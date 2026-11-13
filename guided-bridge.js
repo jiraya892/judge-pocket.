@@ -1,82 +1,67 @@
 /* Guided interview -> Oracle -> coordinator, with conservative diagnostic output. */
 (function(root){'use strict';
-const normalizeName=name=>String(name||'').normalize('NFKD').toLowerCase().replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+const normalizeName=name=>String(name||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 const TYPES=['creature','land','artifact','enchantment','planeswalker','instant','sorcery','battle'];
 function cardObject(card,index){
- const line=card.type_line||'';const parts=line.split(/\\s+[—-]\\s+/);const before=parts[0]||'';
- return {id:'guided-'+index,name:card.name,owner:'A',controller:'A',zone:'battlefield',types:TYPES.filter(t=>new RegExp('\\b'+t+'\\b','i').test(before)),supertypes:['basic','legendary','snow','world'].filter(t=>new RegExp('\\b'+t+'\\b','i').test(before)),subtypes:parts[1]?parts[1].split(/\\s+/):[],power:/^-?\\d+$/.test(card.power||'')?Number(card.power):null,toughness:/^-?\\d+$/.test(card.toughness||'')?Number(card.toughness):null,counters:{'+1/+1':0},damage:0,tapped:false,token:false,oracle_text:card.oracle_text||''};
+ const line=card.type_line||'';const parts=line.split(/\s+[—-]\s+/);const before=parts[0]||'';
+ return {id:'guided-'+index,name:card.name,owner:'A',controller:'A',zone:'battlefield',types:TYPES.filter(t=>new RegExp('\\b'+t+'\\b','i').test(before)),supertypes:['basic','legendary','snow','world'].filter(t=>new RegExp('\\b'+t+'\\b','i').test(before)),subtypes:parts[1]?parts[1].split(/\s+/):[],power:/^-?\d+$/.test(card.power||'')?Number(card.power):null,toughness:/^-?\d+$/.test(card.toughness||'')?Number(card.toughness):null,printedPower:card.power??null,printedToughness:card.toughness??null,counters:{'+1/+1':0},damage:0,tapped:false,token:false,oracle_text:card.oracle_text||''};
 }
+// This adapter compares complete scenario results. It never upgrades the legacy
+// coordinator's partial calculations, even if their numeric values happen to agree.
+function permutations(values){if(values.length<2)return [values];return values.flatMap((v,i)=>permutations(values.filter((_,j)=>j!==i)).map(rest=>[v,...rest]));}
 async function evaluate(context){
- const details={version:1,cards:context?.cards||[],event:context?.event||null,entering:context?.entering||null,casting:context?.casting||null,reasonCodes:[],unsupportedLines:[],warnings:[]};
- const fail=(code,reason,extra={})=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{...details,reasonCodes:[...details.reasonCodes,code],...extra}});
- if(!root.JudgeOracleRecognition||!root.JudgeCoordinator)return fail('ENGINE_MISSING','Moduli Oracle o coordinatore mancanti.');
- if(!Array.isArray(context?.cards)||context.cards.length<2)return fail('CARDS_MISSING','Servono almeno due carte.');
+ const details={version:2,cards:context?.cards||[],event:context?.event||null,reasonCodes:[],unsupportedLines:[],warnings:[]};
+ const fail=(code,reason,extra={})=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{...details,reasonCodes:[code],...extra}});
+ if(!Array.isArray(context?.cards)||context.cards.length<2||context.cards.some(n=>typeof n!=='string'||!n.trim()))return fail('CARDS_MISSING','Servono almeno due nomi di carte.');
+ if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione non sono ancora collegati alla modalità guidata.');
+ if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
+ if(!['present','enter'].includes(context.event))return fail('EVENT_UNKNOWN','Situazione non riconosciuta.');
+ if(context.event==='enter'&&(!Number.isInteger(context.enteringIndex)||normalizeName(context.cards[context.enteringIndex])!==normalizeName(context.entering)))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
+ // The existing continuous evaluator models a snapshot, not the entry event.
+ if(context.event==='enter')return fail('ENTRY_NOT_CONNECTED','Il motore guidato non verifica ancora la sequenza di ingresso sul campo. Non servono altre risposte finché questo limite non è risolto.');
+ if(context.board&&context.board!=='complete')return fail('OPEN_SCENARIO','Gli effetti aggiuntivi devono essere descritti prima di verificare questa situazione. Non vengono considerati assenti.');
+ if(!root.JudgeOracleRecognition||!root.JudgeCoordinator||!root.JudgeGameFacts||!root.JudgeQuestionPlanner)return fail('ENGINE_MISSING','Moduli del motore o pianificatore mancanti.');
+ // A controller and a permutation of entry order form the current finite domain.
+ // Additional effects/objects have an open domain: never enumerate them as absent.
+ if(context.cards.length>3)return fail('SCENARIO_DOMAIN_LIMIT','La modalità guidata non può ancora verificare tutte le alternative con più di tre carte.');
  let cards;try{cards=await Promise.all(context.cards.map(n=>root.JudgeOracleRecognition.fetchCard(n)))}catch(e){return fail('ORACLE_LOOKUP_FAILED','Impossibile recuperare una carta: '+e.message)}
-
- // Chapter 16A/B: evaluate controller alternatives only when every outcome is verified.
- // Partial coordinator output must never suppress a required question.
- // Evaluate controller alternatives only as a conservative
- // diagnostic preview. Partial coordinator results are not rulings.
- if(!context.controllers&&context.board&&root.JudgeQuestionPlanner&&root.JudgeGameFacts){
-  const options=[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}];
-  const planned=root.JudgeQuestionPlanner.plan({
-   facts:cards.map((_,i)=>({key:'controller'+i,question:'Chi controlla '+cards[i].name+'?',options})),
-   answers:{}
-  },scenario=>{
-   const controllers=cards.map((_,i)=>scenario.answers['controller'+i]);
-   const candidate={...context,controllers,board:context.board,order:context.order};
-   const built=root.JudgeGameFacts.build(candidate,cards.map(cardObject));
-   if(!built.supported)return {supported:false};
-   const objects=built.objects,effects=[];
-   for(let i=0;i<cards.length;i++){
-    const recognized=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);
-    if(recognized.unknown.length)return {supported:false};
-    for(const e of recognized.effects)effects.push({...e,id:'scenario-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:built.timestamps[objects[i].id],duration:'ongoing'});
-   }
-   const out=root.JudgeCoordinator.evaluate({schemaVersion:1,players:built.players,turn:built.turn,objects,effects});
-   if(!out.supported||!Array.isArray(out.results)||out.results.some(r=>r.status!=='verified'))return {supported:false};
-   return {supported:true,outcome:out.results.map(r=>({types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness}))};
-  });
-  details.questionPlanning={status:planned.status,reason:planned.reason||null,relevantKeys:planned.relevantKeys||[],scenarios:planned.scenarios||0,previewOnly:true};
- }
- // Do not ask board/controller/timestamp questions for unsupported event modes.
- if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
- if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
- if(!['enter','present'].includes(context.event))return fail('EVENT_UNKNOWN','Situazione non riconosciuta.');
- if(context.event==='enter'&&!cards.some(c=>normalizeName(c.name)===normalizeName(context.entering)))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
- if(!context.board)return {status:'question',key:'board',question:'Ci sono altri permanenti che possono influire su questa interazione?',options:[{id:'complete',label:'No, soltanto queste carte'},{id:'additional',label:'Sì, ci sono altri permanenti'}],diagnostic:details};
- if(!Array.isArray(context.controllers)||context.controllers.length!==cards.length){
-  const index=Array.isArray(context.controllers)?context.controllers.length:0;
-  return {status:'question',key:'controllers',question:'Chi controlla '+cards[index].name+'?',options:[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}],diagnostic:details};
- }
- if(context.event==='present'&&(!Array.isArray(context.order)||context.order.length!==cards.length)){
-  const chosen=Array.isArray(context.order)?context.order:[];
-  return {status:'question',key:'orderChoices',question:'Quale carta è entrata '+(chosen.length?'successivamente':'per prima')+'?',options:cards.map((card,i)=>({id:String(i),label:card.name})).filter(o=>!chosen.includes(Number(o.id))),diagnostic:details};
- }
- const facts=root.JudgeGameFacts?.build(context,cards.map(cardObject));if(!facts?.supported)return fail(facts?.code||'FACTS_ENGINE_MISSING',facts?.reason||'Modulo stato mancante');const objects=facts.objects,effects=[];
- for(let i=0;i<cards.length;i++){
-  const recognition=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognition.unknown;
-  details.unsupportedLines.push(...recognition.unknown.map(line=>({card:cards[i].name,text:line})));
-  for(const e of recognition.effects)effects.push({...e,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,source:objects[i].name,oracleGenerated:true,timestamp:facts.timestamps[objects[i].id],duration:'ongoing'});
- }
- const state={schemaVersion:1,players:facts.players,turn:facts.turn,objects,effects};
- details.cards=cards.map(c=>c.name);details.effectKinds=effects.map(e=>e.kind);details.knownFacts=facts.knownFacts;details.controllers=context.controllers;details.timestamps=facts.timestamps;details.zones=objects.map(o=>({name:o.name,zone:o.zone,controller:o.controller}));
- // Context enters the engine as an explicit zone/state. Entry timing is not implemented.
- if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione della magia non sono ancora collegati a questa modalità.');
- if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');
- if(context.event==='enter'&&!cards.some(c=>normalizeName(c.name)===normalizeName(context.entering)))return fail('ENTERING_CARD_UNKNOWN','La carta che entra non corrisponde a quelle selezionate.');
- if(!['enter','present'].includes(context.event))return fail('EVENT_UNKNOWN','Situazione non riconosciuta.');
- if(context.event==='enter')details.warnings.push('La carta in ingresso è rappresentata sul campo; il motore non modella ancora gli effetti di sostituzione applicati durante l’ingresso.');
- let outcome;try{outcome=root.JudgeCoordinator.evaluate(state)}catch(e){return fail('COORDINATOR_ERROR','Errore nel coordinatore: '+e.message)}
- if(!outcome.supported)return fail('COORDINATOR_REJECTED',outcome.reason||'Il coordinatore non ha accettato lo stato.');
- details.warnings.push(...(outcome.warnings||[]));
- const sba=root.JudgeSBAPreview?.preview(outcome.results,objects)||{supported:false,reason:'Modulo SBA mancante'};details.sbaPreview=sba;
- const trust=root.JudgeOutcomeTrust?.fromCoordinator(outcome);details.outcomeTrust=trust?{status:trust.status,reason:trust.reason,reasonCodes:trust.reasonCodes}:null;details.evidenceAudit=root.JudgeEvidenceLedger?.audit({status:trust?.status,supported:outcome.supported,preview:outcome.results,warnings:outcome.warnings},[])||null;
- const incomplete=outcome.results.filter(r=>r.status==='unsupported'||r.status==='not-evaluated');
- if(incomplete.length)return fail('UNSUPPORTED_EFFECTS','Il coordinatore non riesce ancora a calcolare tutti gli effetti delle carte.',{results:outcome.results,unsupportedObjects:incomplete});
- if(details.unsupportedLines.length)return fail('ORACLE_TEXT_UNSUPPORTED','Alcune righe Oracle non sono state interpretate.',{results:outcome.results});
- // A partial layer computation is NOT a reliable interaction ruling.
- return fail('PARTIAL_RULES_COVERAGE','Le caratteristiche calcolate sono una simulazione parziale, non un verdetto. Restano da verificare controllori, effetti di ingresso, altre carte presenti e azioni basate sullo stato.',{results:outcome.results,preview:outcome.results.map(r=>({card:r.name,types:r.types,subtypes:r.subtypes,power:r.power,toughness:r.toughness,possibleZeroToughness:r.possibleZeroToughness})),missingSupport:['ENTRY_REPLACEMENT_EFFECTS','TRIGGERED_ABILITIES','STACK_AND_PRIORITY','SBA_EXECUTION','FULL_CONTINUOUS_EFFECT_VALIDATION']});
+ const ids=cards.map((_,i)=>i),facts=cards.map((card,i)=>({key:'controller'+i,question:'Chi controlla '+card.name+'?',options:[{id:'A',label:'Giocatore A'},{id:'B',label:'Giocatore B'}]}));
+ const answers={...(context.answers||{})};
+ if(context.controllers!=null&&(!Array.isArray(context.controllers)||context.controllers.length>cards.length))return fail('INVALID_CONTROLLERS','Controllori non validi.');
+ for(let i=0;i<(context.controllers||[]).length;i++)if(context.controllers[i]!=null)answers['controller'+i]=context.controllers[i];
+ const prefix=context.orderPrefix||[];
+ if(!Array.isArray(prefix)||prefix.some(i=>!ids.includes(i))||new Set(prefix).size!==prefix.length)return fail('INVALID_ORDER','Ordine parziale non valido.');
+ const orders=permutations(ids).filter(order=>prefix.every((id,i)=>order[i]===id));
+ facts.push({key:'entryOrder',question:'In quale ordine sono entrate queste carte?',options:orders.map(order=>({id:order.join(','),label:order.map(i=>cards[i].name).join(' → ')}))});
+ if(context.order!=null){if(!Array.isArray(context.order))return fail('INVALID_ORDER','Ordine non valido.');answers.entryOrder=context.order.join(',');}
+ let preview=null;
+ const planning=root.JudgeQuestionPlanner.plan({facts,answers},scenario=>{
+  const candidate={...context,controllers:cards.map((_,i)=>scenario.answers['controller'+i]),order:scenario.answers.entryOrder.split(',').map(Number),board:context.board||'complete'};
+  const built=root.JudgeGameFacts.build(candidate,cards.map(cardObject));if(!built.supported)return {supported:false};
+  const objects=built.objects,effects=[],unsupportedLines=[];
+  for(let i=0;i<cards.length;i++){
+   const recognized=root.JudgeOracleRecognition.recognize(cards[i],objects[i]);objects[i].oracleUnknown=recognized.unknown;
+   unsupportedLines.push(...recognized.unknown.map(text=>({card:cards[i].name,text})));
+   for(const effect of recognized.effects)effects.push({...effect,id:'guided-effect-'+i+'-'+effects.length,sourceId:objects[i].id,oracleGenerated:true,timestamp:built.timestamps[objects[i].id],duration:'ongoing'});
+  }
+  if(unsupportedLines.length){details.unsupportedLines=unsupportedLines;return {supported:false};}
+  const out=root.JudgeCoordinator.evaluate({schemaVersion:1,players:built.players,turn:built.turn,objects,effects});
+  // Preserve the reason for an unsupported diagnostic, not a hypothetical result
+  // based on an unprovided controller or timestamp.
+  preview=out;
+  if(!out?.supported||out.status!=='verified'||['warnings','missingFacts','unsupportedLines','reasonCodes'].some(k=>out[k]!=null&&(!Array.isArray(out[k])||out[k].length))||!Array.isArray(out.results)||out.results.length!==cards.length||out.results.some(r=>r.status!=='verified')||(out.warnings||[]).length)return {supported:false,status:out?.status||'partial'};
+  // Include every rule-significant result field. Internal timestamp/order traces
+  // are explanations, not outcomes; controller is retained (control can matter).
+  return {supported:true,status:'verified',outcome:out.results.map(({order,coverage,...result})=>result)};
+ });
+ details.questionPlanning=planning;
+ if(planning.status==='unsupported')return fail(details.unsupportedLines.length?'ORACLE_TEXT_UNSUPPORTED':'SCENARIO_NOT_VERIFIED',details.unsupportedLines.length?'Parte del testo Oracle non è ancora riconosciuta. Non posso scegliere domande affidabili per questa interazione.':'Il motore non verifica ancora completamente questa interazione. Fare altre domande non renderebbe affidabile un calcolo parziale.',{engineWarnings:preview?.warnings||[],engineReasons:(preview?.results||[]).filter(r=>r.reason).map(r=>r.reason)});
+ // Board completeness is a declared scenario boundary, never an assumed fact.
+ if(!context.board)return {status:'question',key:'board',question:'Le carte indicate descrivono tutta la situazione rilevante, senza altri effetti, segnalini o danni?',options:[{id:'complete',label:'Sì, considera soltanto queste carte'},{id:'additional',label:'No, ci sono altri elementi'}],diagnostic:details};
+ if(planning.status==='question')return {...planning,key:'answers.'+planning.key,diagnostic:details};
+ // Computational readiness is still subject to the source/evidence presentation
+ // boundary. A planner cannot supply a signed source or invent a ruling string.
+ return {status:'ready',title:'Scenari verificati dal motore',reason:'Le alternative verificate producono lo stesso risultato.',outcome:planning.outcome,diagnostic:details};
 }
 root.JudgeGuidedBridge={evaluate,cardObject};
 })(typeof window!=='undefined'?window:globalThis);

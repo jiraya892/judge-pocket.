@@ -4,7 +4,9 @@ function recognize(card,object){
  const text=[card.oracle_text,...(card.card_faces||[]).map(f=>f.oracle_text)].filter(Boolean).join('\n');
  const effects=[],unknown=[];
  const generated=(effect,line)=>{const id='oracle-static-'+object.id+'-'+effects.length;object.abilities=object.abilities||[];object.abilities.push({id,origin:'rulesText',kind:'static',text:line});effects.push({...effect,sourceId:object.id,sourceAbilityId:id});};
- for(const line of text.split('\n').map(x=>x.trim()).filter(Boolean)){
+ // Reminder text has no rules function (CR 207.2a). Keep the original text for diagnostics.
+ const rulesText=text.replace(/\([^()]*\)/g,'');
+ for(const line of rulesText.split('\n').map(x=>x.trim()).filter(Boolean)){
   let m;
   if((m=/^([A-Za-z ]+) gets ([+-]\d+)\/([+-]\d+)\.$/.exec(line))){
    const phrase=m[1].toLowerCase();
@@ -12,7 +14,7 @@ function recognize(card,object){
    else unknown.push(line);
   }else if(/^This creature has (flying|trample|vigilance|lifelink|deathtouch|haste|reach|menace|hexproof|indestructible)\.$/i.test(line)){
    unknown.push(line); // Static printed ability, not an effect that grants itself.
-  }else if(line===card.name+"'s power and toughness are each equal to the number of lands you control."){
+  }else if([card.name,card.name?.split(',')[0],...(card.card_faces||[]).map(f=>f.name)].filter(Boolean).some(name=>line===name+"'s power and toughness are each equal to the number of lands you control.")){
    const abilityId='oracle-pt-'+object.id;object.abilities=object.abilities||[];object.abilities.push({id:abilityId,origin:'rulesText',text:line});object.ptDefinition={kind:'landCount',abilityId};
   }else if(/^Nonbasic lands are Mountains\.$/i.test(line)){
    generated({kind:'setNonbasicLandSubtype',layer:'4',targetId:'all',subtype:'Mountain'},line);
