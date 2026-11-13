@@ -95,3 +95,4 @@ jobs:
               exit "$test_exit"
             fi
           done
+          python3 scripts/verify-public-beta-browser.py --url http://127.0.0.1:8000 --app-at-root
