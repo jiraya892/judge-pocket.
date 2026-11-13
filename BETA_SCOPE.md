@@ -183,3 +183,31 @@ singolo fatto possono ora arrivare a 32: con quattro carte, 16 combinazioni di
 controllori per 24 ordini temporali generano 384 scenari, senza tagliare casi o
 usare risultati parziali. Sono verificati il caso statico reale a quattro carte
 e il percorso mobile con aggiunta della quarta carta.
+
+## Pubblicazione autorizzata — 2026-11-13
+
+Dopo l'autorizzazione dell'utente, l'anteprima è stata pubblicata in:
+<https://jiraya892.github.io/judge-pocket./beta/>.
+
+- Revisione distribuita: `531a3fb` (ramo `dev/beta-preview-approved`).
+- Run di pubblicazione e verifica:
+  <https://github.com/jiraya892/judge-pocket./actions/runs/43388983407>, risultato
+  **Success**, verificato dalla pagina pubblica della run e del job.
+- La pubblicazione richiede la validazione completa riutilizzabile prima del
+  deploy. Seguono controllo HTTPS del `BUILDINFO.json` sul commit atteso e prova
+  browser del sito pubblico con quattro carte e fallback Scryfall bloccato.
+- Il limite è ora quattro carte: 384 scenari per il caso statico completamente
+  ignoto, entro il limite totale di 512; nessun taglio degli ordini possibili.
+- Test Node aggiornati: 2562 complessivi, inclusi 19 casi beta engine. Sono
+  passati anche i percorsi browser locali con quattro carte.
+- `main` è rimasto a `c8f7b146ab961fb296e09270c485ed00af9a0033`. I suoi file
+  pubblici e quelli del precedente preview sono conservati nell'artefatto.
+
+L'ambiente cloud rifiuta la connessione diretta al dominio GitHub Pages con
+CONNECT 403. La verifica del sito pubblico è stata quindi eseguita dal browser e
+dal client HTTPS del runner di pubblicazione: non viene descritta come una
+verifica diretta dal browser dell'ambiente cloud o da uno smartphone reale.
+
+Questa sezione aggiorna lo stato precedente alla decisione di pubblicazione:
+il ramo approvato ora esiste e il deploy è avvenuto. Restano invariati i limiti
+del motore e la distinzione tra calcolo deterministico e fonti non autenticate.
