@@ -1,6 +1,7 @@
 """Available-browser beta checks. Emulation is not a real Android/iOS device."""
 import json
 import shutil
+import os
 import tempfile
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -8,7 +9,7 @@ from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parent.parent
 with sync_playwright() as p:
  profile=tempfile.TemporaryDirectory(prefix='judge-beta-browser-')
- context=p.chromium.launch_persistent_context(profile.name,executable_path=shutil.which('chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+ context=p.chromium.launch_persistent_context(profile.name,executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
  page=context.pages[0];errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto('http://127.0.0.1:8000/index.html')

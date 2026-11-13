@@ -6,6 +6,7 @@ import gzip
 import glob
 import json
 import shutil
+import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -19,7 +20,7 @@ for path in glob.glob(str(root / 'oracle-cards*.jsonl.gz')):
                 cards[card['name']] = card
 assert len(cards) == 2
 with sync_playwright() as p:
-    browser = p.chromium.launch(executable_path=shutil.which('chromium'), headless=True, args=['--no-sandbox'])
+    browser = p.chromium.launch(executable_path=None if os.environ.get('CI') else shutil.which('chromium'), headless=True, args=['--no-sandbox'])
     page = browser.new_page(viewport={'width': 390, 'height': 844})
     errors = []
     page.on('pageerror', lambda error: errors.append(str(error)))

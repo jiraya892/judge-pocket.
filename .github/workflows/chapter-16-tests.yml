@@ -59,5 +59,19 @@ jobs:
           else:
               raise RuntimeError('Local HTTP server failed to start')
           PYTHON
-          python3 scripts/test-chapter-16-browser.py
-          python3 scripts/test-beta-browser.py
+          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py; do
+            set +e
+            python3 -u "$test_script" > /tmp/judge-browser-test.log 2>&1
+            test_exit=$?
+            set -e
+            cat /tmp/judge-browser-test.log
+            if [ "$test_exit" -ne 0 ]; then
+              python3 - <<'PYTHON'
+          from pathlib import Path
+          text = Path('/tmp/judge-browser-test.log').read_text()[-10000:]
+          message = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Browser test diagnostic::' + message)
+          PYTHON
+              exit "$test_exit"
+            fi
+          done
