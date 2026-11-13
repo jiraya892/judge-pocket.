@@ -5,6 +5,9 @@ from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
  b=p.chromium.launch(executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox']);page=b.new_page(viewport={'width':390,'height':844});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
 
+ # Pin snapshot regressions; source-update transports have their own tests.
+ page.route('https://api.scryfall.com/**',lambda route:route.abort())
+
  for title in ['Blood Moon','Ashaya, Soul of the Wild']:
   data=page.evaluate("title=>{const c=document.createElement('canvas');c.width=1500;c.height=600;const x=c.getContext('2d');x.fillStyle='white';x.fillRect(0,0,1500,600);x.fillStyle='black';x.font='66px serif';x.fillText(title,70,140);return c.toDataURL('image/png').split(',')[1]}",title)
   Path('/tmp/'+title.split(',')[0].replace(' ','-')+'.png').write_bytes(base64.b64decode(data))

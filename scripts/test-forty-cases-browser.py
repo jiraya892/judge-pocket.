@@ -1,10 +1,12 @@
 """Real Chromium UI and local Oracle; no simulated engine results."""
 import os,shutil
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 origin=os.environ.get('JUDGE_TEST_ORIGIN','http://127.0.0.1:8000')
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox'])
  page=browser.new_page(viewport={'width':390,'height':844},has_touch=True)
+ # Pin snapshot regressions; source-update transports have their own tests.
+ page.route('https://api.scryfall.com/**',lambda route:route.abort())
  errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  def begin(cards,event):
   page.goto(origin+'/context.html')
@@ -20,7 +22,7 @@ with sync_playwright() as p:
   assert 'Regole applicate' in page.locator('#resultDetails').text_content()
  begin(['Colossal Dreadmaw','Darksteel Myr'],'Una creatura attaccante viene bloccata')
  choose('Colossal Dreadmaw');confirm()
- assert page.locator('#choices').get_by_role('button').count()==6
+ expect(page.locator('#choices').get_by_role('button')).to_have_count(6)
  choose('1 danno al bloccante');result()
  assert '5 danni' in page.locator('#status').inner_text()
  assert 'travolgere' in page.locator('#resultDetails').inner_text().lower()
@@ -54,7 +56,7 @@ with sync_playwright() as p:
  assert '3 danni' in page.locator('#status').inner_text()
  page.locator('#moreContext').click()
  page.locator('#contextAnswerReview').get_by_role('button').filter(has_text='sottofase normale').click()
- assert 'sottofase normale' in page.locator('#question').inner_text()
+ expect(page.locator('#question')).to_contain_text('sottofase normale')
  choose('2 danni al bloccante');result()
  assert '1 danno' in page.locator('#status').inner_text()
  assert not errors,errors

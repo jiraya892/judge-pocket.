@@ -35,6 +35,7 @@ jobs:
           node interaction-story.test.cjs
           node scripts/test-search-batch.cjs
           node card-data.test.cjs
+          node card-refresh.test.cjs
           node verify-tests.cjs
           node verify-groups-5h.cjs
           node scripts/verify-official-provenance.test.cjs
@@ -55,6 +56,7 @@ jobs:
           python3 scripts/media/test_intake.py
           python3 scripts/media/test_ruling_filter.py
           python3 scripts/media/test_instagram_public.py
+          python3 scripts/test_rules_updates.py
           node scripts/media/test_probe.cjs
       - name: Install browser test dependencies
         run: |
@@ -77,7 +79,7 @@ jobs:
           else:
               raise RuntimeError('Local HTTP server failed to start')
           PYTHON
-          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py scripts/test-targeting-cases-browser.py scripts/test-reel-cases-browser.py scripts/test-search-photo-browser.py scripts/test-forty-cases-browser.py; do
+          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py scripts/test-targeting-cases-browser.py scripts/test-reel-cases-browser.py scripts/test-search-photo-browser.py scripts/test-forty-cases-browser.py scripts/test-source-updates-browser.py; do
             set +e
             python3 -u "$test_script" > /tmp/judge-browser-test.log 2>&1
             test_exit=$?

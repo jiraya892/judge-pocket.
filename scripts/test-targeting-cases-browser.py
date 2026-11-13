@@ -5,6 +5,8 @@ from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox'])
  page=browser.new_page(viewport={'width':390,'height':844});errors=[]
+ # Pin snapshot regressions; source-update transports have their own tests.
+ page.route('https://api.scryfall.com/**',lambda route:route.abort())
  page.on('pageerror',lambda error:errors.append(str(error)))
  def begin(target):
   page.goto(os.environ.get('JUDGE_TEST_ORIGIN','http://127.0.0.1:8000')+'/context.html')

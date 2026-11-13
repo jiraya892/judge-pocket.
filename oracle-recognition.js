@@ -26,6 +26,7 @@ function recognize(card,object){
 }
 async function fetchCard(name){
  if(typeof name!=='string'||!name.trim())throw Error('Nome carta mancante');
+ if(root.JudgeCardRefresh){const refreshed=await root.JudgeCardRefresh.get(name);if(refreshed)return refreshed;}
  if(root.JudgeCardData){try{const local=await root.JudgeCardData.get(name);if(local)return local;}catch(e){/* Online transport remains an explicit fallback; no missing data is invented. */}}
  const controller=typeof AbortController==='function'?new AbortController():null;
  const timer=controller?setTimeout(()=>controller.abort(),12000):null;

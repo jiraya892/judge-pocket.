@@ -1,13 +1,15 @@
 """Real mobile UI, local Oracle database and real rules modules; no mocked rulings."""
 import os
 import shutil
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 origin = os.environ.get('JUDGE_TEST_ORIGIN', 'http://127.0.0.1:8000')
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path=None if os.environ.get('CI') else shutil.which('chromium'),
                                 headless=True, args=['--no-sandbox'])
     page = browser.new_page(viewport={'width': 390, 'height': 844}, has_touch=True)
+    # Pin snapshot regressions; source-update transports have their own tests.
+    page.route('https://api.scryfall.com/**', lambda route: route.abort())
     errors = []
     page.on('pageerror', lambda error: errors.append(str(error)))
 
@@ -49,7 +51,7 @@ with sync_playwright() as p:
 
     begin('Dr. Beverly Crusher', 'Resplendent Angel', 'Inizia la sottofase finale')
     confirm()
-    assert 'Resplendent Angel' in page.locator('#question').inner_text()
+    expect(page.locator('#question')).to_contain_text('Resplendent Angel')
     page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
     page.get_by_role('button', name='5 o più punti vita', exact=True).click()
     details()
@@ -105,7 +107,7 @@ with sync_playwright() as p:
     page.locator('#suggestContext').get_by_role('option', name="Ajani's Pridemate", exact=True).click()
     page.locator('#applyContext').click()
     confirm()
-    assert "Ajani's Pridemate" in page.locator('#question').inner_text()
+    expect(page.locator('#question')).to_contain_text("Ajani's Pridemate")
     page.get_by_role('button', name='Lo stesso giocatore', exact=True).click()
     details()
     assert page.locator('#status').inner_text().count('si innesca 2 volte') == 3

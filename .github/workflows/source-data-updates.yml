@@ -1,0 +1,54 @@
+name: Monitor official rules updates
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rules-source-monitor
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test acquisition and diff safeguards
+        run: python3 scripts/test_rules_updates.py
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/rules-monitor
+          key: rules-monitor-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: rules-monitor-
+      - name: Discover current Wizards TXT and compare rules
+        run: python3 scripts/check-rules-update.py
+      - uses: actions/cache/save@v4
+        with:
+          path: .cache/rules-monitor
+          key: rules-monitor-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Summarize source update
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          report=Path('.cache/rules-monitor/report.json')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as target:
+              target.write('## Rules source monitor\n\n')
+              target.write('Candidate data only. No engine changes, corpus import, commits or deployment.\n\n')
+              if report.exists():
+                  data=json.loads(report.read_text())
+                  for key,value in data.items():
+                      if key=='changes':value={kind:len(ids) for kind,ids in value.items()}
+                      target.write(f'- {key}: {value}\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rules-source-candidate-${{ github.run_id }}
+          path: .cache/rules-monitor
+          retention-days: 30

@@ -2,15 +2,20 @@
 (function(){'use strict';
 function bind(field,list){let timer,seq=0;
  const clear=()=>{list.replaceChildren();list.hidden=true};
+ function show(names,q,run){
+  if(run!==seq||field.value.trim()!==q||field.closest('[hidden]'))return;
+  clear();for(const name of names.slice(0,10)){const button=document.createElement('button');button.type='button';button.textContent=name;button.setAttribute('role','option');button.onclick=()=>{field.value=name;seq++;clear()};list.append(button)}list.hidden=!list.children.length;
+ }
  field.addEventListener('input',()=>{clearTimeout(timer);const q=field.value.trim(),run=++seq;clear();if(q.length<2)return;
-  timer=setTimeout(async()=>{try{
-   let names;try{names=await window.JudgeCardData.suggest(q);}catch(e){const response=await fetch('https://api.scryfall.com/cards/autocomplete?q='+encodeURIComponent(q));if(!response.ok)throw Error('Ricerca non disponibile');names=(await response.json()).data||[];}
-   if(run!==seq||field.value.trim()!==q||field.closest('[hidden]'))return;
-   for(const name of names.slice(0,10)){const button=document.createElement('button');button.type='button';button.textContent=name;button.setAttribute('role','option');button.onclick=()=>{field.value=name;clear()};list.append(button)}list.hidden=!list.children.length;
-  }catch(e){if(run===seq){list.textContent='Ricerca non disponibile. Puoi inserire il nome completo e riprovare.';list.hidden=false}}
-  },180);
+  timer=setTimeout(async()=>{
+   let local=[];try{local=await window.JudgeCardData.suggest(q);}catch(e){}
+   show(local,q,run);
+   const fresh=await window.JudgeCardRefresh?.suggest(q)||[];
+   // Reserve half the visible suggestions for newly available online matches.
+   const merged=[...new Set(fresh.length?[...local.slice(0,5),...fresh,...local.slice(5)]:local)];show(merged,q,run);
+  },250);
  });
- field.addEventListener('keydown',e=>{if(e.key==='Escape')clear()});field.addEventListener('blur',()=>setTimeout(clear,180));
+ field.addEventListener('keydown',e=>{if(e.key==='Escape'){seq++;clear()}});field.addEventListener('blur',()=>setTimeout(()=>{seq++;clear()},180));
 }
 for(const [fieldId,listId] of [['card1','suggest1'],['card2','suggest2'],['contextCard','suggestContext'],['extraName','suggestExtra']])bind(document.getElementById(fieldId),document.getElementById(listId));
 const add=document.getElementById('addCard');

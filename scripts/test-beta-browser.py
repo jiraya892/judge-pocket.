@@ -35,6 +35,8 @@ class LocalApp:
 with sync_playwright() as p, LocalApp() as app:
  profile=tempfile.TemporaryDirectory(prefix='judge-beta-browser-')
  context=p.chromium.launch_persistent_context(profile.name,executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+ # Pin snapshot regressions; source-update transports have their own tests.
+ context.route('https://api.scryfall.com/**',lambda route:route.abort())
  page=context.pages[0];errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(app.origin+'/manifest.webmanifest')
