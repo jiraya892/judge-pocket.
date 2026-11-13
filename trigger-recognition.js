@@ -19,7 +19,7 @@ function collect(state){
    const controller=ability.controller??obj.controller;
    if(!players.has(controller))return {supported:false,reason:'Controllore non valido'};
    ids.add(id);
-   abilities.push({id,source:obj.id,...(obj.objectIdentity!==undefined?{sourceIdentity:obj.objectIdentity}:{}),controller,event:clone(ability.event),kind:'normal',description:ability.text||ability.description||'',...(ability.interveningIf!==undefined?{interveningIf:clone(ability.interveningIf)}:{})});
+   abilities.push({id,source:obj.id,...(obj.objectIdentity!==undefined?{sourceIdentity:obj.objectIdentity}:{}),controller,event:clone(ability.event),kind:'normal',description:ability.text||ability.description||'',...(ability.interveningIf!==undefined?{interveningIf:clone(ability.interveningIf)}:{}),...(ability.maxPerTurn!==undefined?{maxPerTurn:ability.maxPerTurn}:{})});
   }
  }
  return {supported:true,abilities,unsupported};
@@ -33,7 +33,7 @@ function run(before,after,options={}){
  // A source that entered must not be used to trigger an event before its entry.
  const observed=root.JudgeDelayedTriggers?root.JudgeDelayedTriggers.observe(after,detected.records,collected.abilities):root.JudgeTriggers.observe(after,detected.records,collected.abilities);
  if(!observed.supported)return observed;
- return {supported:true,events:detected.records,abilities:collected.abilities,pending:observed.pending,firedDelayed:observed.firedDelayed,delayedTriggers:observed.delayedTriggers||[],unsupported:collected.unsupported,trace:observed.trace};
+ return {supported:true,events:detected.records,abilities:collected.abilities,pending:observed.pending,firedDelayed:observed.firedDelayed,delayedTriggers:observed.delayedTriggers||[],unsupported:collected.unsupported,trace:observed.trace,...(observed.triggerUsage?{triggerUsage:observed.triggerUsage}:{})};
 }
 root.JudgeTriggerRecognition={collect,run};
 })(typeof window!=='undefined'?window:globalThis);

@@ -1,5 +1,13 @@
 # Beta sperimentale — perimetro e prove
 
+Aggiornamento locale del 13 novembre 2026: il ramo `dev/media-case-intake`
+aggiunge tre famiglie ricavate da reel pubblici, documentate in
+[case-studies/REEL_CASES.md](case-studies/REEL_CASES.md). Inneschi e pescate sono
+conteggi con un perimetro dichiarato; il combattimento considera una sola
+attaccante e un solo bloccante. Le nuove funzioni sono collegate alla PWA e
+verificate localmente, senza nuova pubblicazione. Le sezioni seguenti conservano
+la storia e le verifiche della beta originaria.
+
 ## Stato
 
 Ramo di sviluppo: `dev/beta-engine-integration`, derivato dai commit locali

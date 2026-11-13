@@ -28,6 +28,11 @@ class RulingFilterTests(unittest.TestCase):
         result = screen_ruling_content(segments('In MTG can I target a creature with protection from red?'), {})
         self.assertEqual(result['decision'], 'ruling_candidate')
 
+    def test_real_observed_topics_can_be_shortlisted_without_the_word_mtg(self):
+        result = screen_ruling_content(segments('Dr. Beverly Crusher: whenever you gain life, this triggered ability triggers an additional time.'), {},
+                                       [{'name': 'Dr. Beverly Crusher', 'evidence_segments': [0]}])
+        self.assertEqual(result['decision'], 'ruling_candidate')
+
     def test_game_cue_can_precede_rule_explanation(self):
         result = screen_ruling_content(segments('Welcome back to Magic.', 'Today a ruling about triggered abilities.'), {})
         self.assertEqual(result['decision'], 'ruling_candidate')

@@ -9,6 +9,7 @@ const rules={
  '603.1':'Un’abilità innescata specifica un evento che la fa innescare e un effetto.',
  '603.2':'Un’abilità si innesca automaticamente quando si verifica il suo evento.',
  '603.3':'Gli inneschi vengono messi in pila prima che un giocatore riceva priorità.',
+ '603.4':'La condizione «se» posta subito dopo l’evento di innesco deve essere vera sia all’innesco sia alla risoluzione.',
  '615.1':'La prevenzione modifica o impedisce il danno prima che venga inflitto.',
  '702.11b':'Antimalocchio impedisce alle magie e abilità controllate dagli avversari di bersagliare il permanente.',
  '702.18a':'Velo impedisce a qualsiasi magia o abilità di bersagliare il permanente.',
@@ -16,7 +17,13 @@ const rules={
  '702.12b':'Indistruttibile impedisce la distruzione per danno letale, ma non la morte per costituzione non positiva.',
  '608.2b':'All’inizio della risoluzione si ricontrolla la legalità dei bersagli.',
  '608.2c':'Le istruzioni della magia si eseguono nell’ordine indicato.',
- '704.5g':'Una creatura con danno letale viene distrutta come azione basata sullo stato.'
+ '704.5g':'Una creatura con danno letale viene distrutta come azione basata sullo stato.',
+ '510.1c':'Una creatura bloccata assegna il danno ai suoi bloccanti; senza bloccanti rimasti non assegna danno, salvo abilità come travolgere.',
+ '702.4b':'Attacco improvviso e doppio attacco creano una prima sottofase di danno; doppio attacco permette di infliggere danno anche nella seconda.',
+ '121.2':'Se un effetto fa pescare più carte, le carte vengono pescate una alla volta.',
+ '614.1a':'«Invece» identifica una sostituzione dell’evento indicato dal testo.',
+ '614.5':'Una sostituzione può modificare un evento una sola volta, senza riapplicarsi ricorsivamente agli eventi che ha prodotto.',
+ '616.1':'Quando più sostituzioni si applicano, il giocatore interessato sceglie quale applicare per prima.'
 };
 function render(container,output){
  if(!container)return;container.replaceChildren();
@@ -26,13 +33,16 @@ function render(container,output){
  add('h3','Passaggi calcolati');
  if(!(outcome.events||[]).length)add('p','Nel contesto dichiarato non si verificano cambi di zona.');
  for(const event of outcome.events||[])add('p',event.type==='creatureLeaves'?(event.reason==='lethalDamage'?event.name+' viene distrutta per danno letale.':event.name+' ha costituzione '+event.toughness+' e viene messa nel cimitero. Gli effetti delle fonti rimaste vengono ricalcolati.'):event.description||event.type);
- add('h3','Situazione finale');
+ add('h3',outcome.scope==='trigger-occurrence'?'Conteggio degli inneschi, prima della risoluzione':outcome.scope==='draw-instructions'?'Istruzioni di pescata, senza risoluzione completa':'Situazione finale');
+ if(outcome.scope==='trigger-occurrence')add('p','Le abilità in pila non sono state risolte. I conteggi non descrivono segnalini, carte pescate o permanenti creati successivamente.');
+ if(outcome.scope==='draw-instructions')add('p','Il contenuto di mano e grimorio, le carte effettivamente pescate e le conseguenze di un grimorio vuoto non sono stati simulati.');
  for(const result of outcome.results||[]){
   const section=add('article','');add('h3',result.name,section);
   if(result.zone==='graveyard'){add('p','Nel cimitero.',section);continue}
   const labels={creature:'Creatura',land:'Terra',artifact:'Artefatto',enchantment:'Incantesimo',instant:'Istantaneo',sorcery:'Stregoneria'};
   const text=[result.zone==='battlefield'?'Sul campo di battaglia':result.zone,(result.types||[]).map(t=>labels[t]||t).join(', '),(result.subtypes||[]).join(', ')];
   if(Number.isFinite(result.power)&&Number.isFinite(result.toughness))text.push(result.power+'/'+result.toughness);
+  if(Number.isFinite(result.damage)&&result.damage>0)text.push(result.damage+' danni segnati');
   add('p',text.filter(Boolean).join(' · '),section);
   for(const ability of result.abilities||[])if(ability.kind==='tapForMana')add('p','Abilità di mana intrinseca: '+({W:'bianco',U:'blu',B:'nero',R:'rosso',G:'verde'}[ability.color]||ability.color)+'.',section);
  }

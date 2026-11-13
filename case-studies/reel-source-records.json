@@ -1,0 +1,386 @@
+{
+  "review_date": "2026-11-13",
+  "profile": "https://www.instagram.com/rippullrepeat/",
+  "coverage": "One user-supplied reel and four recent public reels; not a complete account scan. A promotion returned by the public listing was not acquired.",
+  "base_commit": "4a76135",
+  "asr": {
+    "engine": "whisper.cpp v1.7.6",
+    "model": "multilingual tiny",
+    "model_sha1": "bd577a113a864445d4c299885e0cb97d4ba92b5f",
+    "requires_oracle_review": true
+  },
+  "source_authentication_verified": false,
+  "creator_claims_are_test_oracles": false,
+  "videos": [
+    {
+      "id": "DfiiAccBsLh",
+      "url": "https://www.instagram.com/reel/DfiiAccBsLh/",
+      "source_sha256": "156ab3c6ad8651e867d1c8524bb57a90f8c3b2112629556de06d4e41985f31ee",
+      "transcript_sha256": "e6382d39dc1fe4e4e0c4ae88f4eef804c5062115faec697ddc7a96ab6bd5be5b",
+      "duration_seconds": 70.056,
+      "reviewed_topic": "mtg_ruling",
+      "summary": "Inneschi di guadagno vite, condizioni di fine turno e limite di un innesco per turno.",
+      "evidence_seconds": [
+        [
+          5.44,
+          14.4
+        ],
+        [
+          17.04,
+          46.32
+        ],
+        [
+          46.32,
+          68.72
+        ]
+      ],
+      "raw_media_and_transcript_committed": false
+    },
+    {
+      "id": "DfmsvirxH4l",
+      "url": "https://www.instagram.com/reel/DfmsvirxH4l/",
+      "source_sha256": "ddf1c012e0975dc65d81d712587e9b6517f28a1b4d433e489bf05805a8da1e17",
+      "transcript_sha256": "757ed03e058a8a639058e86750e871f80c6388e899af1a8868394d771702dd69",
+      "duration_seconds": 54.3593125,
+      "reviewed_topic": "mtg_ruling",
+      "summary": "Doppio attacco, bloccante indistruttibile e attaccante che rimane bloccata.",
+      "evidence_seconds": [
+        [
+          0,
+          27.12
+        ],
+        [
+          27.12,
+          50.88
+        ]
+      ],
+      "raw_media_and_transcript_committed": false
+    },
+    {
+      "id": "Dfp_aiYta2D",
+      "url": "https://www.instagram.com/reel/Dfp_aiYta2D/",
+      "source_sha256": "78b499220d88dc0771e5c9205765b2dba97f7c3c627628204d8b0d782542b6e7",
+      "transcript_sha256": "6e5a3f42df052927a9c6bc3d4e957a3f39c42f1ba2a5095c69af703e27b39305",
+      "duration_seconds": 54.0806875,
+      "reviewed_topic": "mtg_ruling",
+      "summary": "Sostituzioni di ciascuna pescata di Brainstorm e composizione di più moltiplicatori.",
+      "evidence_seconds": [
+        [
+          0,
+          28.76
+        ],
+        [
+          30.4,
+          47.28
+        ]
+      ],
+      "raw_media_and_transcript_committed": false
+    },
+    {
+      "id": "DfpLC0aunv0",
+      "url": "https://www.instagram.com/reel/DfpLC0aunv0/",
+      "source_sha256": "d5aed99e1a8c3f583b336ce471993e37bfafaab1e3d56167de7a61d12a2b7613",
+      "transcript_sha256": "cc301d9f20cb12698c124027733fabf46e17da62d3a17d86596ad3f922bed335",
+      "duration_seconds": 69.591625,
+      "reviewed_topic": "mixed_rulings_and_house_variant",
+      "summary": "Booster Tutor: una proposta di variante casalinga e indicazioni per la carta Un. Fuori dal perimetro implementato.",
+      "evidence_seconds": [
+        [
+          0,
+          29.52
+        ],
+        [
+          33.56,
+          65.48
+        ]
+      ],
+      "raw_media_and_transcript_committed": false
+    },
+    {
+      "id": "DfnjODZvN7n",
+      "url": "https://www.instagram.com/reel/DfnjODZvN7n/",
+      "source_sha256": "0bd90121f23d1231f9a9e2aaa06d8b0a858de6642595ec015a57b646637d0483",
+      "transcript_sha256": "30b83206e5bf0d49d8227f9329bce6e0bdc67b82f66c0f5fd8f49bbc1b881ae5",
+      "duration_seconds": 29.2353125,
+      "reviewed_topic": "excluded_non_ruling",
+      "summary": "Invito alla community a raccontare regole casalinghe; nessun ruling ufficiale spiegato.",
+      "evidence_seconds": [
+        [
+          0,
+          28.6
+        ]
+      ],
+      "raw_media_and_transcript_committed": false
+    }
+  ],
+  "oracle_manifest_sha256": "ab96c3f9a0e707c036004cc6157a06703382f6d2a6165fabdb7df59aadaeed96",
+  "oracle_records": [
+    {
+      "name": "Dr. Beverly Crusher",
+      "oracle_id": "5fe6f4ae-3fb1-4df6-8760-88c8666068df",
+      "oracle_text": "If you gaining life causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\nWhenever you gain life, put a +1/+1 counter on Dr. Crusher.",
+      "type_line": "Legendary Creature — Human Doctor",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Exemplar of Light",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "oracle_text": "Flying\nWhenever you gain life, put a +1/+1 counter on this creature.\nWhenever you put one or more +1/+1 counters on this creature, draw a card. This ability triggers only once each turn.",
+      "type_line": "Creature — Angel",
+      "power": "3",
+      "toughness": "3"
+    },
+    {
+      "name": "Enlightened Confidant",
+      "oracle_id": "a139eb7f-3853-490c-a839-35d0e5aed7b5",
+      "oracle_text": "Lifelink\nAt the beginning of your end step, if you gained life this turn, surveil 1. If you put a card with mana value less than or equal to the amount of life you gained this turn into your graveyard this way, put that card into your hand.",
+      "type_line": "Creature — Kor Cleric",
+      "power": "2",
+      "toughness": "1"
+    },
+    {
+      "name": "Resplendent Angel",
+      "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+      "oracle_text": "Flying\nAt the beginning of each end step, if you gained 5 or more life this turn, create a 4/4 white Angel creature token with flying and vigilance.\n{3}{W}{W}{W}: Until end of turn, this creature gets +2/+2 and gains lifelink.",
+      "type_line": "Creature — Angel",
+      "power": "3",
+      "toughness": "3"
+    },
+    {
+      "name": "Bloombrute",
+      "oracle_id": "b7040175-7411-43a8-9b46-dba1d7c2135d",
+      "oracle_text": "Whenever you gain life, draw a card. This ability triggers only once each turn.\n{4}{G}{W}: Target creature gains trample and lifelink until end of turn.",
+      "type_line": "Creature — Plant Elemental",
+      "power": "4",
+      "toughness": "4"
+    },
+    {
+      "name": "Ajani's Pridemate",
+      "oracle_id": "9fcff433-c6f7-44c6-8279-04625703cb3e",
+      "oracle_text": "Whenever you gain life, put a +1/+1 counter on Ajani's Pridemate.",
+      "type_line": "Token Creature — Cat Soldier",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Dawn of Hope",
+      "oracle_id": "d7a38484-2acc-49a6-b32d-d54dddb14d31",
+      "oracle_text": "Whenever you gain life, you may pay {2}. If you do, draw a card.\n{3}{W}: Create a 1/1 white Soldier creature token with lifelink.",
+      "type_line": "Enchantment",
+      "power": null,
+      "toughness": null
+    },
+    {
+      "name": "Mr. Spock, Science Officer",
+      "oracle_id": "869bde03-8813-43a9-9df5-a21c62511b4b",
+      "oracle_text": "If you would draw a card, draw two cards instead.",
+      "type_line": "Legendary Creature — Vulcan Human Scientist",
+      "power": "2",
+      "toughness": "4"
+    },
+    {
+      "name": "Thought Reflection",
+      "oracle_id": "692a6833-3014-42f6-b1ad-333bb3292c65",
+      "oracle_text": "If you would draw a card, draw two cards instead.",
+      "type_line": "Enchantment",
+      "power": null,
+      "toughness": null
+    },
+    {
+      "name": "Brainstorm",
+      "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
+      "oracle_text": "Draw three cards, then put two cards from your hand on top of your library in any order.",
+      "type_line": "Instant",
+      "power": null,
+      "toughness": null
+    },
+    {
+      "name": "Divination",
+      "oracle_id": "273b339c-964b-4a18-8eb5-ceb8abcdfd9e",
+      "oracle_text": "Draw two cards.",
+      "type_line": "Sorcery",
+      "power": null,
+      "toughness": null
+    },
+    {
+      "name": "Booster Tutor",
+      "oracle_id": "a6eab631-77d8-4fc2-9305-a299ecf33e46",
+      "oracle_text": "Open a sealed Magic booster pack, reveal the cards, and put one of them into your hand. (Remove that card from your deck before beginning a new game.)",
+      "type_line": "Instant",
+      "power": null,
+      "toughness": null
+    },
+    {
+      "name": "Ridgetop Raptor",
+      "oracle_id": "600a8c9e-e158-4fff-8c4d-c3a1bfd006e8",
+      "oracle_text": "Double strike (This creature deals both first-strike and regular combat damage.)",
+      "type_line": "Creature — Dinosaur Beast",
+      "power": "2",
+      "toughness": "1"
+    },
+    {
+      "name": "Fencing Ace",
+      "oracle_id": "2f810936-2ba6-4c2b-84a0-ff4c1deb026b",
+      "oracle_text": "Double strike (This creature deals both first-strike and regular combat damage.)",
+      "type_line": "Creature — Human Soldier",
+      "power": "1",
+      "toughness": "1"
+    },
+    {
+      "name": "Darksteel Myr",
+      "oracle_id": "f90fe86c-5cca-483b-93c2-6e856fa01c88",
+      "oracle_text": "Indestructible (Damage and effects that say \"destroy\" don't destroy this creature. If its toughness is 0 or less, it still dies.)",
+      "type_line": "Artifact Creature — Myr",
+      "power": "0",
+      "toughness": "1"
+    },
+    {
+      "name": "Grizzly Bears",
+      "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+      "oracle_text": "",
+      "type_line": "Creature — Bear",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Youthful Knight",
+      "oracle_id": "ef2a24f5-ce5e-4054-843a-2cae0c66318a",
+      "oracle_text": "First strike",
+      "type_line": "Creature — Human Knight",
+      "power": "2",
+      "toughness": "1"
+    },
+    {
+      "name": "Cho-Manno, Revolutionary",
+      "oracle_id": "91af5e35-b3b8-43ce-b1ea-997ed74e4ad2",
+      "oracle_text": "Prevent all damage that would be dealt to Cho-Manno.",
+      "type_line": "Legendary Creature — Human Rebel",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Charging Badger",
+      "oracle_id": "04be1e69-2d5c-4931-8906-a6807b5b08ca",
+      "oracle_text": "Trample",
+      "type_line": "Creature — Badger",
+      "power": "1",
+      "toughness": "1"
+    },
+    {
+      "name": "Wind Drake",
+      "oracle_id": "d6ffdaf0-ac08-4de9-bbce-2eab2f86bcca",
+      "oracle_text": "Flying",
+      "type_line": "Creature — Drake",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Teferi's Ageless Insight",
+      "oracle_id": "1c9e1f75-73f0-4846-b53f-458a0984b1bb",
+      "oracle_text": "If you would draw a card except the first one you draw in each of your draw steps, draw two cards instead.",
+      "type_line": "Legendary Enchantment",
+      "power": null,
+      "toughness": null
+    }
+  ],
+  "supplied_wotc_rulings": [
+    {
+      "object": "ruling",
+      "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+      "source": "wotc",
+      "published_at": "2018-07-13",
+      "comment": "You create only one Angel token, no matter how many times you gained 5 or more life."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+      "source": "wotc",
+      "published_at": "2018-07-13",
+      "comment": "You don't need to have gained 5 life all at once to satisfy Resplendent Angel's triggered ability."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+      "source": "wotc",
+      "published_at": "2018-07-13",
+      "comment": "In a Two-Headed Giant game, life gained by your teammate won't satisfy Resplendent Angel's triggered ability, even though it caused your team's life total to increase."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+      "source": "wotc",
+      "published_at": "2018-07-13",
+      "comment": "If you didn't gain life during the turn before the end step begins, Resplendent Angel's triggered ability won't trigger at all. Gaining life during the end step won't cause the ability to trigger."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+      "source": "wotc",
+      "published_at": "2018-07-13",
+      "comment": "Resplendent Angel's triggered ability checks if you gained 5 or more life total during the turn. It doesn't matter if you also lost life or whether your life total is greater than it was at the beginning of the turn. It also doesn't matter whether Resplendent Angel was on the battlefield when any of the life gain happened."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "source": "wotc",
+      "published_at": "2024-11-08",
+      "comment": "Exemplar of Light's second ability triggers just once for each life-gaining event, whether it's 1 life from Dazzling Angel or 4 life from Apothecary Stomper."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "source": "wotc",
+      "published_at": "2024-11-08",
+      "comment": "If Exemplar of Light is dealt lethal damage at the same time that you gain life, it won't receive a counter from its second ability in time to save it."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "source": "wotc",
+      "published_at": "2024-11-08",
+      "comment": "Exemplar of Light's last ability triggers whenever you put one or more +1/+1 counters on it for any reason, not just as a result of its second ability."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "source": "wotc",
+      "published_at": "2024-11-08",
+      "comment": "In a Two-Headed Giant game, life gained by your teammate won't cause Exemplar of Light's second ability to trigger, even though it caused your team's life total to increase."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "source": "wotc",
+      "published_at": "2024-11-08",
+      "comment": "If you gain an amount of life \"for each\" of something or \"equal to the number\" of something, that life is gained as one event and Exemplar of Light's second ability triggers only once."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+      "source": "wotc",
+      "published_at": "2024-11-08",
+      "comment": "Each creature with lifelink dealing combat damage causes a separate life-gaining event. For example, if two creatures you control with lifelink deal combat damage at the same time, Exemplar of Light's second ability will trigger twice. However, if a single creature you control with lifelink deals combat damage to multiple creatures, players, planeswalkers, and/or battles at the same time (perhaps because it has trample or was blocked by more than one creature), the ability will trigger only once."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "a139eb7f-3853-490c-a839-35d0e5aed7b5",
+      "source": "wotc",
+      "published_at": "2026-08-21",
+      "comment": "Enlightened Confidant's ability checks at the moment it would trigger to see if you gained life this turn. If you didn't, the ability won't trigger at all. Once your end step begins, it's too late to gain life in order to cause this ability to trigger. However, the last part of the ability will check how much life you've gained as the ability resolves, so you could still gain more life while the ability is on the stack to make putting a card into your hand easier."
+    },
+    {
+      "object": "ruling",
+      "oracle_id": "a139eb7f-3853-490c-a839-35d0e5aed7b5",
+      "source": "wotc",
+      "published_at": "2026-08-21",
+      "comment": "If a card in your graveyard has an X in its mana cost, X is 0 for the purpose of determining its mana value."
+    }
+  ],
+  "notes": [
+    "Oracle spelling corrected Dr. Beverly Crusher, Exemplar of Light, Enlightened Confidant and Booster Tutor after reviewing the ASR context.",
+    "The combat reel specifies generic creatures: actual named cards in the tests are independently chosen representatives.",
+    "A word such as \"if\" alone does not identify a replacement effect; the implementation requires the complete Oracle replacement clause.",
+    "Trigger and draw instruction counts do not simulate the full resolution of those interactions."
+  ]
+}

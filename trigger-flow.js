@@ -24,7 +24,7 @@ function transition(before,after,event){
  if(used.size!==previous.length)return {supported:false,reason:'ID innesco duplicato'};
  const pending=[...previous.map(clone),...observed.pending.slice(previous.length).map((t,i)=>({...t,id:'trigger:'+String(after.nextTriggerId??0)+':'+i+':'+t.abilityId}))];
  if(pending.length!==new Set(pending.map(t=>t.id)).size)return {supported:false,reason:'ID innesco duplicato'};
- const state={...clone(after),pendingTriggers:pending,delayedTriggers:observed.delayedTriggers||[],firedDelayed:observed.firedDelayed,nextTriggerId:(after.nextTriggerId??0)+1};
+ const state={...clone(after),pendingTriggers:pending,delayedTriggers:observed.delayedTriggers||[],firedDelayed:observed.firedDelayed,nextTriggerId:(after.nextTriggerId??0)+1,...(observed.triggerUsage?{triggerUsage:observed.triggerUsage}:{})};
  return {supported:true,state,records,queued:pending.length-(after.pendingTriggers||[]).length};
 }
 function place(state,orders){if(!root.JudgeAPNAP)return {supported:false,reason:'APNAP mancante'};return root.JudgeAPNAP.place({...state,activePlayer:state.turn?.activePlayer||state.activePlayer},orders);}

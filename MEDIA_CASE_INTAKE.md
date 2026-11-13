@@ -2,20 +2,23 @@
 
 ## Stato reale
 
-Il creator è stato indicato dall'utente come `rippullrepeat` su Instagram.
-Nell'ambiente aggiornato il profilo pubblico risponde HTTP 200 e i metadati
-riportano `RipPullRepeat (@rippullrepeat)`. **Nessun suo reel è stato acquisito,
-ascoltato o trascritto.** La pagina iniziale non espone un elenco di reel;
-yt-dlp non riesce a indicizzarla. Una richiesta all'endpoint pubblico del profilo
-restituisce HTTP 404, senza recuperare video. Questi risultati non dimostrano
-che il profilo sia vuoto o che sia necessariamente richiesto il login.
+Verifica del 13 novembre 2026: **cinque reel pubblici di `rippullrepeat` sono
+stati scaricati e trascritti realmente**, senza account. Il primo link è stato
+fornito dal proprietario; gli altri quattro sono stati trovati nella pagina
+pubblica incorporabile del profilo. Non è una scansione completa dell'account.
 
-Il controllo anonimo con Chromium si ferma su `ERR_CERT_AUTHORITY_INVALID`:
-la CA dell'ambiente presente nel trust di sistema non è nel database NSS del
-browser. La proposta di aggiungerla è stata respinta dall'approvazione automatica
-perché modifica in modo persistente i certificati attendibili senza consenso
-esplicito. Il trust non è stato modificato; TLS non è stato disattivato.
-Non è stato tentato alcun accesso con credenziali o aggiramento del login.
+La pagina normale non espone un elenco utilizzabile e il vecchio estrattore
+yt-dlp del profilo non funzionava. `instagram_public.py` legge ora i dati JSON
+dell'embed pubblico, anche quando sono dentro una stringa JavaScript, senza
+eseguire JavaScript. Verifica il nome del creator, esclude immagini e dati
+privati, deduplica i permalink e limita a venti gli elementi richiesti.
+La pagina corrente ha restituito cinque video recenti; il limite richiesto non
+garantisce che Instagram renda disponibile l'archivio.
+
+Il precedente tentativo di importare la CA dell'ambiente in Chromium era stato
+respinto dall'approvazione automatica. Il trust del browser non è stato modificato.
+Il flusso ora verificato usa client HTTPS con il trust di sistema già configurato:
+non richiede quella modifica né disattiva TLS. Nessun login è stato aggirato.
 
 Sono stati preparati e provati:
 
@@ -24,13 +27,16 @@ Sono stati preparati e provati:
   `a8d002cfd879315632a579e73f0148d06959de36`, compilato CPU con due thread;
 - FFmpeg per estrarre audio mono PCM a 16 kHz;
 - 10 test Python del flusso e dei controlli, incluso FFmpeg reale;
-- 13 test del filtro per ruling, con testi di esempio in italiano e inglese;
+- 14 test del filtro per ruling, con testi di esempio in italiano e inglese;
+- 6 test del parser della pagina pubblica, senza esecuzione di JavaScript;
 - 3 test del collegamento tra uno scenario revisionato e il motore reale.
 
-**La trascrizione vocale reale non è ancora verificata.** Il modello multilingue
-`tiny` (~75 MiB) non è presente: Hugging Face ora è raggiungibile, ma il download
-redirige a `us.aws.cdn.hf.co`, bloccato dalla rete con CONNECT 403. Il test vocale `smoke.py` si ferma in
-modo esplicito finché il modello manca; non produce un PASS simulato.
+Il modello multilingue `tiny` è presente: download reale di 77.691.713 byte e
+checksum verificato. Il test vocale `smoke.py` è passato sul campione JFK reale
+di 11 secondi. I cinque reel hanno poi prodotto audio PCM e trascrizioni con
+tempi. La revisione contro Oracle resta necessaria: ad esempio “Exemplar of Life”
+nel parlato riconosciuto è stato corretto in “Exemplar of Light”, confrontando
+anche il testo dell'abilità. Non è una misura di accuratezza generale di tiny.
 
 Il modello viene accettato solo se il checksum SHA-1 coincide con quello
 pubblicato nella tabella del repository upstream alla versione bloccata:
@@ -38,30 +44,15 @@ pubblicato nella tabella del repository upstream alla versione bloccata:
 non HTTPS sono rifiutati. Il digest non viene modificato per far passare un file.
 Nessun modello è stato aggiunto alla PWA e nessuna API commerciale è attivata.
 
-## Intervento necessario del proprietario
+## Configurazione effettiva
 
-Le precedenti aggiunte per Instagram e Hugging Face risultano applicate e la rete
-ristretta risulta `enforced`. Resta **soltanto `us.aws.cdn.hf.co`**, identificato
-nel redirect reale, aggiunto alla nuova bozza conservando tutte le altre regole.
-La lettura successiva conferma il dominio nella bozza, ma non nell'ambiente attivo.
-Non occorre riapplicare le vecchie modifiche.
+Anche `us.aws.cdn.hf.co` risulta ora applicato. Lo stato dell'ambiente è stato
+riletto: osservazioni attuali e policy ristretta `enforced`, poi download e
+acquisizioni sono stati verificati con connessioni nuove. Non sono state
+riapplicate impostazioni precedenti né pubblicati ambiente, app o release.
+Per il campione pubblico verificato non serve un altro intervento del proprietario.
 
-L'utente deve rivedere e salvare questa singola aggiunta nelle impostazioni
-dell'ambiente. Il salvataggio della bozza da parte dell'assistente non applica
-da solo la nuova regola alla macchina. L'assistente non pubblica ambiente o app.
-Non è stata attivata una rete senza restrizioni e main non è modificato.
-
-Se l'interfaccia è Codex web, la pagina di gestione ambienti è normalmente
-<https://chatgpt.com/codex/settings/environments>. Su interfacce diverse il percorso
-può cambiare: una schermata dell'utente permette di indicare il comando corretto,
-senza inventare nomi di pulsanti non osservati.
-
-Dopo l'applicazione occorre rileggere lo stato effettivo dell'ambiente e riprovare
-le richieste. Non si deve presumere che l'accesso Instagram o il download siano
-riusciti soltanto perché la bozza risulta salvata. Se emerge un dominio CDN
-aggiuntivo, va identificato dalla risposta effettiva prima di proporlo.
-
-## Cosa esegue l'assistente dopo lo sblocco
+## Comandi per l'assistente
 
 I comandi sono per l'assistente/sviluppatore: il proprietario non deve usare un
 terminale sul telefono. Le installazioni sono ripetibili e fuori dal checkout:
@@ -114,8 +105,9 @@ e i segmenti che la motivano:
 - `needs_review`: evidenza insufficiente o ambigua; nessuna bozza automatica.
   La revisione è compito dell'assistente, senza chiedere all'utente di riassumere.
 
-È un filtro a parole chiave, non un classificatore semanticamente verificato su
-reel reali. Può avere falsi positivi e negativi; non dichiara né il tema confermato
+È un filtro a parole chiave, non un classificatore con accuratezza misurata.
+La prima applicazione reale ha richiesto una revisione e indizi aggiuntivi per
+guadagno vita e pescate. Può avere falsi positivi e negativi; non dichiara né il tema confermato
 né il ruling corretto. Un video che spiega una regola durante un'apertura di
 bustine resta candidato. La revisione deve confermare il tema prima di creare
 uno scenario da eseguire. I video chiaramente estranei vengono ignorati e le
@@ -124,12 +116,15 @@ trascrizioni private restano evidenza della selezione, fuori dal repository.
 Verifica locale eseguita, senza modello o download di reel:
 
 ```sh
-python3 scripts/media/test_ruling_filter.py  # 13 test, OK
+python3 scripts/media/test_ruling_filter.py  # 14 test, OK
 python3 scripts/media/test_intake.py         # 10 test, OK
+python3 scripts/media/test_instagram_public.py # 6 test, OK
 node scripts/media/test_probe.cjs           # 3 controlli, OK, motore reale
 ```
 
-Questi 26 controlli non provano l'accesso ai reel o la qualità della trascrizione.
+Questi 33 controlli non provano da soli l'accesso ai reel o la qualità della
+trascrizione. Le acquisizioni reali sono registrate separatamente in
+`case-studies/reel-source-records.json`, senza commettere i media o il parlato.
 
 ## Dal parlato al test
 
@@ -182,7 +177,11 @@ richiesta in chat, estratta dal browser o salvata nel repository. Un eventuale
 account dedicato va considerato soltanto dopo una reale richiesta di login e
 una modalità di accesso autorizzata: non garantisce il recupero di tutto l'account.
 
-Instagram può limitare profili e reel anche pubblici. Non è stato verificato il
-recupero di un reel reale, né la trascrizione di nomi Magic con tiny. La qualità
-va misurata su una prima clip: errori e ambiguità devono restare visibili. Non si
-passa automaticamente a modelli più grandi o servizi a pagamento.
+Instagram può limitare profili e reel anche pubblici. Il recupero di cinque reel
+è verificato in questa sessione; non garantisce l'accesso futuro o a tutto
+l'archivio. Gli errori sui nomi Magic restano nei file ASR originali e le
+correzioni sono registrate nella revisione. Non si passa automaticamente a
+modelli più grandi o servizi a pagamento.
+
+I casi estratti, le tre famiglie implementate, le prove e i limiti del calcolo
+sono descritti in [case-studies/REEL_CASES.md](case-studies/REEL_CASES.md).

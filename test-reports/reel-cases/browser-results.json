@@ -1,0 +1,68 @@
+{
+  "verified_at_utc": "2026-11-13T10:05:31.141217+00:00",
+  "browser": "Chromium",
+  "viewport": "390x844 touch emulation where enabled; no physical mobile devices",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "scripts/test-chapter-16-browser.py"
+      ],
+      "exit_code": 0,
+      "reported_pass_paths": 3,
+      "output": [
+        "PASS real browser: Oracle -> planner -> real engine -> SBA and source recalculation -> source gate; no controller/order questions",
+        "PASS simulated verified engine: targeted questions, answer revision, no repeat, source gate retained",
+        "PASS stale asynchronous engine response cannot overwrite a restarted interview"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-beta-browser.py"
+      ],
+      "exit_code": 0,
+      "reported_pass_paths": 7,
+      "output": [
+        "PASS Chromium installability: manifest, icons, service worker and app shell",
+        "PASS mobile viewport: real local search, four cards, engine, SBA, result and rule references",
+        "PASS supplied Oracle and ruling records displayed without treating them as pair-specific rulings",
+        "PASS offline reload: cached app, local Oracle shards and real calculation without network",
+        "PASS real mobile spell flow: Oracle damage, priority, resolution and indestructible",
+        "PASS real mobile entry flow: contextual controller question, triggered ability and stack resolution",
+        "PASS unsupported interaction and recovery: explicit limits, no blank screen or JavaScript errors",
+        "UNRUN WebKit: BrowserType.launch: Executable doesn't exist at /home/agent/.cache/ms-playwright/webkit-2336/pw_run.sh"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-targeting-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "reported_pass_paths": 3,
+      "output": [
+        "PASS real UI: protection blocks the targeting attempt without damage",
+        "PASS real UI: necessary controller question allows your own spell through hexproof",
+        "PASS real UI: opposing spell is blocked and no false resolution is displayed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test-reel-cases-browser.py"
+      ],
+      "exit_code": 0,
+      "reported_pass_paths": 7,
+      "output": [
+        "PASS UI: actual life-gain triggers, no irrelevant cap-history question",
+        "PASS UI: recipient retained, once-per-turn history requested and used",
+        "PASS UI: end-step threshold, irrelevant doctor controller omitted",
+        "PASS UI: double strike marks both steps, indestructible blocker survives",
+        "PASS UI: first-step death does not unblock the attacker",
+        "PASS UI: actual draw replacements, unchanged put-back instruction and explicit boundary",
+        "PASS UI: unsupported trample assignment is explicit and recoverable"
+      ]
+    }
+  ]
+}

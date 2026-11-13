@@ -31,14 +31,22 @@ function observe(state,events,abilities,options={}){
  if(!state||!Array.isArray(state.players)||!Array.isArray(events)||!Array.isArray(abilities))return {supported:false,reason:'Input non valido'};
  const players=state.players.map(p=>p.id);if(!players.length||new Set(players).size!==players.length)return {supported:false,reason:'Giocatori non validi'};
  const pending=clone(state.pendingTriggers||[]),used=new Set(state.firedDelayed||[]),trace=[];
+ let usage=state.triggerUsage?clone(state.triggerUsage):null;
+ if(abilities.some(a=>a?.maxPerTurn!==undefined)){
+  const turn=state.turn?.turnNumber;
+  if(!Number.isSafeInteger(turn)||turn<1||!usage||!Number.isSafeInteger(usage.turnNumber)||usage.turnNumber<1||usage.turnNumber>turn||!usage.counts||typeof usage.counts!=='object'||Array.isArray(usage.counts)||Object.values(usage.counts).some(n=>!Number.isSafeInteger(n)||n<0))return {supported:false,reason:'Storico degli inneschi nel turno non determinato'};
+  if(usage.turnNumber!==turn)usage={turnNumber:turn,counts:{}};
+ }
  const ids=new Set();for(const a of abilities){
   if(!a||typeof a.id!=='string'||!a.id||ids.has(a.id)||!players.includes(a.controller)||!a.event||typeof a.event.type!=='string'||!['normal','delayed','reflexive'].includes(a.kind||'normal'))return {supported:false,reason:'Descrittore abilità non valido'};
   if(a.interveningIf!=null&&!root.JudgeTriggerConditions.valid(a.interveningIf))return {supported:false,reason:'Condizione intervening-if non valida'};
+  if(a.maxPerTurn!==undefined&&(!Number.isSafeInteger(a.maxPerTurn)||a.maxPerTurn<1))return {supported:false,reason:'Limite di innesco non valido'};
   ids.add(a.id);
  }
  for(let i=0;i<events.length;i++){
   const record=events[i],event=record.event||record;
   if(!event||typeof event.type!=='string')return {supported:false,reason:'Evento non valido'};
+  if(['gainLife','putCounters'].includes(event.type)&&event.amount!==undefined&&(!Number.isSafeInteger(event.amount)||event.amount<0))return {supported:false,reason:'Quantità dell’evento di innesco non valida'};
   for(const a of abilities){
    if(a.kind==='delayed'&&used.has(a.id))continue;
    const source=(record.before?.objects||state.objects||[]).find(o=>o.id===a.source)||null;
@@ -51,18 +59,36 @@ function observe(state,events,abilities,options={}){
    // An ability belonging to a specific incarnation must not fire for a different incarnation.
    const relevant=leaves?source:afterSource;
    if(a.sourceIdentity!==undefined&&relevant?.objectIdentity!==a.sourceIdentity)continue;
-   if(!validSource||!match(a.event,event,record))continue;
+   if(!validSource||!match(a.event,event,record)||event.type==='gainLife'&&event.amount===0||event.type==='putCounters'&&event.amount===0)continue;
    const ctx={event,before:record.before||null,after:record.after||null,source:leaves?source:afterSource,controller:a.controller};
    const verdict=a.interveningIf==null?true:root.JudgeTriggerConditions.evaluate(a.interveningIf,ctx);
    if(verdict===null)return {supported:false,reason:'Condizione di innesco non determinabile dai fatti disponibili',requiredFacts:[{key:'triggerCondition:'+a.id+':'+i,question:'Quali fatti mancano per verificare la condizione dell’innesco '+a.id+'?',options:[],reason:'Condizione intervening-if non determinabile'}]};
    if(verdict!==true)continue;
-   const id='trigger:'+i+':'+a.id;
-   pending.push({id,abilityId:a.id,controller:a.controller,source:a.source??null,event:clone(event),description:a.description||'',interveningIf:clone(a.interveningIf??null),context:clone(ctx),resolution:'manual'});
-   trace.push(id);
+   let copies=1;
+   for(const permanent of record.after?.objects||state.objects||[]){
+    if(permanent.zone!=='battlefield')continue;
+    for(const ability of permanent.abilities||[]){
+     const bonus=ability.triggerBonus;if(bonus===undefined)continue;
+     if(ability.kind!=='static'||!bonus||typeof bonus!=='object'||Array.isArray(bonus)||Object.keys(bonus).some(k=>!['eventType','additional'].includes(k))||bonus.eventType!=='gainLife'||!Number.isSafeInteger(bonus.additional)||bonus.additional<1)return {supported:false,reason:'Modificatore degli inneschi non supportato'};
+     if((!a.kind||a.kind==='normal')&&event.type==='gainLife'&&event.player===permanent.controller&&a.controller===permanent.controller&&relevant?.zone==='battlefield'&&relevant.controller===permanent.controller)copies+=bonus.additional;
+    }
+   }
+   if(copies>32)return {supported:false,reason:'Troppi inneschi aggiuntivi'};
+   if(a.maxPerTurn!==undefined){
+    if(typeof relevant?.objectIdentity!=='string'||!relevant.objectIdentity)return {supported:false,reason:'Identità del permanente con limite di innesco non nota'};
+    const key=JSON.stringify([a.id,relevant.objectIdentity]),previous=usage.counts[key]||0;
+    copies=Math.min(copies,Math.max(0,a.maxPerTurn-previous));
+    usage.counts[key]=previous+copies;
+   }
+   for(let copy=0;copy<copies;copy++){
+    const id='trigger:'+i+':'+a.id+(copy?':additional:'+copy:'');
+    pending.push({id,abilityId:a.id,controller:a.controller,source:a.source??null,event:clone(event),description:a.description||'',interveningIf:clone(a.interveningIf??null),context:clone(ctx),resolution:'manual'});
+    trace.push(id);
+   }
    if(a.kind==='delayed'&&a.once!==false)used.add(a.id);
   }
  }
- return {supported:true,pending,firedDelayed:[...used],trace};
+ return {supported:true,pending,firedDelayed:[...used],trace,...(usage?{triggerUsage:usage}:{})};
 }
 function stackAPNAP(state,pending,orders={}){
  const players=state?.players?.map(p=>p.id)||[],start=players.indexOf(state?.activePlayer);

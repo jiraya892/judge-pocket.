@@ -26,6 +26,8 @@ MECHANICS = {
     'damage': re.compile(r'\b(?:damage|dann[io]|indestructible|indistruttibile)\b'),
     'replacement': re.compile(r'\b(?:replacement effects?|effetti? di sostituzione|prevention|prevenzione)\b'),
     'state_actions': re.compile(r'\b(?:state.based actions?|azioni basate sullo stato)\b'),
+    'life_gain': re.compile(r'\b(?:gain(?:s|ed|ing)? life|guadagn\w* (?:punti )?vit[ae])\b'),
+    'card_draw': re.compile(r'\b(?:draw(?:s|ing)? (?:a |one |two |three |multiple )?cards?|pesc\w* (?:una |due |tre )?cart[ae])\b'),
 }
 NON_RULING = re.compile(
     r'\b(?:unboxing|giveaway|give away|discount code|codice sconto|sponsorizzat\w*|'

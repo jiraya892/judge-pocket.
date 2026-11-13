@@ -19,6 +19,9 @@ def reel_url(value):
 def public_index(profile,limit):
  if not re.fullmatch(r'[A-Za-z0-9._]{1,30}',profile)or profile in {'accounts','p','reel','reels'}:raise IntakeError('Use an Instagram username, not credentials')
  if not 1<=limit<=20:raise IntakeError('Index at most 20 public reels per request')
+ from instagram_public import PublicProfileError, public_profile_embed
+ try:return public_profile_embed(profile,limit)
+ except (PublicProfileError,OSError,ValueError):pass  # A changed embed may still have a supported public yt-dlp listing.
  try:import yt_dlp
  except ImportError as e:raise IntakeError('Run with the media-tool Python interpreter')from e
  url='https://www.instagram.com/'+profile+'/'
@@ -52,7 +55,7 @@ def download(url,folder):
  url=reel_url(url)
  try:import yt_dlp
  except ImportError as e:raise IntakeError('Run with the installed media-tool Python interpreter')from e
- options={'quiet':True,'no_warnings':True,'noplaylist':True,'socket_timeout':20,'retries':1,'fragment_retries':1,'concurrent_fragment_downloads':1,'max_filesize':MAX_BYTES,'outtmpl':str(folder/'source.%(ext)s'),'format':'best[height<=480]/best'}
+ options={'quiet':True,'noprogress':True,'no_warnings':True,'noplaylist':True,'socket_timeout':20,'retries':1,'fragment_retries':1,'concurrent_fragment_downloads':1,'max_filesize':MAX_BYTES,'outtmpl':str(folder/'source.%(ext)s'),'format':'best[height<=480]/best'}
  # TLS verification and inherited proxy settings remain enabled. No cookie,
  # password, impersonation or private-content fallback is configured.
  with yt_dlp.YoutubeDL(options)as ydl:

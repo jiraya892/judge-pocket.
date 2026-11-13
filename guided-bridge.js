@@ -13,6 +13,9 @@ async function evaluate(context){
  const details={version:2,cards:context?.cards||[],event:context?.event||null,reasonCodes:[],unsupportedLines:[],warnings:[]};
  const fail=(code,reason,extra={})=>({status:'unsupported',title:'Interazione non ancora supportata',reason,diagnostic:{...details,reasonCodes:[code],...extra}});
  if(!Array.isArray(context?.cards)||context.cards.length<2||context.cards.some(n=>typeof n!=='string'||!n.trim()))return fail('CARDS_MISSING','Servono almeno due nomi di carte.');
+ if(['gainLife','putCounters','beginEndStep'].includes(context.event)&&root.JudgeTriggerScenario)return root.JudgeTriggerScenario.guided(context);
+ if(context.event==='combat'&&root.JudgeCombatScenario)return root.JudgeCombatScenario.guided(context);
+ if(context.event==='drawCards'&&root.JudgeDrawScenario)return root.JudgeDrawScenario.guided(context);
  if(context.event==='cast'&&root.JudgeSpellScenario)return root.JudgeSpellScenario.guided(context);
  if(context.event==='cast')return fail('CAST_STACK_NOT_CONNECTED','Il lancio e la risoluzione non sono ancora collegati alla modalità guidata.');
  if(context.event==='other')return fail('CUSTOM_EVENT_NOT_PARSED','La descrizione libera non è ancora traducibile in eventi verificabili.');

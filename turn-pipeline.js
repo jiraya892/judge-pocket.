@@ -17,7 +17,7 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
   if(!Array.isArray(applied)||applied.length>1)return {supported:false,reason:'Eventi effettivi post-sostituzione non disponibili'};
   const integrated=root.JudgeTriggerFlow.transition(before,s,applied[0]||null);
   if(!integrated.supported)return integrated;
-  Object.assign(s,{pendingTriggers:integrated.state.pendingTriggers,delayedTriggers:integrated.state.delayedTriggers,firedDelayed:integrated.state.firedDelayed,nextTriggerId:integrated.state.nextTriggerId});
+  Object.assign(s,{pendingTriggers:integrated.state.pendingTriggers,delayedTriggers:integrated.state.delayedTriggers,firedDelayed:integrated.state.firedDelayed,nextTriggerId:integrated.state.nextTriggerId,...(integrated.state.triggerUsage?{triggerUsage:integrated.state.triggerUsage}:{})});
   if(action[INTERNAL]){s.pending=s.pendingTriggers;s.history.push({kind:'resolutionEvent',event:ev});return {supported:true,state:s,event:applied[0]||null,queued:integrated.queued,sba:[],sbaExecuted:false,warnings:out.warnings};}
   if(!root.JudgeLocalSBA)return {supported:false,reason:'Modulo SBA 4F.5 non disponibile'};
   let settled=root.JudgeLocalSBA.stabilize(s);if(!settled.supported)return settled;
@@ -26,7 +26,7 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
    const snap={...clone(change.after),pendingTriggers:s.pendingTriggers,delayedTriggers:s.delayedTriggers,firedDelayed:s.firedDelayed,nextTriggerId:s.nextTriggerId};
    const tr=root.JudgeTriggerFlow.transition(change.before,snap);
    if(!tr.supported)return tr;
-   Object.assign(s,{objects:tr.state.objects,pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});
+   Object.assign(s,{objects:tr.state.objects,pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId,...(tr.state.triggerUsage?{triggerUsage:tr.state.triggerUsage}:{})});
    sbaQueued+=tr.queued;
   }
   s.pending=s.pendingTriggers;
@@ -67,7 +67,7 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
     next=moved.state;zoneTransition=moved.transition;
     if(!root.JudgeTriggerFlow)return {supported:false,reason:'Flusso inneschi non disponibile'};
     const triggers=root.JudgeTriggerFlow.transition(moved.before,next);if(!triggers.supported)return triggers;
-    Object.assign(next,{pendingTriggers:triggers.state.pendingTriggers,delayedTriggers:triggers.state.delayedTriggers,firedDelayed:triggers.state.firedDelayed,nextTriggerId:triggers.state.nextTriggerId});
+    Object.assign(next,{pendingTriggers:triggers.state.pendingTriggers,delayedTriggers:triggers.state.delayedTriggers,firedDelayed:triggers.state.firedDelayed,nextTriggerId:triggers.state.nextTriggerId,...(triggers.state.triggerUsage?{triggerUsage:triggers.state.triggerUsage}:{})});
    }
    next.pending=next.pendingTriggers;next.passes=0;next.priority=next.turn?.activePlayer||next.activePlayer;
    next.history.push({kind:'allTargetsIllegal',top:top.id});return {supported:true,state:next,step:'allTargetsIllegal',top,legality:plan.legality,zoneTransition};
@@ -98,13 +98,13 @@ function apply(state,action){const s=clone(state);if(!action||!action.type)retur
     const moved=root.JudgeStackZone.transition(current,top,destination);if(!moved.supported)return moved;
     current=moved.state;resolutionZoneTransition=moved.transition;
     const tr=root.JudgeTriggerFlow.transition(moved.before,current);if(!tr.supported)return tr;
-    Object.assign(current,{pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});
+    Object.assign(current,{pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId,...(tr.state.triggerUsage?{triggerUsage:tr.state.triggerUsage}:{})});
    }
    return root.JudgeLocalSBA.stabilize(current);
   });
   if(!atomic.supported)return {supported:false,reason:'Risoluzione non eseguita: '+atomic.reason,top};
   resolving=atomic.state;
-  const events=atomic.events;const settled={changes:atomic.sba,transitions:atomic.transitions};let sbaQueued=0;for(const change of settled.transitions){const snap={...clone(change.after),pendingTriggers:resolving.pendingTriggers,delayedTriggers:resolving.delayedTriggers,firedDelayed:resolving.firedDelayed,nextTriggerId:resolving.nextTriggerId};const tr=root.JudgeTriggerFlow.transition(change.before,snap);if(!tr.supported)return tr;Object.assign(resolving,{objects:tr.state.objects,pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId});sbaQueued+=tr.queued;}resolving.pending=resolving.pendingTriggers;resolving.priority=resolving.turn?.activePlayer||resolving.activePlayer;resolving.passes=0;resolving.history.push({kind:'resolved',top});return {supported:true,state:resolving,step:'resolved',top,events,zoneTransition:resolutionZoneTransition,event:events[0]||null,sba:[...settled.changes],sbaExecuted:settled.changes.length>0};
+  const events=atomic.events;const settled={changes:atomic.sba,transitions:atomic.transitions};let sbaQueued=0;for(const change of settled.transitions){const snap={...clone(change.after),pendingTriggers:resolving.pendingTriggers,delayedTriggers:resolving.delayedTriggers,firedDelayed:resolving.firedDelayed,nextTriggerId:resolving.nextTriggerId};const tr=root.JudgeTriggerFlow.transition(change.before,snap);if(!tr.supported)return tr;Object.assign(resolving,{objects:tr.state.objects,pendingTriggers:tr.state.pendingTriggers,delayedTriggers:tr.state.delayedTriggers,firedDelayed:tr.state.firedDelayed,nextTriggerId:tr.state.nextTriggerId,...(tr.state.triggerUsage?{triggerUsage:tr.state.triggerUsage}:{})});sbaQueued+=tr.queued;}resolving.pending=resolving.pendingTriggers;resolving.priority=resolving.turn?.activePlayer||resolving.activePlayer;resolving.passes=0;resolving.history.push({kind:'resolved',top});return {supported:true,state:resolving,step:'resolved',top,events,zoneTransition:resolutionZoneTransition,event:events[0]||null,sba:[...settled.changes],sbaExecuted:settled.changes.length>0};
  }
  return {supported:false,reason:'Azione non supportata'};
 }

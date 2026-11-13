@@ -1,0 +1,281 @@
+{
+  "verified_at_utc": "2026-11-13T10:05:24.707743+00:00",
+  "ci_status": "not_run_for_local_changes_no_push",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "scripts/build-card-database.py"
+      ],
+      "kind": "generation",
+      "exit_code": 0,
+      "count": null,
+      "summary": [
+        "38779 Oracle cards; 64 compressed shards; 12270996 bytes total"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build-app-shell.py"
+      ],
+      "kind": "generation",
+      "exit_code": 0,
+      "count": null,
+      "summary": [
+        "App shell: 89 assets, all present"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "question-planner.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 27,
+        "total": 27
+      },
+      "summary": [
+        "PASS evaluator cannot mutate planner input",
+        "PASS interaction between unknown facts retained",
+        "27/27 question-planner tests passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "chapter-16-guided.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 20,
+        "total": 20
+      },
+      "summary": [
+        "PASS invalid order rejected",
+        "PASS build input objects retain subtype and printed numeric values",
+        "20/20 guided bridge integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "chapter-16-real-engine.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 39,
+        "total": 39
+      },
+      "summary": [
+        "PASS actual bridge stabilizes real interaction without controller or order questions",
+        "PASS presentation does not manufacture a verified verdict",
+        "39/39 real-engine integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "beta-engine.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 19,
+        "total": 19
+      },
+      "summary": [
+        "PASS unparsed target abilities rejected by narrow evaluator",
+        "PASS stalled online lookup aborts and reports a recoverable error",
+        "19/19 beta engine integration checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-targeting.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 16,
+        "total": 16
+      },
+      "summary": [
+        "PASS a known protection block makes hexproof ownership irrelevant",
+        "PASS unimplemented protection and conditional keywords stay unsupported",
+        "16/16 targeting case-study checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "case-study-reels.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 50,
+        "total": 50
+      },
+      "summary": [
+        "PASS actual replacement core applies each draw replacement once in either order",
+        "PASS draw projections do not claim to execute draws through the event pipeline",
+        "50/50 reel case-study checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "card-data.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 10,
+        "total": 10
+      },
+      "summary": [
+        "PASS retry after integrity failure does not cache invalid bytes",
+        "PASS all provider requests remain local and shard reads are deduplicated",
+        "10/10 card database checks passed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "verify-tests.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 71,
+        "total": 71
+      },
+      "summary": [
+        "PASS 5H: 2 damage in separate resolution kills before later counter",
+        "PASS 5H: indestructible 2/2 survives lethal damage",
+        "Total: 71 passed, 0 failed"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "verify-groups-5h.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 2370,
+        "total": 2370
+      },
+      "summary": [
+        "JudgeGroup15GTests: 10/10",
+        "JudgeGroup15HTests: 10/10",
+        "Browser suites: 2370/2370 passed; 0 execution errors"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/verify-official-provenance.test.cjs"
+      ],
+      "kind": "node",
+      "exit_code": 0,
+      "count": {
+        "passed": 6,
+        "total": 6
+      },
+      "summary": [
+        "6/6 provenance fail-closed tests passed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_intake.py"
+      ],
+      "kind": "python",
+      "exit_code": 0,
+      "count": {
+        "passed": 10,
+        "total": 10
+      },
+      "summary": [
+        "Ran 10 tests in 0.207s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_ruling_filter.py"
+      ],
+      "kind": "python",
+      "exit_code": 0,
+      "count": {
+        "passed": 14,
+        "total": 14
+      },
+      "summary": [
+        "Ran 14 tests in 0.005s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/media/test_instagram_public.py"
+      ],
+      "kind": "python",
+      "exit_code": 0,
+      "count": {
+        "passed": 6,
+        "total": 6
+      },
+      "summary": [
+        "Ran 6 tests in 0.008s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/media/test_probe.cjs"
+      ],
+      "kind": "research_probe",
+      "exit_code": 0,
+      "count": {
+        "passed": 3,
+        "total": 3
+      },
+      "summary": [
+        "3/3 reviewed-case probe checks passed (actual rules engine; no media or model download)"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "trigger-engine.js": "c6be160e6dbe4172967f8577056c33e0dc964c51d184f768f4596385b09dbae6",
+    "trigger-flow.js": "e7846ff7609d74e7db5060c46c8958f54ca80c839d5097b1e05d46b545406dc8",
+    "trigger-recognition.js": "cc56126b2bfbfdb05c48e5313edd2f345f063c56610e0b9c20a731ef4f69bec6",
+    "turn-pipeline.js": "02ebef7fc57a52baaf83588f7cf8c780c6d461f48615aa5f55a43e52f968aa54",
+    "replacement-engine.js": "eac3facb13a6e1546ce10dc40cb55d080587de1cc1f98417a7a06f4a75187785",
+    "trigger-scenario.js": "c9b2239a43d25b9e5df8dbda31ad89b84b04d782c70b9f6f44bd8a349f41c60f",
+    "combat-scenario.js": "d5bccf6964ae16357fc4c9431babae19b130fd1ea098506f4ffb9bc9451e2fa5",
+    "draw-scenario.js": "6f2c53fc50ea232485c65d1592893c56d555992a50d0b588261e6f4d3fa7cb34",
+    "guided-bridge.js": "629c827957048b86f3e23d3134045f462a2a94e7c4196df81758d76e78759680",
+    "context-interview.js": "f9edbe45d058ec27229f91f370c482af909efccf325c8932bc7e796069b6c4cc",
+    "context-ui.js": "7913768d6fbdc415aa6a73c6888014ba0041a67d0c3708ad047a3e7f7316ee66",
+    "context.html": "4d92043dfd924ae4f83f06ce90a8fa04c5505ddea64eafb9dca813ba3abcd065",
+    "result-view.js": "f32f4c92d3877d483060f4a34f02fc9f8733cb609f73b8fe24d6322254bb1130",
+    "sw.js": "5841d162e0d7ee9115b140c80055ffcc905e2e294414b801c1765afbabdec391",
+    "case-study-reels.test.cjs": "53c4194e4a8623d57dfb6d026c3b7087bca9e0011a890430537d89c8cd62d9a7"
+  }
+}

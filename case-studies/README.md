@@ -3,6 +3,10 @@
 Questi file distinguono candidati, casi provati e meccanismi implementati. Non
 sono una raccolta di risposte da cercare tramite i nomi delle carte.
 
+Il blocco successivo, basato su cinque reel realmente trascritti, è documentato in
+[REEL_CASES.md](REEL_CASES.md): conteggi di inneschi, combattimento ristretto e
+sostituzioni delle pescate, con perimetri e limiti distinti.
+
 ## Ricerca nei dati disponibili
 
 `scripts/discover-case-studies.py` legge gli snapshot Oracle/ruling forniti e

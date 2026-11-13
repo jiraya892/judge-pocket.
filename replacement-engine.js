@@ -1,7 +1,7 @@
 /* Group 3: structured replacement/prevention before event execution.
    No implicit player choices: ambiguous orders fail closed. */
 (function(root){'use strict';
-const eventTypes=new Set(['gainLife','loseLife','dealDamage','putCounters','tap','untap']);
+const eventTypes=new Set(['gainLife','loseLife','dealDamage','putCounters','tap','untap','drawCard']);
 const operations=new Set(['prevent','multiply','add','set','redirect','changeType']);
 function matches(effect,event){
  const m=effect.match||{};

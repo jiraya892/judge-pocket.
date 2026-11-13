@@ -28,6 +28,7 @@ jobs:
           node chapter-16-real-engine.test.cjs
           node beta-engine.test.cjs
           node case-study-targeting.test.cjs
+          node case-study-reels.test.cjs
           node card-data.test.cjs
           node verify-tests.cjs
           node verify-groups-5h.cjs
@@ -48,6 +49,7 @@ jobs:
           fi
           python3 scripts/media/test_intake.py
           python3 scripts/media/test_ruling_filter.py
+          python3 scripts/media/test_instagram_public.py
           node scripts/media/test_probe.cjs
       - name: Install browser test dependencies
         run: |
@@ -70,7 +72,7 @@ jobs:
           else:
               raise RuntimeError('Local HTTP server failed to start')
           PYTHON
-          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py scripts/test-targeting-cases-browser.py; do
+          for test_script in scripts/test-chapter-16-browser.py scripts/test-beta-browser.py scripts/test-targeting-cases-browser.py scripts/test-reel-cases-browser.py; do
             set +e
             python3 -u "$test_script" > /tmp/judge-browser-test.log 2>&1
             test_exit=$?
