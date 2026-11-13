@@ -45,3 +45,12 @@ jobs:
           PAGES_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           python3 checkouts/beta/scripts/verify-deployed-beta.py --url "$PAGES_URL" --commit "$GITHUB_SHA"
+      - name: Install public-browser verification tools
+        run: |
+          python3 -m pip install playwright==1.56.0
+          python3 -m playwright install --with-deps chromium
+      - name: Exercise the actual public four-card beta
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python3 checkouts/beta/scripts/verify-public-beta-browser.py --url "$PAGES_URL"
