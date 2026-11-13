@@ -3,16 +3,41 @@ import json
 import shutil
 import os
 import tempfile
+import threading
+import functools
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 root=Path(__file__).resolve().parent.parent
-with sync_playwright() as p:
+class QuietHandler(SimpleHTTPRequestHandler):
+ def log_message(self, *args):
+  pass
+
+class LocalApp:
+ def __init__(self):
+  self.port=0;self.server=None
+ def start(self):
+  self.server=ThreadingHTTPServer(('127.0.0.1',self.port),functools.partial(QuietHandler,directory=str(root)))
+  self.server.daemon_threads=True;self.port=self.server.server_port
+  self.thread=threading.Thread(target=self.server.serve_forever,kwargs={'poll_interval':0.05},daemon=True);self.thread.start()
+ def stop(self):
+  if self.server:
+   self.server.shutdown();self.server.server_close();self.thread.join();self.server=None
+ def __enter__(self):
+  self.start();return self
+ def __exit__(self,*args):
+  self.stop()
+ @property
+ def origin(self):
+  return f'http://127.0.0.1:{self.port}'
+
+with sync_playwright() as p, LocalApp() as app:
  profile=tempfile.TemporaryDirectory(prefix='judge-beta-browser-')
  context=p.chromium.launch_persistent_context(profile.name,executable_path=None if os.environ.get('CI') else shutil.which('chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
  page=context.pages[0];errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
- page.goto('http://127.0.0.1:8000/index.html')
+ page.goto(app.origin+'/index.html')
  page.evaluate('navigator.serviceWorker.ready')
  page.reload()
  page.wait_for_function('navigator.serviceWorker.controller !== null')
@@ -49,6 +74,9 @@ with sync_playwright() as p:
  assert 'Nonbasic lands are Mountains.' in details.inner_text()
  print('PASS supplied Oracle and ruling records displayed without treating them as pair-specific rulings')
  assert page.evaluate('async()=> (await JudgeCardData.info()).count')==38779
+ # Older Playwright versions do not emulate offline for every service-worker
+ # request. Stop the real origin, so no network response can hide a cache bug.
+ app.stop()
  context.set_offline(True)
  page.reload();page.locator('#card1').fill('Blood Moon');page.locator('#card2').fill('Ashaya, Soul of the Wild')
  page.locator('#begin').click();page.get_by_role('button',name='Le carte sono già sul campo di battaglia',exact=True).click()
@@ -58,6 +86,7 @@ with sync_playwright() as p:
  if not page.evaluate('navigator.onLine'):
   assert 'Sei offline' in page.locator('#connectionStatus').inner_text()
  print('PASS offline reload: cached app, local Oracle shards and real calculation without network')
+ app.start()
  context.set_offline(False)
  page.locator('#restart').click();page.locator('#card1').fill('Lightning Bolt');page.locator('#card2').fill('Darksteel Myr');page.locator('#begin').click()
  page.get_by_role('button',name='Sto lanciando una magia',exact=True).click()
@@ -90,4 +119,4 @@ with sync_playwright() as p:
  except Exception as exc:
   print('UNRUN WebKit:',str(exc).splitlines()[0])
  else:
-  tab=webkit.new_page(viewport={'width':390,'height':844});tab.goto('http://127.0.0.1:8000/context.html');assert tab.locator('#begin').is_visible();webkit.close();print('PASS WebKit smoke (not a real iOS device)')
+  tab=webkit.new_page(viewport={'width':390,'height':844});tab.goto(app.origin+'/context.html');assert tab.locator('#begin').is_visible();webkit.close();print('PASS WebKit smoke (not a real iOS device)')
